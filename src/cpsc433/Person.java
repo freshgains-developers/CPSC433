@@ -8,7 +8,7 @@ package cpsc433;
 /**
  *
  * @author Micheal
- * An object that represents each person in the sisyphus problem
+ * An object that represents each person in the Sisyphus problem
  */
 public class Person extends Entity{
     // Array of projects the person is assigned to
