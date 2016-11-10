@@ -9,7 +9,6 @@ public class Project extends Entity {
 
     private ArrayList<Person> personList;
     private ArrayList<Person> headList;
-    private int size;
     private boolean isLarge;
 
     public Project(String name) {
@@ -21,6 +20,19 @@ public class Project extends Entity {
     public ArrayList<Person> getHead() {
         return headList;
     }
+
+    public void setProjectHead(Person p) {
+        headList.add(p);
+    }
+
+    public ArrayList<Person> getPersonList(){
+        return personList;
+    }
+
+    public void setPerson(Person p) {
+        personList.add(p);
+    }
+
 
 
 
