@@ -32,11 +32,11 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 	private static Environment instance=null;
 	protected boolean fixedAssignments=false;
         
-        private HashMap<String, Person[]> worksWith = null;
+        //private HashMap<String, Person[]> worksWith = null;
 	
 	protected Environment(String name) {
 		super(name==null?"theEnvironment":name);
-                worksWith = new HashMap();
+            //    worksWith = new HashMap();
 	}
 	
 	/**
