@@ -9,6 +9,19 @@ package cpsc433;
  *
  * @author Chris
  */
-public class Room {
+public class Room extends Entity {
+    public enum RoomSize {
+        SMALL, MEDIUM, LARGE
+    }
     
+    private RoomSize size;
+    
+    public Room(String name, RoomSize size) {
+        super(name);
+        this.size = size;
+    }
+    
+    public RoomSize getSize() {
+        return size;
+    }
 }
