@@ -24,29 +24,56 @@ public class Person extends Entity{
     private boolean smoker;
 
     // Set methods for the private variables of person
-    private void setSecretary(boolean b) {
+    public void setSecretary(boolean b) {
         this.secretary = b;   
     }
 
-    private void setManager(boolean b) {
+    public void setManager(boolean b) {
         this.manager = b;   
     }
 
-    private void setHacker(boolean b) {
+    public void setHacker(boolean b) {
         this.hacker = b;   
     }
 
-    private void setResearcher(boolean b) {
+    public void setResearcher(boolean b) {
         this.researcher = b;   
     }
 
-    private void setSmoker(boolean b) {
+    public void setSmoker(boolean b) {
         this.smoker = b;   
     }
+    
+    // Get methods
+    public boolean isSecretary(){
+        return secretary;
+    }
+    
+    public boolean isManager(){
+        return manager;
+    }
+    
+    public boolean isHacker(){
+        return hacker;
+    }
+    
+    public boolean isResearcher(){
+        return researcher;
+    }
+    
+    public boolean isSmoker(){
+        return smoker;
+    }
+    
         
     public Person(String name) {
         super(name);
     }
-    	
+    
+    
+    
+    
+    
+    
 	
 }
