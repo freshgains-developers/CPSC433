@@ -59,6 +59,12 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 
         @Override
 	public void a_person(String p) {
+            // Check is a person of the name p already exists 
+            // (Compare p to hashmap of people)
+            
+            Person newPerson = new Person(p);
+            
+            // Put newPerson into the hashmap
             
         }
         @Override
@@ -68,7 +74,14 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 	
         @Override
 	public void a_secretary(String p) {
+            // Check to see if there is a person of name p.
+            // If there is:
+            // personWithNameP.setSecretary(true);
             
+            // If no person exists:
+            Person newPerson = new Person(p);
+            newPerson.setSecretary(true);
+            // Put this new person into the hashmap            
         }
         @Override
 	public boolean e_secretary(String p) {
@@ -77,7 +90,14 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 	
         @Override
 	public void a_researcher(String p) {
+            // Check to see if there is a person of name p.
+            // If there is:
+            // personWithNameP.setResearcher(true);
             
+            // If no person exists:
+            Person newPerson = new Person(p);
+            newPerson.setResearcher(true);
+            // Put this new person into the hashmap 
         }
         @Override
 	public boolean e_researcher(String p) {
@@ -86,7 +106,14 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 	
         @Override
 	public void a_manager(String p) {
+            // Check to see if there is a person of name p.
+            // If there is:
+            // personWithNameP.setManager(true);
             
+            // If no person exists:
+            Person newPerson = new Person(p);
+            newPerson.setManager(true);
+            // Put this new person into the hashmap 
         }
         @Override
 	public boolean e_manager(String p) {
@@ -95,7 +122,14 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 	
         @Override
 	public void a_smoker(String p) {
+            // Check to see if there is a person of name p.
+            // If there is:
+            // personWithNameP.setSmoker(true);
             
+            // If no person exists:
+            Person newPerson = new Person(p);
+            newPerson.setSmoker(true);
+            // Put this new person into the hashmap 
         }
         @Override
 	public boolean e_smoker(String p) {
@@ -104,7 +138,14 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 	
         @Override
 	public void a_hacker(String p) {
+            // Check to see if there is a person of name p.
+            // If there is:
+            // personWithNameP.setHacker(true);
             
+            // If no person exists:
+            Person newPerson = new Person(p);
+            newPerson.setHacker(true);
+            // Put this new person into the hashmap 
         }
         @Override
 	public boolean e_hacker(String p) {

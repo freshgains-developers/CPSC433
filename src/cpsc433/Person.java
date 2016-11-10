@@ -15,13 +15,13 @@ public class Person extends Entity{
     private Project[] projects;
     // Array of groups the person is associated with
     private Group[] groups; 
-    // Role booleans
-    private boolean secretary;
-    private boolean manager;
-    private boolean hacker;
-    private boolean researcher;
-    // Smoker
-    private boolean smoker;
+    // Role booleans (default false)
+    private boolean secretary = false;
+    private boolean manager = false;
+    private boolean hacker = false;
+    private boolean researcher = false;
+    // Smoker (default false)
+    private boolean smoker = false;
 
     // Set methods for the private variables of person
     public void setSecretary(boolean b) {
@@ -69,11 +69,5 @@ public class Person extends Entity{
     public Person(String name) {
         super(name);
     }
-    
-    
-    
-    
-    
-    
-	
-}
+
+} 
