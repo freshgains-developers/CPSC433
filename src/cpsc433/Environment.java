@@ -6,6 +6,7 @@ package cpsc433;
 import cpsc433.Predicate.ParamType;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.TreeSet;
 
 /**
@@ -33,18 +34,24 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 	private static Environment instance=null;
 	protected boolean fixedAssignments=false;
         
-        private HashMap<String, HashMap<String, Person>> worksWith = null;
+        private HashMap<String, LinkedHashSet<Person>> worksWith = null;
         private HashMap<String, Person> people = null;
-        private ArrayList<Group> groups = null;
-        private ArrayList<Project> projects = null;
+        
+        private LinkedHashSet<Group> groups = null;
+        private LinkedHashSet<Project> projects = null;
+        
+        private HashMap<String, Room> rooms = null;
+        private HashMap<String, LinkedHashSet<Room>> closeTo = null;
 	
 	protected Environment(String name) {
 		super(name==null?"theEnvironment":name);
                 
                 worksWith = new HashMap();
                 people = new HashMap();
-                groups = new ArrayList();
-                projects = new ArrayList();
+                groups = new LinkedHashSet();
+                projects = new LinkedHashSet();
+                rooms = new HashMap();
+                closeTo = new HashMap();
 	}
 	
 	/**
