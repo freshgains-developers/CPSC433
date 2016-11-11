@@ -4,9 +4,10 @@
 package cpsc433;
 
 import cpsc433.Predicate.ParamType;
-import java.util.ArrayList;
+import cpsc433.Room.RoomSize;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.TreeSet;
 
 /**
@@ -34,24 +35,25 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 	private static Environment instance=null;
 	protected boolean fixedAssignments=false;
         
-        private HashMap<String, LinkedHashSet<Person>> worksWith = null;
+        // TODO: Maybe use LinkedHashMap instead ?
         private HashMap<String, Person> people = null;
+        private HashSet<SymmetricPair<Person, Person>> worksWith = null;
         
-        private LinkedHashSet<Group> groups = null;
-        private LinkedHashSet<Project> projects = null;
+        private HashMap<String, Group> groups = null;
+        private HashMap<String, Project> projects = null;
         
         private HashMap<String, Room> rooms = null;
-        private HashMap<String, LinkedHashSet<Room>> closeTo = null;
+        private HashSet<SymmetricPair<Room, Room>> closeTo = null;
 	
 	protected Environment(String name) {
 		super(name==null?"theEnvironment":name);
                 
-                worksWith = new HashMap();
+                worksWith = new HashSet();
                 people = new HashMap();
-                groups = new LinkedHashSet();
-                projects = new LinkedHashSet();
+                groups = new HashMap();
+                projects = new HashMap();
                 rooms = new HashMap();
-                closeTo = new HashMap();
+                closeTo = new HashSet();
 	}
 	
 	/**
@@ -81,12 +83,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
         @Override
 	public boolean e_person(String p) {
             //Checks if a person exists with the name p
-            if(people.containsKey(p)){
-                return true;
-            }
-            else{
-                return false;
-            }
+            return people.containsKey(p);
         }
 	
         @Override
@@ -301,56 +298,157 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 	// ROOMS
         @Override
 	public void a_room(String r) {
-            
+            // Add room if it doesn't already exist
+            if(!rooms.containsKey(r)) {
+                rooms.put(r, new Room(r, RoomSize.MEDIUM));
+            }
         }	
         @Override
 	public boolean e_room(String r) {
-            return false;
+            return rooms.containsKey(r);
         }
 	
         @Override
 	public void a_close(String room, String room2) {
+            Room roomObj1, roomObj2;
+ 
+            // First check if the specified rooms exist, if not
+            // create them 
             
+            if(!rooms.containsKey(room)) {
+                roomObj1 = new Room(room, RoomSize.MEDIUM);
+                rooms.put(room, roomObj1);
+            } else {
+                roomObj1 = rooms.get(room);
+            }
+            
+            if(!rooms.containsKey(room2)) {
+                roomObj2 = new Room(room2, RoomSize.MEDIUM);
+                rooms.put(room2, roomObj2);
+            } else {
+                roomObj2 = rooms.get(room2);
+            }
+            
+            // Create a new relation pair (room1, room2) and add
+            // it to the set of relations
+            //
+            // Note that duplicate pairs are not added by defition
+            // of the add method in HashSet including pairs of the
+            // form (room2, room1)
+            closeTo.add(new SymmetricPair(roomObj1, roomObj2));
         }	
         @Override
 	public boolean e_close(String room, String room2) {
-            return false;
+            return ( rooms.containsKey(room) && rooms.containsKey(room2) 
+                     && closeTo.contains(new SymmetricPair(rooms.get(room), rooms.get(room2))) );
         }
 
         @Override
 	public void a_close(String room, TreeSet<Pair<ParamType,Object>> set) {
+            Room roomObj1;
             
+            // If the room does not exist create it before
+            // proceeding
+            if(!rooms.containsKey(room)) {
+                roomObj1 = new Room(room, RoomSize.MEDIUM);
+                rooms.put(room, roomObj1);
+            } else {
+                roomObj1 = rooms.get(room);
+            }
+            
+            // Iterate through all rooms in TreeSet, if any rooms
+            // don't exist create them then add the close relation
+            // (room1, room_i) to the closeTo set
+            Iterator<Pair<ParamType,Object>> iter = set.iterator();
+            while(iter.hasNext()) {
+                Room room_i;
+                String roomName_i = (String)iter.next().getValue();
+                
+                if(!rooms.containsKey(roomName_i)) {
+                    room_i = new Room(roomName_i, RoomSize.MEDIUM);
+                    rooms.put(roomName_i, room_i);
+                } else {
+                    room_i = rooms.get(roomName_i);
+                }
+                
+                closeTo.add(new SymmetricPair(roomObj1, room_i));
+            }
         }
         @Override
 	public boolean e_close(String room, TreeSet<Pair<ParamType,Object>> set) {
-            return false;
+            // If the first room name is not associated with any 
+            // known room or the set is empty return false
+            if(!rooms.containsKey(room) || set.isEmpty()) {
+                return false;
+            }
+            
+            Room roomObj1 = rooms.get(room);
+            Iterator<Pair<ParamType,Object>> iter = set.iterator();
+            
+            while(iter.hasNext()) {
+                Room room_i;
+                String roomName_i = (String)iter.next().getValue();
+                
+                if(!rooms.containsKey(roomName_i)) {
+                    return false;
+                } else {
+                    room_i = rooms.get(roomName_i);
+                }
+                
+                if( !closeTo.contains(new SymmetricPair(roomObj1, room_i)) ) {
+                    return false;
+                }
+            }
+            
+            return true;
         }
 	
         @Override
 	public void a_large_room(String r) {
-            
+            if(!rooms.containsKey(r)) {
+                // Add room if it doesn't already exist
+                rooms.put(r, new Room(r, RoomSize.LARGE));
+            } else {
+                // If the room already exists update the size
+                Room room = rooms.get(r);
+                room.setSize(RoomSize.LARGE);
+            }
         }
         @Override
 	public boolean e_large_room(String r) {
-            return false;
+            return (rooms.containsKey(r) && rooms.get(r).getSize() == RoomSize.LARGE);
         }
 	
         @Override
 	public void a_medium_room(String r) {
-            
+            if(!rooms.containsKey(r)) {
+                // Add room if it doesn't already exist
+                rooms.put(r, new Room(r, RoomSize.MEDIUM));
+            } else {
+                // If the room already exists update the size
+                Room room = rooms.get(r);
+                room.setSize(RoomSize.MEDIUM);
+            }
         }
         @Override
 	public boolean e_medium_room(String r) {
-            return false;
+            return (rooms.containsKey(r) && rooms.get(r).getSize() == RoomSize.MEDIUM);
         }
 	
         @Override
 	public void a_small_room(String r) {
-            
+            if(!rooms.containsKey(r)) {
+                // Add room if it doesn't already exist
+                rooms.put(r, new Room(r, RoomSize.SMALL));
+            } else {
+                // If the room already exists update the size
+                Room room = rooms.get(r);
+                room.setSize(RoomSize.SMALL);
+            }
         }
         @Override
 	public boolean e_small_room(String r) {
-            return false;
+            return (rooms.containsKey(r) && rooms.get(r).getSize() == RoomSize.SMALL);
         }
 	
 	// GROUPS
