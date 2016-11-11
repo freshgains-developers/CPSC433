@@ -59,96 +59,172 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 
         @Override
 	public void a_person(String p) {
-            // Check is a person of the name p already exists 
-            // (Compare p to hashmap of people)
-            
-            Person newPerson = new Person(p);
-            
-            // Put newPerson into the hashmap
-            
+            // Check to see if there is a person of name p.
+            // If there is then do nothing
+            if(people.containsKey(p)){
+                // Do nothing (Because there is already a person with that name)
+            }
+            // If no person exists:
+            else{
+                Person newPerson = new Person(p);
+                people.put(p, newPerson);   
+            }      
         }
+        
         @Override
 	public boolean e_person(String p) {
-            return false;
+            //Checks if a person exists with the name p
+            if(people.containsKey(p)){
+                return true;
+            }
+            else{
+                return false;
+            }
         }
 	
         @Override
 	public void a_secretary(String p) {
             // Check to see if there is a person of name p.
-            // If there is:
-            // personWithNameP.setSecretary(true);
-            
+            // If there is then grab the person and make them a secretary.
+            if(people.containsKey(p)){
+                Person personWithNameP;
+                personWithNameP = people.get(p);
+                personWithNameP.setSecretary(true);
+            }
             // If no person exists:
-            Person newPerson = new Person(p);
-            newPerson.setSecretary(true);
-            // Put this new person into the hashmap            
+            else{
+                Person newPerson = new Person(p);
+                newPerson.setSecretary(true);
+                people.put(p, newPerson);   
+            }           
         }
         @Override
 	public boolean e_secretary(String p) {
+            // If the person exists and is a secretary then return true
+            if(people.containsKey(p)){
+                Person tempPerson = people.get(p);
+                if(tempPerson.isSecretary()){
+                    return true;
+                }
+            }
+            // Else return false
             return false;
         }
 	
         @Override
 	public void a_researcher(String p) {
             // Check to see if there is a person of name p.
-            // If there is:
-            // personWithNameP.setResearcher(true);
-            
+            // If there is then grab the person and make them a researcher.
+            if(people.containsKey(p)){
+                Person personWithNameP;
+                personWithNameP = people.get(p);
+                personWithNameP.setResearcher(true);
+            }
             // If no person exists:
-            Person newPerson = new Person(p);
-            newPerson.setResearcher(true);
-            // Put this new person into the hashmap 
+            else{
+                Person newPerson = new Person(p);
+                newPerson.setResearcher(true);
+                people.put(p, newPerson);   
+            }
         }
         @Override
 	public boolean e_researcher(String p) {
+            // If the person exists and is a researcher then return true
+            if(people.containsKey(p)){
+                Person tempPerson = people.get(p);
+                if(tempPerson.isResearcher()){
+                    return true;
+                }
+            }
+            // Else return false
             return false;
         }
+      
 	
         @Override
 	public void a_manager(String p) {
             // Check to see if there is a person of name p.
-            // If there is:
-            // personWithNameP.setManager(true);
-            
+            // If there is then grab the person and make them a manager.
+            if(people.containsKey(p)){
+                Person personWithNameP;
+                personWithNameP = people.get(p);
+                personWithNameP.setManager(true);
+            }
             // If no person exists:
-            Person newPerson = new Person(p);
-            newPerson.setManager(true);
-            // Put this new person into the hashmap 
+            else{
+                Person newPerson = new Person(p);
+                newPerson.setManager(true);
+                people.put(p, newPerson);   
+            }
         }
         @Override
 	public boolean e_manager(String p) {
+            // If the person exists and is a manager then return true
+            if(people.containsKey(p)){
+                Person tempPerson = people.get(p);
+                if(tempPerson.isManager()){
+                    return true;
+                }
+            }
+            // Else return false
             return false;
         }
 	
         @Override
 	public void a_smoker(String p) {
             // Check to see if there is a person of name p.
-            // If there is:
-            // personWithNameP.setSmoker(true);
-            
+            // If there is then grab the person and make them a smoker.
+            if(people.containsKey(p)){
+                Person personWithNameP;
+                personWithNameP = people.get(p);
+                personWithNameP.setSmoker(true);
+            }
             // If no person exists:
-            Person newPerson = new Person(p);
-            newPerson.setSmoker(true);
-            // Put this new person into the hashmap 
+            else{
+                Person newPerson = new Person(p);
+                newPerson.setSmoker(true);
+                people.put(p, newPerson);   
+            }
         }
         @Override
 	public boolean e_smoker(String p) {
+            // If the person exists and is a smoker then return true
+            if(people.containsKey(p)){
+                Person tempPerson = people.get(p);
+                if(tempPerson.isSmoker()){
+                    return true;
+                }
+            }
+            // Else return false
             return false;
         }
 	
         @Override
 	public void a_hacker(String p) {
             // Check to see if there is a person of name p.
-            // If there is:
-            // personWithNameP.setHacker(true);
-            
+            // If there is then grab the person and make them a hacker.
+            if(people.containsKey(p)){
+                Person personWithNameP;
+                personWithNameP = people.get(p);
+                personWithNameP.setHacker(true);
+            }
             // If no person exists:
-            Person newPerson = new Person(p);
-            newPerson.setHacker(true);
-            // Put this new person into the hashmap 
+            else{
+                Person newPerson = new Person(p);
+                newPerson.setHacker(true);
+                people.put(p, newPerson);   
+            }
         }
         @Override
 	public boolean e_hacker(String p) {
+            // If the person exists and is a hacker then return true
+            if(people.containsKey(p)){
+                Person tempPerson = people.get(p);
+                if(tempPerson.isHacker()){
+                    return true;
+                }
+            }
+            // Else return false
             return false;
         }
 	
