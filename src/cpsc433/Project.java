@@ -25,16 +25,16 @@ public class Project extends Entity {
         return headMap.containsKey(k);
     }
 
-    public void setProjectHead(String j, Person p) {
-        headMap.put(j, p);
+    public void setProjectHead(Person p) {
+        headMap.put(p.getName(), p);
     }
 
     public HashMap getPersonMap() {
         return personMap;
     }
 
-    public void setProjectPerson(String j, Person p) {
-        personMap.put(j, p);
+    public void setProjectPerson(Person p) {
+        personMap.put(p.getName(), p);
     }
 
     public boolean checkPerson(String k) {
