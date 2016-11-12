@@ -234,7 +234,18 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 	
         @Override
 	public void a_group(String p, String grp) {
-            
+            //if group exists, add person to group
+            if (groups.containsKey(grp)){
+                Group tempGroup = groups.get(grp);
+                Person tempPerson = people.get(p);
+                tempGroup.addToGroup(tempPerson);
+            }
+            //else, create group, then add person to group
+            else{
+                Group tempGroup = new Group(grp);
+                groups.put(grp, tempGroup);
+                
+            }
         }
         @Override
 	public boolean e_group(String p, String grp) {
