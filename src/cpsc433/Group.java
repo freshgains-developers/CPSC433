@@ -23,10 +23,23 @@ public class Group extends Entity{
         groupMap = new HashMap();
         headMap = new HashMap();
     }
-    
+    /**
+     * 
+     * @param p person to check
+     * @return true if person is a member of group
+     */
     public boolean memberOfGroup(Person p){
         String personKey = p.getName();
         return groupMap.containsKey(personKey);
+    }
+    
+    /**
+     * @param p person to check
+     * @return true if person is a head of the group
+     */
+    public boolean headOfGroup(Person p){
+        String personKey = p.getName();
+        return headMap.containsKey(personKey);        
     }
     
     /**add person to group
