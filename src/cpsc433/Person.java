@@ -12,9 +12,9 @@ package cpsc433;
  */
 public class Person extends Entity{
     // Array of projects the person is assigned to
-    private Project[] projects;
+    private Project[] projects = null;
     // Array of groups the person is associated with
-    private Group[] groups; 
+    private Group[] groups = null; 
     // Role booleans (default false)
     private boolean secretary = false;
     private boolean manager = false;
@@ -22,6 +22,9 @@ public class Person extends Entity{
     private boolean researcher = false;
     // Smoker (default false)
     private boolean smoker = false;
+    
+    // Assigned room or null if not assigned
+    private Room assignedRoom = null;
 
     // Set methods for the private variables of person
     public void setSecretary(boolean b) {
@@ -42,6 +45,10 @@ public class Person extends Entity{
 
     public void setSmoker(boolean b) {
         this.smoker = b;   
+    }
+    
+    public void assignToRoom(Room room) {
+        assignedRoom = room;
     }
     
     // Get methods
@@ -65,7 +72,10 @@ public class Person extends Entity{
         return smoker;
     }
     
-        
+    public Room assignedRoom() {
+        return assignedRoom;
+    } 
+    
     public Person(String name) {
         super(name);
     }

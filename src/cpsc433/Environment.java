@@ -288,11 +288,47 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 	
         @Override
 	public void a_assign_to(String p, String room) throws Exception {
+            Person person;
+            Room   roomObj;
             
+            if(people.containsKey(p)) {
+                person = people.get(p);
+            } else {
+                person = new Person(p);
+                people.put(p, person);
+            }
+            
+            if(rooms.containsKey(room)) {
+                roomObj = rooms.get(room);
+            } else {
+                roomObj = new Room(room, RoomSize.MEDIUM);
+                rooms.put(room, roomObj);
+            }
+            
+            person.assignToRoom(roomObj);
+            roomObj.putPerson(person);
+            
+            // TODO: possibly throw exception if room is full or person is assigned twice ? ^^^^
         }
         @Override
 	public boolean e_assign_to(String p, String room) {
-            return false;
+            // Check if the person exists
+            if(!people.containsKey(p)) {
+                // Person doesn't exist
+                return false;
+            }
+            
+            // Check if the person is assigned to a room
+            Person person = people.get(p);
+            Room assignedRoom = person.assignedRoom();
+            
+            if(assignedRoom == null) {
+                // Person not assigned a room
+                return false;
+            }
+            
+            // Check if the assigned room matches the query
+            return assignedRoom.getName().equals(room);
         }
 
 	// ROOMS
