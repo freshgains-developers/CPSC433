@@ -244,12 +244,16 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
             else{
                 Group tempGroup = new Group(grp);
                 groups.put(grp, tempGroup);
-                
+                Person tempPerson = people.get(p);
+                tempGroup.addToGroup(tempPerson);                
             }
         }
         @Override
 	public boolean e_group(String p, String grp) {
-            return false;
+            //if p is a person in grp, return true
+            Group tempGroup = groups.get(grp);
+            Person tempPerson = people.get(p);
+            return tempGroup.memberOfGroup(tempPerson);
         }
 	
         @Override

@@ -24,6 +24,11 @@ public class Group extends Entity{
         headMap = new HashMap();
     }
     
+    public boolean memberOfGroup(Person p){
+        String personKey = p.getName();
+        return groupMap.containsKey(personKey);
+    }
+    
     /**add person to group
      * @param p is the key in the map
      * 
