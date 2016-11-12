@@ -1,37 +1,52 @@
 package cpsc433;
-import java.util.ArrayList;
-import java.util.List;
+
+import java.util.HashMap;
 
 /**
  * Created by thise_000 on 2016-11-09.
  */
 public class Project extends Entity {
 
-    private ArrayList<Person> personList;
-    private ArrayList<Person> headList;
-    private boolean isLarge;
+    private HashMap personMap;
+    private HashMap headMap;
+    private boolean isLarge = false;
 
     public Project(String name) {
         super(name);
-        personList = new ArrayList<Person>();
-        headList = new ArrayList<Person>();
+        personMap = new HashMap();
+        headMap = new HashMap();
     }
 
-    public ArrayList<Person> getHead() {
-        return headList;
+    public HashMap getHeadMap() {
+        return headMap;
     }
 
-    public void setProjectHead(Person p) {
-        headList.add(p);
+    public boolean checkHead(String k) {
+        return headMap.containsKey(k);
     }
 
-    public ArrayList<Person> getPersonList(){
-        return personList;
+    public void setProjectHead(String j, Person p) {
+        headMap.put(j, p);
     }
 
-    public void setPerson(Person p) {
-        personList.add(p);
+    public HashMap getPersonMap() {
+        return personMap;
     }
+
+    public void setProjectPerson(String j, Person p) {
+        personMap.put(j, p);
+    }
+
+    public boolean checkPerson(String k) {
+        return headMap.containsKey(k);
+    }
+
+    public void setLarge() {
+        isLarge = true;
+    }
+
+
+
 
 
 
