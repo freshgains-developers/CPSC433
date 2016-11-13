@@ -93,7 +93,7 @@ public class Person extends Entity{
         super(name);
         
         groups = new ArrayList();
-        project = new ArrayList();
+        projects = new ArrayList();
     }
 
 } 
