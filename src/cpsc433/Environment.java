@@ -243,11 +243,18 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 
         @Override
 	public void a_project(String p, String prj) {
+            Person person = people.get(p);
+            Project project = projects.get(prj);
+            if (!project.checkPerson(p)) {
+                project.setProjectPerson(person);
+            }
 
         }
         @Override
 	public boolean e_project(String p, String prj) {
-            return false;
+            Person person = people.get(p);
+            Project project = projects.get(prj);
+            return project.checkPerson(p);
         }
 
         @Override
@@ -261,11 +268,18 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 
         @Override
 	public void a_heads_project(String p, String prj) {
-
+            Person person = people.get(p);
+            Project project = projects.get(prj);
+            if (!project.checkPerson(p)) {
+                project.setProjectPerson(person);
+                project.setProjectHead(person);
+            }
         }
         @Override
 	public boolean e_heads_project(String p, String prj) {
-            return false;
+            Person person = people.get(p);
+            Project project = projects.get(prj);
+            return project.checkHead(p);
         }
 
         @Override
