@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package cpsc433;
+import java.util.ArrayList;
 
 /**
  *
@@ -12,17 +13,29 @@ package cpsc433;
  */
 public class Person extends Entity{
     // Array of projects the person is assigned to
-    private Project[] projects = null;
+    private ArrayList projects = null;
     // Array of groups the person is associated with
-    private Group[] groups = null; 
+    private ArrayList groups = null; 
     // Role booleans (default false)
     private boolean secretary = false;
     private boolean manager = false;
     private boolean hacker = false;
+    
     private boolean researcher = false;
     // Smoker (default false)
     private boolean smoker = false;
     
+    /**
+     * Accessor for groups array
+     * @param g group to add to person array
+     */
+    public void addGroup(Group g){
+        groups.add(g);
+    }
+
+    public void addProject( Project j){
+        projects.add(j);
+    }
     // Assigned room or null if not assigned
     private Room assignedRoom = null;
 
@@ -78,6 +91,9 @@ public class Person extends Entity{
     
     public Person(String name) {
         super(name);
+        
+        groups = new ArrayList();
+        project = new ArrayList();
     }
 
 } 
