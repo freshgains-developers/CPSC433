@@ -572,20 +572,34 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 	// PROJECTS
         @Override
 	public void a_project(String p) {
-            
+            if (!projects.containsKey(p)){
+                Project newProject = new Project(p);
+                projects.put(p, newProject);
+            }
+
         }
         @Override
 	public boolean e_project(String p) {
-            return false;
+            return groups.containsKey(p);
         }
 	
         @Override
 	public void a_large_project(String prj) {
-            
+            if (!projects.containsKey(prj)) {
+                Project newProject = new Project(prj);
+                newProject.setLarge();
+                projects.put(prj, newProject);
+            }
+
+            else {
+                Project project = projects.get(prj);
+                project.setLarge();
+            }
+
         }
         @Override
 	public boolean e_large_project(String prj) {
-            return false;
+            return projects.containsKey(prj) && projects.get(prj).getLarge();
         }
 	
 	/**

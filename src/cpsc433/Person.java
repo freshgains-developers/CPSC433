@@ -13,7 +13,7 @@ import java.util.ArrayList;
  */
 public class Person extends Entity{
     // Array of projects the person is assigned to
-    private Project[] projects = null;
+    private ArrayList projects = null;
     // Array of groups the person is associated with
     private ArrayList groups = null; 
     // Role booleans (default false)
@@ -33,6 +33,17 @@ public class Person extends Entity{
         groups.add(g);
     }
     
+    /**
+     * Accessor for groups array
+     * @param g group to add to person array
+     */
+    public void addGroup(Group g){
+        groups.add(g);
+    }
+
+    public void addProject( Project j){
+        projects.add(j);
+    }
     // Assigned room or null if not assigned
     private Room assignedRoom = null;
 
@@ -90,6 +101,7 @@ public class Person extends Entity{
         super(name);
         
         groups = new ArrayList();
+        project = new ArrayList();
     }
 
 } 

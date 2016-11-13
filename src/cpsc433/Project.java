@@ -45,7 +45,9 @@ public class Project extends Entity {
         isLarge = true;
     }
 
-
+    public boolean getLarge(){
+        return isLarge;
+    }
 
 
 
