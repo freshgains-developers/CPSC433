@@ -5,6 +5,9 @@
  */
 package cpsc433;
 
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+
 /**
  *
  * @author Micheal
@@ -15,6 +18,8 @@ public class Person extends Entity{
     private Project[] projects;
     // Array of groups the person is associated with
     private Group[] groups; 
+    // List of people the person works with
+    private HashMap<String, LinkedHashSet<Person>> worksWith = null;
     // Role booleans (default false)
     private boolean secretary = false;
     private boolean manager = false;
