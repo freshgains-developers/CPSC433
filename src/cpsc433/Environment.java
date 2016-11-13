@@ -305,6 +305,8 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                 tempPerson = new Person(p);
                 tempGroup.addAsHead(tempPerson);
                 tempPerson.addGroup(tempGroup);
+                
+                people.put(p, tempPerson);
             }
         }
         
