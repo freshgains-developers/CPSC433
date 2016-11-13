@@ -243,18 +243,35 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 
         @Override
 	public void a_project(String p, String prj) {
-            Person person = people.get(p);
-            Project project = projects.get(prj);
-            if (!project.checkPerson(p)) {
-                project.setProjectPerson(person);
+            Project project;
+            Person person;
+            if (projects.containsKey(prj)){
+                project = projects.get(prj);
+            }
+            else {
+                project = new Project(prj);
+                projects.put(prj,project);
             }
 
+            if (people.containsKey(p)){
+                person = people.get(p);
+                project.setProjectPerson(person);
+                person.addProject(project);
+            }
+            else{
+                person = new Person(p);
+                project.setProjectHead(person);
+                person.addProject(project);
+            }
         }
         @Override
 	public boolean e_project(String p, String prj) {
-            Person person = people.get(p);
-            Project project = projects.get(prj);
-            return project.checkPerson(p);
+            if (people.containsKey(p) && projects.containsKey(prj)) {
+                Person person = people.get(p);
+                Project project = projects.get(prj);
+                return project.checkPerson(p);
+            }
+            return false;
         }
 
         @Override
@@ -268,18 +285,16 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 
         @Override
 	public void a_heads_project(String p, String prj) {
+            a_project(p,prj);
             Person person = people.get(p);
-            Project project = projects.get(prj);
-            if (!project.checkPerson(p)) {
-                project.setProjectPerson(person);
-                project.setProjectHead(person);
-            }
+            projects.get(prj).setProjectHead(person);
         }
         @Override
 	public boolean e_heads_project(String p, String prj) {
-            Person person = people.get(p);
-            Project project = projects.get(prj);
-            return project.checkHead(p);
+            if (e_project(p,prj) && projects.get(prj).checkHead(p)) {
+                return true;
+            }
+            return false;
         }
 
         @Override
