@@ -240,9 +240,10 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
             //group check
             if (groups.containsKey(grp))
                 tempGroup = groups.get(grp);
-            else
+            else{
                 tempGroup = new Group(grp);
-             
+                groups.put(grp, tempGroup);
+            }
             //person check
             if (people.containsKey(p)){
                     tempPerson = people.get(p);
@@ -292,6 +293,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
             }
             else{
                 tempGroup = new Group(grp);
+                groups.put(grp, tempGroup);
             }
             //person check and assignment
             if (people.containsKey(p)){
