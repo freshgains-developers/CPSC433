@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package cpsc433;
 
@@ -17,7 +17,7 @@ import java.util.TreeSet;
  * use that one.
  * <p>
  * I have defined this class as a singleton.
- * 
+ *
  * <p>Copyright: Copyright (c) 2003-16, Department of Computer Science, University 
  * of Calgary.  Permission to use, copy, modify, distribute and sell this 
  * software and its documentation for any purpose is hereby granted without 
@@ -34,20 +34,20 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 
 	private static Environment instance=null;
 	protected boolean fixedAssignments=false;
-        
+
         // TODO: Maybe use LinkedHashMap instead ?
         private HashMap<String, Person> people = null;
         private HashSet<SymmetricPair<Person, Person>> worksWith = null;
-        
+
         private HashMap<String, Group> groups = null;
         private HashMap<String, Project> projects = null;
-        
+
         private HashMap<String, Room> rooms = null;
         private HashSet<SymmetricPair<Room, Room>> closeTo = null;
-	
+
 	protected Environment(String name) {
 		super(name==null?"theEnvironment":name);
-                
+
                 worksWith = new HashSet();
                 people = new HashMap();
                 groups = new HashMap();
@@ -55,7 +55,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                 rooms = new HashMap();
                 closeTo = new HashSet();
 	}
-	
+
 	/**
 	 * A getter for the global instance of this class.  If an instance of this class
 	 * does not already exist, it will be created.
@@ -76,16 +76,16 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
             // If no person exists:
             else{
                 Person newPerson = new Person(p);
-                people.put(p, newPerson);   
-            }      
+                people.put(p, newPerson);
+            }
         }
-        
+
         @Override
 	public boolean e_person(String p) {
             //Checks if a person exists with the name p
             return people.containsKey(p);
         }
-	
+
         @Override
 	public void a_secretary(String p) {
             // Check to see if there is a person of name p.
@@ -99,8 +99,8 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
             else{
                 Person newPerson = new Person(p);
                 newPerson.setSecretary(true);
-                people.put(p, newPerson);   
-            }           
+                people.put(p, newPerson);
+            }
         }
         @Override
 	public boolean e_secretary(String p) {
@@ -114,7 +114,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
             // Else return false
             return false;
         }
-	
+
         @Override
 	public void a_researcher(String p) {
             // Check to see if there is a person of name p.
@@ -128,7 +128,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
             else{
                 Person newPerson = new Person(p);
                 newPerson.setResearcher(true);
-                people.put(p, newPerson);   
+                people.put(p, newPerson);
             }
         }
         @Override
@@ -143,8 +143,8 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
             // Else return false
             return false;
         }
-      
-	
+
+
         @Override
 	public void a_manager(String p) {
             // Check to see if there is a person of name p.
@@ -158,7 +158,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
             else{
                 Person newPerson = new Person(p);
                 newPerson.setManager(true);
-                people.put(p, newPerson);   
+                people.put(p, newPerson);
             }
         }
         @Override
@@ -173,7 +173,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
             // Else return false
             return false;
         }
-	
+
         @Override
 	public void a_smoker(String p) {
             // Check to see if there is a person of name p.
@@ -187,7 +187,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
             else{
                 Person newPerson = new Person(p);
                 newPerson.setSmoker(true);
-                people.put(p, newPerson);   
+                people.put(p, newPerson);
             }
         }
         @Override
@@ -202,7 +202,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
             // Else return false
             return false;
         }
-	
+
         @Override
 	public void a_hacker(String p) {
             // Check to see if there is a person of name p.
@@ -216,7 +216,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
             else{
                 Person newPerson = new Person(p);
                 newPerson.setHacker(true);
-                people.put(p, newPerson);   
+                people.put(p, newPerson);
             }
         }
         @Override
@@ -231,7 +231,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
             // Else return false
             return false;
         }
-	
+
         @Override
 	public void a_group(String p, String grp) {
             //if group exists, add person to group
@@ -273,16 +273,23 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
             else
                 return false;
         }
-	
+
         @Override
 	public void a_project(String p, String prj) {
-            
+            Person person = people.get(p);
+            Project project = projects.get(prj);
+            if (!project.checkPerson(p)) {
+                project.setProjectPerson(person);
+            }
+
         }
         @Override
 	public boolean e_project(String p, String prj) {
-            return false;
+            Person person = people.get(p);
+            Project project = projects.get(prj);
+            return project.checkPerson(p);
         }
-	
+
         @Override
 	public void a_heads_group(String p, String grp) {
             //group check
@@ -325,56 +332,63 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
             else
                 return false;
         }
-	
+
         @Override
 	public void a_heads_project(String p, String prj) {
-            
+            Person person = people.get(p);
+            Project project = projects.get(prj);
+            if (!project.checkPerson(p)) {
+                project.setProjectPerson(person);
+                project.setProjectHead(person);
+            }
         }
         @Override
 	public boolean e_heads_project(String p, String prj) {
-            return false;
+            Person person = people.get(p);
+            Project project = projects.get(prj);
+            return project.checkHead(p);
         }
-	
+
         @Override
 	public void a_works_with(String p, TreeSet<Pair<ParamType,Object>> p2s) {
-            
+
         }
         @Override
 	public boolean e_works_with(String p, TreeSet<Pair<ParamType,Object>> p2s) {
             return false;
         }
-	
+
         @Override
 	public void a_works_with(String p, String p2) {
-            
+
         }
         @Override
 	public boolean e_works_with(String p, String p2) {
             return false;
         }
-	
+
         @Override
 	public void a_assign_to(String p, String room) throws Exception {
             Person person;
             Room   roomObj;
-            
+
             if(people.containsKey(p)) {
                 person = people.get(p);
             } else {
                 person = new Person(p);
                 people.put(p, person);
             }
-            
+
             if(rooms.containsKey(room)) {
                 roomObj = rooms.get(room);
             } else {
                 roomObj = new Room(room, RoomSize.MEDIUM);
                 rooms.put(room, roomObj);
             }
-            
+
             person.assignToRoom(roomObj);
             roomObj.putPerson(person);
-            
+
             // TODO: possibly throw exception if room is full or person is assigned twice ? ^^^^
         }
         @Override
@@ -384,16 +398,16 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                 // Person doesn't exist
                 return false;
             }
-            
+
             // Check if the person is assigned to a room
             Person person = people.get(p);
             Room assignedRoom = person.assignedRoom();
-            
+
             if(assignedRoom == null) {
                 // Person not assigned a room
                 return false;
             }
-            
+
             // Check if the assigned room matches the query
             return assignedRoom.getName().equals(room);
         }
@@ -405,33 +419,33 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
             if(!rooms.containsKey(r)) {
                 rooms.put(r, new Room(r, RoomSize.MEDIUM));
             }
-        }	
+        }
         @Override
 	public boolean e_room(String r) {
             return rooms.containsKey(r);
         }
-	
+
         @Override
 	public void a_close(String room, String room2) {
             Room roomObj1, roomObj2;
- 
+
             // First check if the specified rooms exist, if not
-            // create them 
-            
+            // create them
+
             if(!rooms.containsKey(room)) {
                 roomObj1 = new Room(room, RoomSize.MEDIUM);
                 rooms.put(room, roomObj1);
             } else {
                 roomObj1 = rooms.get(room);
             }
-            
+
             if(!rooms.containsKey(room2)) {
                 roomObj2 = new Room(room2, RoomSize.MEDIUM);
                 rooms.put(room2, roomObj2);
             } else {
                 roomObj2 = rooms.get(room2);
             }
-            
+
             // Create a new relation pair (room1, room2) and add
             // it to the set of relations
             //
@@ -439,17 +453,17 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
             // of the add method in HashSet including pairs of the
             // form (room2, room1)
             closeTo.add(new SymmetricPair(roomObj1, roomObj2));
-        }	
+        }
         @Override
 	public boolean e_close(String room, String room2) {
-            return ( rooms.containsKey(room) && rooms.containsKey(room2) 
+            return ( rooms.containsKey(room) && rooms.containsKey(room2)
                      && closeTo.contains(new SymmetricPair(rooms.get(room), rooms.get(room2))) );
         }
 
         @Override
 	public void a_close(String room, TreeSet<Pair<ParamType,Object>> set) {
             Room roomObj1;
-            
+
             // If the room does not exist create it before
             // proceeding
             if(!rooms.containsKey(room)) {
@@ -458,7 +472,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
             } else {
                 roomObj1 = rooms.get(room);
             }
-            
+
             // Iterate through all rooms in TreeSet, if any rooms
             // don't exist create them then add the close relation
             // (room1, room_i) to the closeTo set
@@ -466,46 +480,46 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
             while(iter.hasNext()) {
                 Room room_i;
                 String roomName_i = (String)iter.next().getValue();
-                
+
                 if(!rooms.containsKey(roomName_i)) {
                     room_i = new Room(roomName_i, RoomSize.MEDIUM);
                     rooms.put(roomName_i, room_i);
                 } else {
                     room_i = rooms.get(roomName_i);
                 }
-                
+
                 closeTo.add(new SymmetricPair(roomObj1, room_i));
             }
         }
         @Override
 	public boolean e_close(String room, TreeSet<Pair<ParamType,Object>> set) {
-            // If the first room name is not associated with any 
+            // If the first room name is not associated with any
             // known room or the set is empty return false
             if(!rooms.containsKey(room) || set.isEmpty()) {
                 return false;
             }
-            
+
             Room roomObj1 = rooms.get(room);
             Iterator<Pair<ParamType,Object>> iter = set.iterator();
-            
+
             while(iter.hasNext()) {
                 Room room_i;
                 String roomName_i = (String)iter.next().getValue();
-                
+
                 if(!rooms.containsKey(roomName_i)) {
                     return false;
                 } else {
                     room_i = rooms.get(roomName_i);
                 }
-                
+
                 if( !closeTo.contains(new SymmetricPair(roomObj1, room_i)) ) {
                     return false;
                 }
             }
-            
+
             return true;
         }
-	
+
         @Override
 	public void a_large_room(String r) {
             if(!rooms.containsKey(r)) {
@@ -521,7 +535,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 	public boolean e_large_room(String r) {
             return (rooms.containsKey(r) && rooms.get(r).getSize() == RoomSize.LARGE);
         }
-	
+
         @Override
 	public void a_medium_room(String r) {
             if(!rooms.containsKey(r)) {
@@ -537,7 +551,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 	public boolean e_medium_room(String r) {
             return (rooms.containsKey(r) && rooms.get(r).getSize() == RoomSize.MEDIUM);
         }
-	
+
         @Override
 	public void a_small_room(String r) {
             if(!rooms.containsKey(r)) {
@@ -553,7 +567,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 	public boolean e_small_room(String r) {
             return (rooms.containsKey(r) && rooms.get(r).getSize() == RoomSize.SMALL);
         }
-	
+
 	// GROUPS
         @Override
 	public void a_group(String g) {
@@ -568,7 +582,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 	public boolean e_group(String g) {
             return groups.containsKey(g);
         }
-	
+
 	// PROJECTS
         @Override
 	public void a_project(String p) {
@@ -582,7 +596,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 	public boolean e_project(String p) {
             return groups.containsKey(p);
         }
-	
+
         @Override
 	public void a_large_project(String prj) {
             if (!projects.containsKey(prj)) {
@@ -601,7 +615,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 	public boolean e_large_project(String prj) {
             return projects.containsKey(prj) && projects.get(prj).getLarge();
         }
-	
+
 	/**
 	 * The help text for the exit() predicate.
 	 */
