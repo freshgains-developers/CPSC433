@@ -32,14 +32,6 @@ public class Person extends Entity{
     public void addGroup(Group g){
         groups.add(g);
     }
-    
-    /**
-     * Accessor for groups array
-     * @param g group to add to person array
-     */
-    public void addGroup(Group g){
-        groups.add(g);
-    }
 
     public void addProject( Project j){
         projects.add(j);
@@ -101,7 +93,7 @@ public class Person extends Entity{
         super(name);
         
         groups = new ArrayList();
-        project = new ArrayList();
+        projects = new ArrayList();
     }
 
 } 
