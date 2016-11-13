@@ -235,19 +235,28 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
         @Override
 	public void a_group(String p, String grp) {
             //if group exists, add person to group
-            if (groups.containsKey(grp)){
-                Group tempGroup = groups.get(grp);
-                Person tempPerson = people.get(p);
-                tempGroup.addToGroup(tempPerson);
+            Group tempGroup;
+            Person tempPerson;
+            //group check
+            if (groups.containsKey(grp))
+                tempGroup = groups.get(grp);
+            else
+                tempGroup = new Group(grp);
+             
+            //person check
+            if (people.containsKey(p)){
+                    tempPerson = people.get(p);
+                    tempGroup.addToGroup(tempPerson);
+                    tempPerson.addGroup(tempGroup);         //update person's group array
             }
-            //else, create group, then add person to group
             else{
-                Group tempGroup = new Group(grp);
-                groups.put(grp, tempGroup);
-                Person tempPerson = people.get(p);
-                tempGroup.addToGroup(tempPerson);                
-            }
+                tempPerson = new Person(p);
+                tempGroup.addToGroup(tempPerson);
+                people.put(p, tempPerson);
+                tempPerson.addGroup(tempGroup);        //update person's group array
+            }     
         }
+        
         @Override
 	public boolean e_group(String p, String grp) {
             //if p is a person in grp, return true
@@ -275,20 +284,28 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 	
         @Override
 	public void a_heads_group(String p, String grp) {
-            //if group exists, add person to group
+            //group check
+            Group tempGroup;
+            Person tempPerson;
             if (groups.containsKey(grp)){
-                Group tempGroup = groups.get(grp);
-                Person tempPerson = people.get(p);
-                tempGroup.addAsHead(tempPerson);
+                tempGroup = groups.get(grp);
             }
-            //else, create group, then add person to group
             else{
-                Group tempGroup = new Group(grp);
-                groups.put(grp, tempGroup);
-                Person tempPerson = people.get(p);
-                tempGroup.addAsHead(tempPerson);                
+                tempGroup = new Group(grp);
+            }
+            //person check and assignment
+            if (people.containsKey(p)){
+                tempPerson = people.get(p);
+                tempGroup.addAsHead(tempPerson);
+                tempPerson.addGroup(tempGroup);
+            }
+            else{
+                tempPerson = new Person(p);
+                tempGroup.addAsHead(tempPerson);
+                tempPerson.addGroup(tempGroup);
             }
         }
+        
         @Override
 	public boolean e_heads_group(String p, String grp) {
             //if p is a head in grp, return true
