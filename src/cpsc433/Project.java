@@ -7,8 +7,8 @@ import java.util.HashMap;
  */
 public class Project extends Entity {
 
-    private final HashMap personMap;
-    private final HashMap headMap;
+    private final HashMap<String, Person> personMap;
+    private final HashMap<String, Person> headMap;
     private boolean isLarge = false;
 
     public Project(String name) {
@@ -36,13 +36,13 @@ public class Project extends Entity {
     }
 
     public void setProjectPerson(Person p) {
-        if (!checkHead(p.getName())){
-        personMap.put(p.getName(), p);
-    }
+        if (!checkPerson(p.getName())){
+            personMap.put(p.getName(), p);
+        }
     }
 
     public boolean checkPerson(String k) {
-        return headMap.containsKey(k);
+        return personMap.containsKey(k);
     }
 
     public void setLarge() {

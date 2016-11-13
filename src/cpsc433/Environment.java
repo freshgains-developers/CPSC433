@@ -293,14 +293,15 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
             }
             else{
                 person = new Person(p);
-                project.setProjectHead(person);
+                project.setProjectPerson(person);
                 person.addProject(project);
+                
+                people.put(p, person);
             }
         }
         @Override
 	public boolean e_project(String p, String prj) {
             if (people.containsKey(p) && projects.containsKey(prj)) {
-                Person person = people.get(p);
                 Project project = projects.get(prj);
                 return project.checkPerson(p);
             }
@@ -358,10 +359,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
         }
         @Override
 	public boolean e_heads_project(String p, String prj) {
-            if (e_project(p,prj) && projects.get(prj).checkHead(p)) {
-                return true;
-            }
-            return false;
+            return e_project(p,prj) && projects.get(prj).checkHead(p);
         }
 
         @Override
@@ -609,7 +607,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
         }
         @Override
 	public boolean e_project(String p) {
-            return groups.containsKey(p);
+            return projects.containsKey(p);
         }
 
         @Override
