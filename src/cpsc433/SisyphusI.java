@@ -1,5 +1,7 @@
 package cpsc433;
 
+import java.util.Scanner;
+
 /**
  * This is the main class for the SysiphusI assignment.  It's main function is to
  * interpret the command line.
@@ -125,10 +127,12 @@ public class SisyphusI {
 		final int maxBuf = 200;
 		byte[] buf = new byte[maxBuf];
 		int length;
+                
+                Scanner scan = new Scanner(System.in);
 		try {
 			System.out.print("\nSisyphus I: query using predicates, assert using \"!\" prefixing predicates;\n !exit() to quit; !help() for help.\n\n> ");
-			while ((length=System.in.read(buf))!=-1) {
-				String s = new String(buf,0,length);
+			while (scan.hasNextLine()) {
+				String s = scan.nextLine();
 				s = s.trim();
 				if (s.equals("exit")) break;
 				if (s.equals("?")||s.equals("help")) {

@@ -7,6 +7,7 @@ package cpsc433;
 
 import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.ArrayList;
 
 /**
  *
@@ -15,18 +16,33 @@ import java.util.LinkedHashSet;
  */
 public class Person extends Entity{
     // Array of projects the person is assigned to
-    private Project[] projects;
+    private ArrayList projects = null;
     // Array of groups the person is associated with
-    private Group[] groups; 
+    private ArrayList groups = null; 
     // List of people the person works with
     private HashMap<String, LinkedHashSet<Person>> worksWith = null;
     // Role booleans (default false)
     private boolean secretary = false;
     private boolean manager = false;
     private boolean hacker = false;
+    
     private boolean researcher = false;
     // Smoker (default false)
     private boolean smoker = false;
+    
+    /**
+     * Accessor for groups array
+     * @param g group to add to person array
+     */
+    public void addGroup(Group g){
+        groups.add(g);
+    }
+
+    public void addProject( Project j){
+        projects.add(j);
+    }
+    // Assigned room or null if not assigned
+    private Room assignedRoom = null;
 
     // Set methods for the private variables of person
     public void setSecretary(boolean b) {
@@ -47,6 +63,10 @@ public class Person extends Entity{
 
     public void setSmoker(boolean b) {
         this.smoker = b;   
+    }
+    
+    public void assignToRoom(Room room) {
+        assignedRoom = room;
     }
     
     // Get methods
@@ -70,9 +90,15 @@ public class Person extends Entity{
         return smoker;
     }
     
-        
+    public Room assignedRoom() {
+        return assignedRoom;
+    } 
+    
     public Person(String name) {
         super(name);
+        
+        groups = new ArrayList();
+        projects = new ArrayList();
     }
 
-} 
+}
