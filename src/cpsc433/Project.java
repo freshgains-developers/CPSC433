@@ -26,7 +26,9 @@ public class Project extends Entity {
     }
 
     public void setProjectHead(Person p) {
-        headMap.put(p.getName(), p);
+        if (!checkHead(p.getName())) {
+            headMap.put(p.getName(), p);
+        }
     }
 
     public HashMap getPersonMap() {
@@ -34,7 +36,9 @@ public class Project extends Entity {
     }
 
     public void setProjectPerson(Person p) {
+        if (!checkHead(p.getName())){
         personMap.put(p.getName(), p);
+    }
     }
 
     public boolean checkPerson(String k) {
