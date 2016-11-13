@@ -13,8 +13,8 @@ import java.util.HashMap;
  */
 public class Group extends Entity{
     
-    private HashMap<String, Person> groupMap;
-    private HashMap<String, Person> headMap;
+    private final HashMap<String, Person> groupMap;
+    private final HashMap<String, Person> headMap;
     
     //constructor of group
     public Group(String name){

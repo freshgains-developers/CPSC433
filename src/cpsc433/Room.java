@@ -17,7 +17,7 @@ public class Room extends Entity {
     }
     
     private RoomSize size;
-    private Person[] assignedPeople;
+    private final Person[] assignedPeople;
     
     // Constructor, accepts name and Room size
     public Room(String name, RoomSize size) {

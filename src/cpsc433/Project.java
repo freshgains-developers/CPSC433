@@ -7,8 +7,8 @@ import java.util.HashMap;
  */
 public class Project extends Entity {
 
-    private HashMap personMap;
-    private HashMap headMap;
+    private final HashMap personMap;
+    private final HashMap headMap;
     private boolean isLarge = false;
 
     public Project(String name) {

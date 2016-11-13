@@ -15,7 +15,7 @@ public class Person extends Entity{
     // Array of projects the person is assigned to
     private Project[] projects = null;
     // Array of groups the person is associated with
-    private ArrayList groups = new ArrayList(null); 
+    private ArrayList groups = null; 
     // Role booleans (default false)
     private boolean secretary = false;
     private boolean manager = false;
@@ -88,6 +88,8 @@ public class Person extends Entity{
     
     public Person(String name) {
         super(name);
+        
+        groups = new ArrayList();
     }
 
 } 
