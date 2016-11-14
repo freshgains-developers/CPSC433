@@ -73,8 +73,6 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
         public int fromFile(String fileName) {
 		int ret = super.fromFile(fileName);
                 if(ret >= 0) {
-                    System.out.println("DOING OUTPUT");
-
                     // Open output file and print predicates
                     try {
                         PrintWriter writer = new PrintWriter(fileName + ".out", "UTF-8");
