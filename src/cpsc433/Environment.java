@@ -4,7 +4,11 @@
 package cpsc433;
 
 import cpsc433.Predicate.ParamType;
+import static cpsc433.PredicateReader.error;
 import cpsc433.Room.RoomSize;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -64,6 +68,31 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 	public static Environment get() {
 		if (instance==null) instance = new Environment(null);
 		return instance;
+	}
+        
+        public int fromFile(String fileName) {
+		int ret = super.fromFile(fileName);
+                if(ret >= 0) {
+                    System.out.println("DOING OUTPUT");
+
+                    // Open output file and print predicates
+                    try {
+                        PrintWriter writer = new PrintWriter(fileName + ".out", "UTF-8");
+                        
+                        Iterator<Room> roomIter = rooms.values().iterator();
+                        while(roomIter.hasNext()) {
+                            Room room = roomIter.next();
+                            writer.println("room(" + room.getName() + ")");
+                        }
+                        
+                        writer.close();
+                    } catch (FileNotFoundException | UnsupportedEncodingException e) {
+                        error("Can't open file " + fileName);
+                        return -1;
+                    }
+                }
+                
+                return ret;
 	}
 
         @Override
