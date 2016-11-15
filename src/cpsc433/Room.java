@@ -12,6 +12,30 @@ package cpsc433;
  * Class to hold room data
  */
 public class Room extends Entity {
+    
+    /**
+     * @author Chris
+     * 
+     * Exception for when more than 2 people are assigned to a room
+     */
+    public class FullRoomException extends Exception {
+        public FullRoomException() {
+            super();
+        }
+
+        public FullRoomException(String message) {
+            super(message);
+        }
+
+        public FullRoomException(String message, Throwable cause) {
+            super(message, cause);
+        }
+
+        public FullRoomException(Throwable cause) {
+            super(cause);
+        }
+    }
+    
     public enum RoomSize {
         SMALL, MEDIUM, LARGE
     }
@@ -45,18 +69,16 @@ public class Room extends Entity {
     }
     
     // Adds Person p to this room if space is available,
-    // and returns true otherwise if the room is full
-    // false is returned and the occupants are unchanged
-    public boolean putPerson(Person p) {
+    // otherwise throws FullRoomException and occupants
+    // are unchanged
+    public void putPerson(Person p) throws FullRoomException {
         if(assignedPeople[0] == null) {
             assignedPeople[0] = p;
         } else if(assignedPeople[1] == null) {
             assignedPeople[1] = p;
         } else {
-            return false;
+            throw new FullRoomException("Cannot assign more than 2 people to a room.");
         }
-        
-        return true;
     }
     
     // Removes Person p from this room (if present)

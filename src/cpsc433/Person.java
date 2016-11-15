@@ -4,6 +4,9 @@
  * and open the template in the editor.
  */
 package cpsc433;
+
+import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.ArrayList;
 
 /**
@@ -25,6 +28,9 @@ public class Person extends Entity{
     // Smoker (default false)
     private boolean smoker = false;
     
+    // Assigned room or null if not assigned
+    private Room assignedRoom = null;
+    
     /**
      * Accessor for groups array
      * @param g group to add to person array
@@ -36,9 +42,6 @@ public class Person extends Entity{
     public void addProject( Project j){
         projects.add(j);
     }
-    // Assigned room or null if not assigned
-    private Room assignedRoom = null;
-
     // Set methods for the private variables of person
     public void setSecretary(boolean b) {
         this.secretary = b;   
@@ -96,4 +99,4 @@ public class Person extends Entity{
         projects = new ArrayList();
     }
 
-} 
+}

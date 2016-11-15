@@ -5,6 +5,7 @@ package cpsc433;
 
 import cpsc433.Predicate.ParamType;
 import static cpsc433.PredicateReader.error;
+import cpsc433.Room.FullRoomException;
 import cpsc433.Room.RoomSize;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -13,6 +14,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.TreeSet;
+import java.util.ArrayList;
 
 /**
  * This is class extends {@link cpsc433.PredicateReader} just as required to 
@@ -70,6 +72,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 		return instance;
 	}
         
+        @Override
         public int fromFile(String fileName) {
 		int ret = super.fromFile(fileName);
                 if(ret >= 0) {
@@ -80,17 +83,22 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                         printRoomPredicates(writer);
                         printGroupPredicates(writer);
                         printProjectPredicates(writer);
+                        printPeoplePredicates(writer);
                         
                         
                         writer.close();
                     } catch (FileNotFoundException | UnsupportedEncodingException e) {
-                        error("Can't open file " + fileName);
+                        error("Can't open file " + fileName + ".out");
                         return -1;
                     }
                 }
                 
                 return ret;
 	}
+        
+        private void printPeoplePredicates(PrintWriter writer) {
+            
+        }
         
         private void printRoomPredicates(PrintWriter writer) {
             Iterator<Room> roomIter = rooms.values().iterator();
@@ -103,13 +111,13 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                 // Print room size
                 switch (room.getSize()) {
                     case SMALL:
-                        writer.println("large-room(" + room.getName() + ")");
+                        writer.println("small-room(" + room.getName() + ")");
                         break;
                     case MEDIUM:
                         writer.println("medium-room(" + room.getName() + ")");
                         break;
                     case LARGE:
-                        writer.println("small-room(" + room.getName() + ")");
+                        writer.println("large-room(" + room.getName() + ")");
                         break;
                 }
 
@@ -124,7 +132,11 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
             }
             
             // Print close relation predicates
-            
+            Iterator<SymmetricPair<Room,Room>> closeToIter = closeTo.iterator();
+            while(closeToIter.hasNext()) {
+                SymmetricPair<Room,Room> relation = closeToIter.next();
+                writer.println("close(" + relation.left.getName() + ", " + relation.right.getName() + ")");
+            }
         }
         private void printGroupPredicates(PrintWriter writer){
             Iterator<Group> groupIter = groups.values().iterator();
@@ -461,12 +473,43 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
         }
 
         @Override
-	public void a_works_with(String p, TreeSet<Pair<ParamType,Object>> p2s) {
+	public void a_works_with(String p, TreeSet<Pair<ParamType,Object>> p2s){
+            Person thisPerson;
+            if(people.containsKey(p)) {
+                thisPerson = people.get(p);
+            } else {
+                thisPerson = new Person(p);
+                people.put(p, thisPerson);
+            }
 
+            // Iterate through all workers in TreeSet, if any coworkers
+            // don't exist create them then add the workswith relation
+            Iterator<Pair<ParamType,Object>> iter = p2s.iterator();
+            while(iter.hasNext()) {
+                Person person_i;
+                String name_i = (String)iter.next().getValue();
+
+                // If the person we are iterating through the tree exists,
+                // Grab the person and add the works with relation
+                if(people.containsKey(name_i)){
+                    person_i = people.get(name_i);
+                    worksWith.add(new SymmetricPair(person_i, thisPerson));
+                } 
+                else{
+                    person_i = new Person(name_i);
+                    worksWith.add(new SymmetricPair(person_i, thisPerson));
+                    people.put(name_i, person_i);
+                    
+                }
+            }
         }
         @Override
 	public boolean e_works_with(String p, TreeSet<Pair<ParamType,Object>> p2s) {
-            return false;
+            // A bunch of if statements for the iterator that checks if all
+            // the object pairs are actually part of the worksWith hashset
+            
+            
+            return true;
         }
 
         @Override
@@ -479,7 +522,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
         }
 
         @Override
-	public void a_assign_to(String p, String room) throws Exception {
+	public void a_assign_to(String p, String room) throws FullRoomException {
             Person person;
             Room   roomObj;
 
@@ -497,10 +540,8 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                 rooms.put(room, roomObj);
             }
 
-            person.assignToRoom(roomObj);
             roomObj.putPerson(person);
-
-            // TODO: possibly throw exception if room is full or person is assigned twice ? ^^^^
+            person.assignToRoom(roomObj);
         }
         @Override
 	public boolean e_assign_to(String p, String room) {
