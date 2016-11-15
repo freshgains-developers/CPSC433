@@ -119,15 +119,13 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                 if(tempPerson.isSmoker()){
                     writer.println("smoker(" + tempName + ")");
                 }
-                
-                
-                // Printing the works with array
-                // Print close relation predicates
-                Iterator<SymmetricPair<Person,Person>> worksWithIter = worksWith.iterator();
-                while(worksWithIter.hasNext()) {
-                    SymmetricPair<Person,Person> relation = worksWithIter.next();
-                    writer.println("works-with(" + relation.left.getName() + ", " + relation.right.getName() + ")");
-                }
+            }
+            
+            // Printing the works with array
+            Iterator<SymmetricPair<Person, Person>> worksWithIter = worksWith.iterator();
+            while (worksWithIter.hasNext()) {
+                SymmetricPair<Person, Person> relation = worksWithIter.next();
+                writer.println("works-with(" + relation.left.getName() + ", " + relation.right.getName() + ")");
             }
         }
         
