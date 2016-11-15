@@ -93,7 +93,6 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                 
                 return ret;
 	}
-        
         private void printRoomPredicates(PrintWriter writer) {
             Iterator<Room> roomIter = rooms.values().iterator();
             while (roomIter.hasNext()) {
@@ -479,20 +478,47 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
         }
         @Override
 	public boolean e_works_with(String p, TreeSet<Pair<ParamType,Object>> p2s) {
-            // A bunch of if statements for the iterator that checks if all
-            // the object pairs are actually part of the worksWith hashset
-            
-            
+            // If the first person name is not associated with any
+            // known person or the set is empty return false
+            if(!people.containsKey(p) || p2s.isEmpty()) {
+                return false;
+            }
+
+            Person tempPerson = people.get(p);
+            Iterator<Pair<ParamType,Object>> iter = p2s.iterator();
+
+            while(iter.hasNext()) {
+                Person person_i;
+                String name_i = (String)iter.next().getValue();
+
+                if(!people.containsKey(name_i)) {
+                    return false;
+                } else {
+                    person_i = people.get(name_i);
+                }
+
+                if( !worksWith.contains(new SymmetricPair(tempPerson, person_i)) ) {
+                    return false;
+                }
+            }
+
             return true;
         }
+        
 
         @Override
 	public void a_works_with(String p, String p2) {
-
+            
         }
         @Override
 	public boolean e_works_with(String p, String p2) {
-            return false;
+            if(!people.containsKey(p) || !people.containsKey(p2)) {
+                return false;
+            }
+            if(!worksWith.contains(new SymmetricPair(p, p2))){
+                return false;
+            }
+            return true;
         }
 
         @Override
