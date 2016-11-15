@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.TreeSet;
+import java.util.ArrayList;
 
 /**
  * This is class extends {@link cpsc433.PredicateReader} just as required to 
@@ -350,12 +351,43 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
         }
 
         @Override
-	public void a_works_with(String p, TreeSet<Pair<ParamType,Object>> p2s) {
+	public void a_works_with(String p, TreeSet<Pair<ParamType,Object>> p2s){
+            Person thisPerson;
+            if(people.containsKey(p)) {
+                thisPerson = people.get(p);
+            } else {
+                thisPerson = new Person(p);
+                people.put(p, thisPerson);
+            }
 
+            // Iterate through all workers in TreeSet, if any coworkers
+            // don't exist create them then add the workswith relation
+            Iterator<Pair<ParamType,Object>> iter = p2s.iterator();
+            while(iter.hasNext()) {
+                Person person_i;
+                String name_i = (String)iter.next().getValue();
+
+                // If the person we are iterating through the tree exists,
+                // Grab the person and add the works with relation
+                if(people.containsKey(name_i)){
+                    person_i = people.get(name_i);
+                    worksWith.add(new SymmetricPair(person_i, thisPerson));
+                } 
+                else{
+                    person_i = new Person(name_i);
+                    worksWith.add(new SymmetricPair(person_i, thisPerson));
+                    people.put(name_i, person_i);
+                    
+                }
+            }
         }
         @Override
 	public boolean e_works_with(String p, TreeSet<Pair<ParamType,Object>> p2s) {
-            return false;
+            // A bunch of if statements for the iterator that checks if all
+            // the object pairs are actually part of the worksWith hashset
+            
+            
+            return true;
         }
 
         @Override
