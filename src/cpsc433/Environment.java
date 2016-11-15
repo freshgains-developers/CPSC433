@@ -4,7 +4,12 @@
 package cpsc433;
 
 import cpsc433.Predicate.ParamType;
+import static cpsc433.PredicateReader.error;
+import cpsc433.Room.FullRoomException;
 import cpsc433.Room.RoomSize;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -66,6 +71,84 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 		if (instance==null) instance = new Environment(null);
 		return instance;
 	}
+        
+        public int fromFile(String fileName) {
+		int ret = super.fromFile(fileName);
+                if(ret >= 0) {
+                    // Open output file and print predicates
+                    try {
+                        PrintWriter writer = new PrintWriter(fileName + ".out", "UTF-8");
+                        
+                        printRoomPredicates(writer);
+                        printGroupPredicates(writer);
+                        
+                        
+                        
+                        writer.close();
+                    } catch (FileNotFoundException | UnsupportedEncodingException e) {
+                        error("Can't open file " + fileName + ".out");
+                        return -1;
+                    }
+                }
+                
+                return ret;
+	}
+        
+        private void printRoomPredicates(PrintWriter writer) {
+            Iterator<Room> roomIter = rooms.values().iterator();
+            while (roomIter.hasNext()) {
+                Room room = roomIter.next();
+
+                // Print room name
+                writer.println("room(" + room.getName() + ")");
+
+                // Print room size
+                switch (room.getSize()) {
+                    case SMALL:
+                        writer.println("small-room(" + room.getName() + ")");
+                        break;
+                    case MEDIUM:
+                        writer.println("medium-room(" + room.getName() + ")");
+                        break;
+                    case LARGE:
+                        writer.println("large-room(" + room.getName() + ")");
+                        break;
+                }
+
+                // Print people assigned to this room
+                Person[] assignedPeople = room.getAssignedPeople();
+                if (assignedPeople[0] != null) {
+                    writer.println("assign-to(" + assignedPeople[0].getName() + ", " + room.getName() + ")");
+                }
+                if (assignedPeople[1] != null) {
+                    writer.println("assign-to(" + assignedPeople[1].getName() + ", " + room.getName() + ")");
+                }
+            }
+            
+            // Print close relation predicates
+            Iterator<SymmetricPair<Room,Room>> closeToIter = closeTo.iterator();
+            while(closeToIter.hasNext()) {
+                SymmetricPair<Room,Room> relation = closeToIter.next();
+                writer.println("close(" + relation.left.getName() + ", " + relation.right.getName() + ")");
+            }
+        }
+        private void printGroupPredicates(PrintWriter writer){
+            Iterator<Group> groupIter = groups.values().iterator();
+                while(groupIter.hasNext()){
+                    Group group = groupIter.next();
+                    writer.println("group(" + group.getName() + ")");
+                    Iterator<Person> headIterator = group.getHeads();
+                    while (headIterator.hasNext()) {
+                        Person tempPerson = headIterator.next();    //gets every person that is a head in the group
+                        writer.println("heads-group(" + tempPerson.getName() + ", " + group.getName() + ")");
+                    }
+                    Iterator<Person> memberIterator = group.getMembers();
+                    while (memberIterator.hasNext()){
+                        Person tempPerson = memberIterator.next();  //gets every person that is a member of the group
+                        writer.println("group(" + tempPerson.getName() + "," + group.getName() + ")");
+                    }                
+                }
+        }
 
         @Override
 	public void a_person(String p) {
@@ -277,18 +360,36 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 
         @Override
 	public void a_project(String p, String prj) {
-            Person person = people.get(p);
-            Project project = projects.get(prj);
-            if (!project.checkPerson(p)) {
-                project.setProjectPerson(person);
+            Project project;
+            Person person;
+            if (projects.containsKey(prj)){
+                project = projects.get(prj);
+            }
+            else {
+                project = new Project(prj);
+                projects.put(prj,project);
             }
 
+            if (people.containsKey(p)){
+                person = people.get(p);
+                project.setProjectPerson(person);
+                person.addProject(project);
+            }
+            else{
+                person = new Person(p);
+                project.setProjectPerson(person);
+                person.addProject(project);
+                
+                people.put(p, person);
+            }
         }
         @Override
 	public boolean e_project(String p, String prj) {
-            Person person = people.get(p);
-            Project project = projects.get(prj);
-            return project.checkPerson(p);
+            if (people.containsKey(p) && projects.containsKey(prj)) {
+                Project project = projects.get(prj);
+                return project.checkPerson(p);
+            }
+            return false;
         }
 
         @Override
@@ -336,18 +437,13 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 
         @Override
 	public void a_heads_project(String p, String prj) {
+            a_project(p,prj);
             Person person = people.get(p);
-            Project project = projects.get(prj);
-            if (!project.checkPerson(p)) {
-                project.setProjectPerson(person);
-                project.setProjectHead(person);
-            }
+            projects.get(prj).setProjectHead(person);
         }
         @Override
 	public boolean e_heads_project(String p, String prj) {
-            Person person = people.get(p);
-            Project project = projects.get(prj);
-            return project.checkHead(p);
+            return e_project(p,prj) && projects.get(prj).checkHead(p);
         }
 
         @Override
@@ -400,7 +496,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
         }
 
         @Override
-	public void a_assign_to(String p, String room) throws Exception {
+	public void a_assign_to(String p, String room) throws FullRoomException {
             Person person;
             Room   roomObj;
 
@@ -418,10 +514,8 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                 rooms.put(room, roomObj);
             }
 
-            person.assignToRoom(roomObj);
             roomObj.putPerson(person);
-
-            // TODO: possibly throw exception if room is full or person is assigned twice ? ^^^^
+            person.assignToRoom(roomObj);
         }
         @Override
 	public boolean e_assign_to(String p, String room) {
@@ -626,7 +720,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
         }
         @Override
 	public boolean e_project(String p) {
-            return groups.containsKey(p);
+            return projects.containsKey(p);
         }
 
         @Override
