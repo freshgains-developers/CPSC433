@@ -72,6 +72,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 		return instance;
 	}
         
+        @Override
         public int fromFile(String fileName) {
 		int ret = super.fromFile(fileName);
                 if(ret >= 0) {
@@ -81,7 +82,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                         
                         printRoomPredicates(writer);
                         printGroupPredicates(writer);
-                        
+                        printPeoplePredicates(writer);
                         
                         
                         writer.close();
@@ -93,6 +94,10 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                 
                 return ret;
 	}
+        
+        private void printPeoplePredicates(PrintWriter writer) {
+            
+        }
         
         private void printRoomPredicates(PrintWriter writer) {
             Iterator<Room> roomIter = rooms.values().iterator();
