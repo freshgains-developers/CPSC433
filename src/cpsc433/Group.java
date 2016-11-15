@@ -5,6 +5,7 @@
  */
 package cpsc433;
 import java.util.HashMap;
+import java.util.Iterator;
 /**
  *
  * @author Brenton Kruger
@@ -31,6 +32,14 @@ public class Group extends Entity{
     public boolean memberOfGroup(Person p){
         String personKey = p.getName();
         return groupMap.containsKey(personKey);
+    }
+    
+    public Iterator<Person> getHeads(){
+        return headMap.values().iterator();
+    }
+    
+    public Iterator<Person> getMembers(){
+        return groupMap.values().iterator();
     }
     
     /**
