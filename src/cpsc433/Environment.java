@@ -5,6 +5,7 @@ package cpsc433;
 
 import cpsc433.Predicate.ParamType;
 import static cpsc433.PredicateReader.error;
+import cpsc433.Room.FullRoomException;
 import cpsc433.Room.RoomSize;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -463,7 +464,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
         }
 
         @Override
-	public void a_assign_to(String p, String room) throws Exception {
+	public void a_assign_to(String p, String room) throws FullRoomException {
             Person person;
             Room   roomObj;
 
@@ -481,10 +482,8 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                 rooms.put(room, roomObj);
             }
 
-            person.assignToRoom(roomObj);
             roomObj.putPerson(person);
-
-            // TODO: possibly throw exception if room is full or person is assigned twice ? ^^^^
+            person.assignToRoom(roomObj);
         }
         @Override
 	public boolean e_assign_to(String p, String room) {
