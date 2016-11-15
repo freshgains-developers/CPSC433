@@ -82,6 +82,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                         
                         printRoomPredicates(writer);
                         printGroupPredicates(writer);
+                        printProjectPredicates(writer);
                         printPeoplePredicates(writer);
                         
                         
@@ -155,6 +156,26 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                 }
         }
 
+        private void printProjectPredicates(PrintWriter writer){
+            Iterator<Project> projectIter = projects.values().iterator();
+                while(projectIter.hasNext()){
+                    Project project = projectIter.next();
+                    writer.println("project(" + project.getName() + ")");
+                    if (project.getLarge()){
+                        writer.println("large-project(" + project.getName() + ")");
+                    }
+                    Iterator<Person> headIterator = project.getHeads();
+                    while (headIterator.hasNext()) {
+                        Person tempPerson = headIterator.next();    //gets every person that is a head in the group
+                        writer.println("heads-project(" + tempPerson.getName() + ", " + project.getName() + ")");
+                    }
+                    Iterator<Person> memberIterator = project.getMembers();
+                    while (memberIterator.hasNext()){
+                        Person tempPerson = memberIterator.next();  //gets every person that is a member of the group
+                        writer.println("project(" + tempPerson.getName() + "," + project.getName() + ")");
+                    }                
+                }
+        }
         @Override
 	public void a_person(String p) {
             // Check to see if there is a person of name p.

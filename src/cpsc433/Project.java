@@ -1,6 +1,7 @@
 package cpsc433;
 
 import java.util.HashMap;
+import java.util.Iterator;
 
 /**
  * Created by thise_000 on 2016-11-09.
@@ -17,6 +18,13 @@ public class Project extends Entity {
         headMap = new HashMap();
     }
 
+    public Iterator<Person> getHeads(){
+        return headMap.values().iterator();
+    }
+    
+    public Iterator<Person> getMembers(){
+        return personMap.values().iterator();
+    }
     public HashMap getHeadMap() {
         return headMap;
     }
