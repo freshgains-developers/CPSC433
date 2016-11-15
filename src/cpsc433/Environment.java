@@ -78,16 +78,9 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                         PrintWriter writer = new PrintWriter(fileName + ".out", "UTF-8");
                         
                         printRoomPredicates(writer);
+                        printGroupPredicates(writer);
                         
-                        Iterator<Group> groupIter = groups.values().iterator();
-                        while(groupIter.hasNext()){
-                            Group group = groupIter.next();
-                            while(group.getHeads().hasNext()){
-                                Person tempPerson = group.getHeads().next();
-                            }
-                            //writer.println("group-head(" + group.values().iterator() + ")");
-                            writer.println("group(" + group.getName() + ")");
-                        }
+                        
                         
                         writer.close();
                     } catch (FileNotFoundException | UnsupportedEncodingException e) {
@@ -132,6 +125,21 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
             
             // Print close relation predicates
             
+        }
+        private void printGroupPredicates(PrintWriter writer){
+            Iterator<Group> groupIter = groups.values().iterator();
+                while(groupIter.hasNext()){
+                    Group group = groupIter.next();
+                    writer.println("group(" + group.getName() + ")");
+                    while (group.getHeads().hasNext()) {
+                        Person tempPerson = group.getHeads().next();    //gets every person that is a head in the group
+                        writer.println("heads-group(" + tempPerson.getName() + ", " + group.getName() + ")");
+                    }
+                    while (group.getMembers().hasNext()){
+                        Person tempPerson = group.getMembers().next();  //gets every person that is a member of the group
+                        writer.println("group(" + tempPerson.getName() + "," + group.getName() + ")");
+                    }                
+                }
         }
 
         @Override
