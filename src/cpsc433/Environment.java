@@ -97,7 +97,40 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 	}
         
         private void printPeoplePredicates(PrintWriter writer) {
-            
+            Iterator<Person> peopleIter = people.values().iterator();
+            while (peopleIter.hasNext()){
+                Person tempPerson = peopleIter.next();
+                String tempName = tempPerson.getName();
+                
+                //Printing the name of the person
+                writer.println("person(" + tempName + ")");
+                
+                //Printing the roles of the person
+                if(tempPerson.isHacker()){
+                    writer.println("hacker(" + tempName + ")");
+                }
+                if(tempPerson.isManager()){
+                    writer.println("manager(" + tempName + ")");
+                }
+                if(tempPerson.isResearcher()){
+                    writer.println("researcher(" + tempName + ")");
+                }
+                if(tempPerson.isSecretary()){
+                    writer.println("secretary(" + tempName + ")");
+                }
+                if(tempPerson.isSmoker()){
+                    writer.println("smoker(" + tempName + ")");
+                }
+                
+                
+                // Printing the works with array
+                // Print close relation predicates
+                Iterator<SymmetricPair<Person,Person>> worksWithIter = worksWith.iterator();
+                while(worksWithIter.hasNext()) {
+                    SymmetricPair<Person,Person> relation = worksWithIter.next();
+                    writer.println("works-with(" + relation.left.getName() + ", " + relation.right.getName() + ")");
+                }
+            }
         }
         
         private void printRoomPredicates(PrintWriter writer) {
