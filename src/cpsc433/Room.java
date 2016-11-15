@@ -34,6 +34,11 @@ public class Room extends Entity {
         return size;
     }
     
+    // Getter for assigned people
+    public Person[] getAssignedPeople() {
+        return assignedPeople;
+    }
+    
     // Setter for Room size
     public void setSize(RoomSize size) {
         this.size = size;

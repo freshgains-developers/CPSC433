@@ -77,11 +77,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                     try {
                         PrintWriter writer = new PrintWriter(fileName + ".out", "UTF-8");
                         
-                        Iterator<Room> roomIter = rooms.values().iterator();
-                        while(roomIter.hasNext()) {
-                            Room room = roomIter.next();
-                            writer.println("room(" + room.getName() + ")");
-                        }
+                        printRoomPredicates(writer);
                         
                         Iterator<Group> groupIter = groups.values().iterator();
                         while(groupIter.hasNext()){
@@ -102,6 +98,41 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                 
                 return ret;
 	}
+        
+        private void printRoomPredicates(PrintWriter writer) {
+            Iterator<Room> roomIter = rooms.values().iterator();
+            while (roomIter.hasNext()) {
+                Room room = roomIter.next();
+
+                // Print room name
+                writer.println("room(" + room.getName() + ")");
+
+                // Print room size
+                switch (room.getSize()) {
+                    case SMALL:
+                        writer.println("large-room(" + room.getName() + ")");
+                        break;
+                    case MEDIUM:
+                        writer.println("medium-room(" + room.getName() + ")");
+                        break;
+                    case LARGE:
+                        writer.println("small-room(" + room.getName() + ")");
+                        break;
+                }
+
+                // Print people assigned to this room
+                Person[] assignedPeople = room.getAssignedPeople();
+                if (assignedPeople[0] != null) {
+                    writer.println("assign-to(" + assignedPeople[0].getName() + ", " + room.getName() + ")");
+                }
+                if (assignedPeople[1] != null) {
+                    writer.println("assign-to(" + assignedPeople[1].getName() + ", " + room.getName() + ")");
+                }
+            }
+            
+            // Print close relation predicates
+            
+        }
 
         @Override
 	public void a_person(String p) {
