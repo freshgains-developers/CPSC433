@@ -19,8 +19,6 @@ public class Person extends Entity{
     private ArrayList projects = null;
     // Array of groups the person is associated with
     private ArrayList groups = null; 
-    // List of people the person works with
-    private HashMap<String, LinkedHashSet<Person>> worksWith = null;
     // Role booleans (default false)
     private boolean secretary = false;
     private boolean manager = false;
@@ -29,6 +27,9 @@ public class Person extends Entity{
     private boolean researcher = false;
     // Smoker (default false)
     private boolean smoker = false;
+    
+    // Assigned room or null if not assigned
+    private Room assignedRoom = null;
     
     /**
      * Accessor for groups array
@@ -41,9 +42,6 @@ public class Person extends Entity{
     public void addProject( Project j){
         projects.add(j);
     }
-    // Assigned room or null if not assigned
-    private Room assignedRoom = null;
-
     // Set methods for the private variables of person
     public void setSecretary(boolean b) {
         this.secretary = b;   
