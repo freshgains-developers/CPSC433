@@ -100,13 +100,13 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                 // Print room size
                 switch (room.getSize()) {
                     case SMALL:
-                        writer.println("large-room(" + room.getName() + ")");
+                        writer.println("small-room(" + room.getName() + ")");
                         break;
                     case MEDIUM:
                         writer.println("medium-room(" + room.getName() + ")");
                         break;
                     case LARGE:
-                        writer.println("small-room(" + room.getName() + ")");
+                        writer.println("large-room(" + room.getName() + ")");
                         break;
                 }
 
@@ -121,7 +121,11 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
             }
             
             // Print close relation predicates
-            
+            Iterator<SymmetricPair<Room,Room>> closeToIter = closeTo.iterator();
+            while(closeToIter.hasNext()) {
+                SymmetricPair<Room,Room> relation = closeToIter.next();
+                writer.println("close(" + relation.left.getName() + ", " + relation.right.getName() + ")");
+            }
         }
 
         @Override
