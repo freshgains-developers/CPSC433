@@ -118,8 +118,10 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                 if (assignedPeople[1] != null) {
                     writer.println("assign-to(" + assignedPeople[1].getName() + ", " + room.getName() + ")");
                 }
-
             }
+            
+            // Print close relation predicates
+            
         }
 
         @Override
