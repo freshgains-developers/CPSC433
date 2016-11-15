@@ -84,7 +84,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                         
                         writer.close();
                     } catch (FileNotFoundException | UnsupportedEncodingException e) {
-                        error("Can't open file " + fileName);
+                        error("Can't open file " + fileName + ".out");
                         return -1;
                     }
                 }
