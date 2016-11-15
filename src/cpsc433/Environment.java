@@ -528,6 +528,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 
             worksWith.add(new SymmetricPair(person_i, thisPerson));
         }
+        
 
     }
 
