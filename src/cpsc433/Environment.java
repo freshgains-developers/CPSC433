@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.TreeSet;
-import java.util.ArrayList;
 
 /**
  * This is class extends {@link cpsc433.PredicateReader} just as required to 
@@ -84,7 +83,6 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                         printGroupPredicates(writer);
                         printProjectPredicates(writer);
                         printPeoplePredicates(writer);
-                        
                         
                         writer.close();
                     } catch (FileNotFoundException | UnsupportedEncodingException e) {
@@ -514,7 +512,32 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 
         @Override
 	public void a_works_with(String p, String p2) {
+            Person personObj1, personObj2;
 
+            // First check if the specified people exist, if not
+            // create them
+
+            if(!people.containsKey(p)) {
+                personObj1 = new Person(p);
+                people.put(p, personObj1);
+            } else {
+                personObj1 = people.get(p);
+            }
+
+            if(!people.containsKey(p2)) {
+                personObj2 = new Person(p2);
+                people.put(p2, personObj2);
+            } else {
+                personObj2 = people.get(p2);
+            }
+
+            // Create a new relation pair (person1, person2) and add
+            // it to the set of relations
+            //
+            // Note that duplicate pairs are not added by defition
+            // of the add method in HashSet including pairs of the
+            // form (person2, person1)
+            worksWith.add(new SymmetricPair(personObj1, personObj2));
         }
         @Override
 	public boolean e_works_with(String p, String p2) {
