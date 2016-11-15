@@ -83,6 +83,16 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                             writer.println("room(" + room.getName() + ")");
                         }
                         
+                        Iterator<Group> groupIter = groups.values().iterator();
+                        while(groupIter.hasNext()){
+                            Group group = groupIter.next();
+                            while(group.getHeads().hasNext()){
+                                Person tempPerson = group.getHeads().next();
+                            }
+                            //writer.println("group-head(" + group.values().iterator() + ")");
+                            writer.println("group(" + group.getName() + ")");
+                        }
+                        
                         writer.close();
                     } catch (FileNotFoundException | UnsupportedEncodingException e) {
                         error("Can't open file " + fileName);
