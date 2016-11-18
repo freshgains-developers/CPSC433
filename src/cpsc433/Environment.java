@@ -126,6 +126,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
             while (worksWithIter.hasNext()) {
                 SymmetricPair<Person, Person> relation = worksWithIter.next();
                 writer.println("works-with(" + relation.left.getName() + ", " + relation.right.getName() + ")");
+                writer.println("works-with(" + relation.right.getName() + ", " + relation.left.getName() + ")");
             }
         }
         
@@ -165,6 +166,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
             while(closeToIter.hasNext()) {
                 SymmetricPair<Room,Room> relation = closeToIter.next();
                 writer.println("close(" + relation.left.getName() + ", " + relation.right.getName() + ")");
+                writer.println("close(" + relation.right.getName() + ", " + relation.left.getName() + ")");
             }
         }
         private void printGroupPredicates(PrintWriter writer){
