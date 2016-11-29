@@ -102,9 +102,11 @@ public class Person extends Entity{
     public Room assignedRoom() {
         return assignedRoom;
     }
+
     public boolean isProjectHead(){
         return projectHead;
     }
+
     public boolean isGroupHead(){
         return groupHead;
     }
