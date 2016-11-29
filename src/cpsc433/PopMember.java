@@ -9,6 +9,8 @@ import cpsc433.Room.RoomSize;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Random;
 import java.util.Queue;
 
@@ -31,7 +33,7 @@ public class PopMember{
     public void PopMember(HashSet worksWith, HashMap people, HashMap groups, HashMap projects, HashMap rooms,HashSet closeTo){
         //initialize population randomly.
         Random randGen = new Random();
-        HashMap<Person, Room> assignments = new Hashmap();
+        HashMap<Person, Room> assignments = new HashMap();
         Iterator<Person> peopleIter = people.values().iterator();
         this.worksWith = worksWith;
         this.people = people;
@@ -80,12 +82,7 @@ public class PopMember{
         }
         //while managers is not empty, assign to tempPerson
         //getRandom Room with no respect to size.
-public class PopMember {
-    
-    private HashMap<Person,Room> assignments;
-    private HashSet worksWith;
-    private HashMap <String,Project> projects;
-    
+    }
     
     public int score() {
         int score = 0;
