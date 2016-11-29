@@ -42,6 +42,15 @@ public class Person extends Entity{
     public void addProject( Project j){
         projects.add(j);
     }
+    
+    public ArrayList getProjects() {
+        return projects;
+    }
+    
+    public ArrayList getGroups() {
+        return groups;
+    }
+    
     // Set methods for the private variables of person
     public void setSecretary(boolean b) {
         this.secretary = b;   
