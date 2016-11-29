@@ -116,7 +116,7 @@ public class SisyphusI {
 	 * @param timeLimit A time limit in milliseconds.
 	 */
 	protected void doSearch(Environment env, long timeLimit) {
-		System.out.println("Would do a search for "+timeLimit+" milliseconds here, but it's not defined yet.");
+            
 	}
 	
 	protected void printResults() {
