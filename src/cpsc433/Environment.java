@@ -16,18 +16,18 @@ import java.util.Iterator;
 import java.util.TreeSet;
 
 /**
- * This is class extends {@link cpsc433.PredicateReader} just as required to 
+ * This is class extends {@link cpsc433.PredicateReader} just as required to
  * in the assignment. You can extend this class to include your predicate definitions
  * or you can create another class that extends {@link cpsc433.PredicateReader} and
  * use that one.
  * <p>
  * I have defined this class as a singleton.
  *
- * <p>Copyright: Copyright (c) 2003-16, Department of Computer Science, University 
- * of Calgary.  Permission to use, copy, modify, distribute and sell this 
- * software and its documentation for any purpose is hereby granted without 
+ * <p>Copyright: Copyright (c) 2003-16, Department of Computer Science, University
+ * of Calgary.  Permission to use, copy, modify, distribute and sell this
+ * software and its documentation for any purpose is hereby granted without
  * fee, provided that the above copyright notice appear in all copies and that
- * both that copyright notice and this permission notice appear in supporting 
+ * both that copyright notice and this permission notice appear in supporting
  * documentation.  The Department of Computer Science makes no representations
  * about the suitability of this software for any purpose.  It is provided
  * "as is" without express or implied warranty.</p>
@@ -70,7 +70,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 		if (instance==null) instance = new Environment(null);
 		return instance;
 	}
-        
+
         @Override
         public int fromFile(String fileName) {
 		int ret = super.fromFile(fileName);
@@ -78,31 +78,31 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                     // Open output file and print predicates
                     try {
                         PrintWriter writer = new PrintWriter(fileName + ".out", "UTF-8");
-                        
+
                         printRoomPredicates(writer);
                         printGroupPredicates(writer);
                         printProjectPredicates(writer);
                         printPeoplePredicates(writer);
-                        
+
                         writer.close();
                     } catch (FileNotFoundException | UnsupportedEncodingException e) {
                         error("Can't open file " + fileName + ".out");
                         return -1;
                     }
                 }
-                
+
                 return ret;
 	}
-        
+
         private void printPeoplePredicates(PrintWriter writer) {
             Iterator<Person> peopleIter = people.values().iterator();
             while (peopleIter.hasNext()){
                 Person tempPerson = peopleIter.next();
                 String tempName = tempPerson.getName();
-                
+
                 //Printing the name of the person
                 writer.println("person(" + tempName + ")");
-                
+
                 //Printing the roles of the person
                 if(tempPerson.isHacker()){
                     writer.println("hacker(" + tempName + ")");
@@ -120,7 +120,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                     writer.println("smoker(" + tempName + ")");
                 }
             }
-            
+
             // Printing the works with array
             Iterator<SymmetricPair<Person, Person>> worksWithIter = worksWith.iterator();
             while (worksWithIter.hasNext()) {
@@ -129,7 +129,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                 writer.println("works-with(" + relation.right.getName() + ", " + relation.left.getName() + ")");
             }
         }
-        
+
         private void printRoomPredicates(PrintWriter writer) {
             Iterator<Room> roomIter = rooms.values().iterator();
             while (roomIter.hasNext()) {
@@ -160,7 +160,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                     writer.println("assign-to(" + assignedPeople[1].getName() + ", " + room.getName() + ")");
                 }
             }
-            
+
             // Print close relation predicates
             Iterator<SymmetricPair<Room,Room>> closeToIter = closeTo.iterator();
             while(closeToIter.hasNext()) {
@@ -183,7 +183,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                     while (memberIterator.hasNext()){
                         Person tempPerson = memberIterator.next();  //gets every person that is a member of the group
                         writer.println("group(" + tempPerson.getName() + "," + group.getName() + ")");
-                    }                
+                    }
                 }
         }
 
@@ -204,7 +204,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                     while (memberIterator.hasNext()){
                         Person tempPerson = memberIterator.next();  //gets every person that is a member of the group
                         writer.println("project(" + tempPerson.getName() + "," + project.getName() + ")");
-                    }                
+                    }
                 }
         }
         @Override
@@ -396,9 +396,9 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                 tempGroup.addToGroup(tempPerson);
                 people.put(p, tempPerson);
                 tempPerson.addGroup(tempGroup);        //update person's group array
-            }     
+            }
         }
-        
+
         @Override
 	public boolean e_group(String p, String grp) {
             //if p is a person in grp, return true
@@ -436,7 +436,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                 person = new Person(p);
                 project.setProjectPerson(person);
                 person.addProject(project);
-                
+
                 people.put(p, person);
             }
         }
@@ -466,16 +466,18 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                 tempPerson = people.get(p);
                 tempGroup.addAsHead(tempPerson);
                 tempPerson.addGroup(tempGroup);
+				tempPerson.setGroupHead(true);
             }
             else{
                 tempPerson = new Person(p);
                 tempGroup.addAsHead(tempPerson);
                 tempPerson.addGroup(tempGroup);
-                
+				tempPerson.setGroupHead(true);
+
                 people.put(p, tempPerson);
             }
         }
-        
+
         @Override
 	public boolean e_heads_group(String p, String grp) {
             //if p is a head in grp, return true
@@ -497,6 +499,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
             a_project(p,prj);
             Person person = people.get(p);
             projects.get(prj).setProjectHead(person);
+			person.setProjectHead(true);
         }
         @Override
 	public boolean e_heads_project(String p, String prj) {
@@ -525,11 +528,11 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                 if(people.containsKey(name_i)){
                     person_i = people.get(name_i);
                     worksWith.add(new SymmetricPair(person_i, thisPerson));
-                } 
+                }
                 else{
                     person_i = new Person(name_i);
                     worksWith.add(new SymmetricPair(person_i, thisPerson));
-                    people.put(name_i, person_i); 
+                    people.put(name_i, person_i);
                 }
             }
         }
@@ -561,7 +564,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 
             return true;
         }
-        
+
 
         @Override
 	public void a_works_with(String p, String p2) {
@@ -810,7 +813,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                 Group tempGroup = new Group(g);
                 groups.put(g, tempGroup);
             }
-            //else do nothing.           
+            //else do nothing.
         }
         @Override
 	public boolean e_group(String g) {

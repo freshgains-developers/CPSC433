@@ -25,7 +25,7 @@ public class PopMember{
     private HashMap<String, Room> rooms = null;
     private HashSet<SymmetricPair<Room, Room>> closeTo = null;
     private HashMap<Person, Room> assignments;
-    private Queue
+    
 
     public void PopMember(HashSet worksWith, HashMap people, HashMap groups, HashMap projects, HashMap rooms,HashSet closeTo){
         //initialize population randomly.
@@ -47,31 +47,24 @@ public class PopMember{
 
 
 
-
+        //identify all managers, group heads, project heads, secretaries and plebs and assign to proper queues
         while peopleIter.hasNext(){
             Person tempPerson = peopleIter.next()
             switch (tempPerson){
                 case tempPerson.isManager(): managerQ.add(tempPerson);
+                    break;
+                case tempPerson.isGroupHead(): groupHeadQ.add(tempPerson);
+                    break;
+                case tempPerson.isProjectHead(): projectHeadQ.add(tempPerson);
                     break;
                 case tempPerson.isSecretary(): secretaryQ.add(tempPerson);
                     break;
                 default: plebQ.add(tempPerson)
                     break;
             }
-
         }
-
-
-        //managers first
-        //group heads after
-        //project heads
-        //secretaries
-        //plebs
-
-        //for all managers, assign random rooms
-        //for all groups, get group heads && assign random rooms
-        //for all project heads, assign random rooms
-        //for all secretaries, assign rooms
-        //for all plebs, assign rooms
+        //assign randomly.
+        //while managers is not empty, assign to tempPerson
+        //getRandom Room with no respect to size.
     }
 }
