@@ -13,9 +13,9 @@ import java.util.Queue;
 
 /**
  *
- * @author Brenton
+ * @author Brenton effing Kruger
  * Container for a complete solution
- * hashmap <person, room> assignments
+ *
  */
 public class PopMember{
     private HashSet<SymmetricPair<Person, Person>> worksWith = null;
@@ -25,7 +25,7 @@ public class PopMember{
     private HashMap<String, Room> rooms = null;
     private HashSet<SymmetricPair<Room, Room>> closeTo = null;
     private HashMap<Person, Room> assignments;
-    
+
 
     public void PopMember(HashSet worksWith, HashMap people, HashMap groups, HashMap projects, HashMap rooms,HashSet closeTo){
         //initialize population randomly.
@@ -63,7 +63,20 @@ public class PopMember{
                     break;
             }
         }
+
         //assign randomly.
+        while (managerq.peek() != null){
+            Person tempPerson = managerq.remove();
+            //Room tempRoom =
+            try{
+            tempRoom.putPerson(tempPerson);
+            }
+            catch(FullRoomException e){
+
+                
+            }
+            assignments.put(tempPerson.getName(), tempRoom)
+        }
         //while managers is not empty, assign to tempPerson
         //getRandom Room with no respect to size.
     }
