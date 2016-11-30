@@ -36,6 +36,24 @@ import java.util.TreeSet;
  *
  */
 public class Environment extends PredicateReader implements SisyphusPredicates {
+    
+    public static class UnsolvableInstanceException extends Exception {
+        public UnsolvableInstanceException() {
+            super();
+        }
+
+        public UnsolvableInstanceException(String message) {
+            super(message);
+        }
+
+        public UnsolvableInstanceException(String message, Throwable cause) {
+            super(message, cause);
+        }
+
+        public UnsolvableInstanceException(Throwable cause) {
+            super(cause);
+        }
+    }
 
 	private static Environment instance=null;
 	protected boolean fixedAssignments=false;
