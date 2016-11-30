@@ -63,6 +63,9 @@ public class PopMember{
                     break;
             }
         }
+        //random room selection implemented with an array and an int
+        int roomsLeft = rooms.size();
+        Array roomAddresses = rooms..values().toArray();
 
         //assign randomly.
         while (managerq.peek() != null){
@@ -80,4 +83,6 @@ public class PopMember{
         //while managers is not empty, assign to tempPerson
         //getRandom Room with no respect to size.
     }
+    private getRandomRoom()
+    
 }
