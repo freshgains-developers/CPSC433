@@ -5,11 +5,12 @@
  */
 package cpsc433;
 
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.ArrayList;
-import java.util.Random;
-import java.util.AbstractQueue<E>;
+import cpsc433.Room.RoomSize;
+import cpsc433.Room.FullRoomException;
+import java.lang.reflect.Array;
+
+
+import java.util.*;
 
 /**
  *
@@ -27,10 +28,10 @@ public class PopMember{
     private HashMap<Person, Room> assignments;
 
 
+    @SuppressWarnings("empty-statement")
     public void PopMember(HashSet worksWith, HashMap people, HashMap groups, HashMap projects, HashMap rooms,HashSet closeTo){
         //initialize population randomly.
         Random randGen = new Random();
-        HashMap<Person, Room> assignments = new Hashmap();
         Iterator<Person> peopleIter = people.values().iterator();
         this.worksWith = worksWith;
         this.people = people;
@@ -39,54 +40,117 @@ public class PopMember{
         this.rooms = rooms;
         this.closeTo = closeTo;
 
-        AbstractQueue<People> managerQ = new AbstractQueue();
-        AbstractQueue<People> groupHeadQ = new AbstractQueue();
-        AbstractQueue<People> projectHeadQ = new AbstractQueue();
-        AbstractQueue<People> secretaryQ = new AbstractQueue();
-        AbstractQueue<People> plebQ = new AbstractQueue();
+        LinkedList<Person> managerQ = new LinkedList();
+        LinkedList<Person> groupHeadQ = new LinkedList();
+        LinkedList<Person> projectHeadQ = new LinkedList();
+        LinkedList<Person> secretaryQ = new LinkedList();
+        LinkedList<Person> plebQ = new LinkedList();
+
+
 
 
 
         //identify all managers, group heads, project heads, secretaries and plebs and assign to proper queues
-        while peopleIter.hasNext(){
-            Person tempPerson = peopleIter.next()
-            switch (tempPerson){
-                case tempPerson.isManager(): managerQ.add(tempPerson);
-                    break;
-                case tempPerson.isGroupHead(): groupHeadQ.add(tempPerson);
-                    break;
-                case tempPerson.isProjectHead(): projectHeadQ.add(tempPerson);
-                    break;
-                case tempPerson.isSecretary(): secretaryQ.add(tempPerson);
-                    break;
-                default: plebQ.add(tempPerson)
+        while (peopleIter.hasNext()){
+            Person tempPerson = peopleIter.next();
+            if (tempPerson.isManager()) {
+                managerQ.add(tempPerson); break ; }
+
+            else if (tempPerson.isGroupHead()){
+             groupHeadQ.add(tempPerson); break; }
+
+
+            else if (tempPerson.isProjectHead()){
+                projectHeadQ.add(tempPerson); break; }
+
+            else if (tempPerson.isSecretary()) {
+                secretaryQ.add(tempPerson); break; }
+
+            else {
+                plebQ.add(tempPerson);
                     break;
             }
         }
-        //random room selection implemented with an array and an int
+        
+        Room[] roomAddresses = (Room[]) rooms.values().toArray();
         int roomsLeft = rooms.size();
-        Array roomAddresses = rooms..values().toArray();
-
+        
         //assign randomly.
-        while (managerq.peek() != null){
-            Person tempPerson = managerq.remove();
-            //Room tempRoom =
+        while (managerQ.peek() != null){
+            
+            Person tempPerson = managerQ.remove();
+            int roomIndex = randGen.nextInt(roomsLeft);
+            Room tempRoom = roomAddresses[roomIndex];
+            //update rooms left
+            if (tempRoom.isFull()){
+                roomAddresses[roomIndex] = roomAddresses[roomsLeft]; //move last element to take the place of the full one
+                roomsLeft -= roomsLeft;
+            }
             try{
             tempRoom.putPerson(tempPerson);
+            }catch (FullRoomException e){
+                ;  
             }
-            catch(FullRoomException e){
-
-
-            }
-            assignments.put(tempPerson.getName(), tempRoom)
+            assignments.put(tempPerson, tempRoom);
         }
         //while managers is not empty, assign to tempPerson
         //getRandom Room with no respect to size.
     }
-    private Room getRandomRoom(){
     
-    return randRoom;
+    public int score() {
+        int score = 0;
+        
+        Iterator <Room> roomIter;
+        roomIter = assignments.values().iterator();
+        
+        while(roomIter.hasNext()) {
+            Room r = roomIter.next();
+            
+            Person p1 = r.getAssignedPeople()[0];
+            Person p2 = r.getAssignedPeople()[1];
+            
+            // 16) Two people shouldn't share a small room
+            if(p1 != null && p2 != null && r.getSize() == RoomSize.SMALL) {
+                score -= 25;
+            }
+            
+            // 15) If two people share an office, they sould work together
+            if(!worksWith.contains(new SymmetricPair(p1, p2))) {
+                score -= 3;
+            }
+            
+            // 14) People prefer to have their own offices 
+            if(p2 != null) {
+                score -= 4;
+            }
+            
+            // 13) if a non-secretary hacker/non-hacker shares an office, 
+            //     then he/she should share with another hacker/non-hacker
+            if(p1.isHacker() && !p2.isHacker() && !p2.isSecretary()) {
+                score -= 2;
+            }
+            if(p2.isHacker() && !p1.isHacker() && !p1.isSecretary()) {
+                score -= 2;
+            }
+            
+            // 11) A smoker shouldn't share an office with a non-smoker
+            if( (p1.isSmoker() || p2.isSmoker()) && (!p1.isSmoker() || !p2.isSmoker()) ) {
+                score -= 50;
+            }
+        }
+        
+        Iterator<Project> projectIter;
+        projectIter = projects.values().iterator();
+        
+        while(projectIter.hasNext()) {
+            Project project = projectIter.next();
+            
+            
+        }
+        
+        return score;
     }
+    
         
     
 }

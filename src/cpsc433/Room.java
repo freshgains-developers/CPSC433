@@ -68,6 +68,13 @@ public class Room extends Entity {
         this.size = size;
     }
     
+    public boolean isFull(){
+         if(this.assignedPeople[1] == null)
+            return false;
+         else
+            return true;
+    }
+    
     // Adds Person p to this room if space is available,
     // otherwise throws FullRoomException and occupants
     // are unchanged
