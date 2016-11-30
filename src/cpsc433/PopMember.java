@@ -83,6 +83,10 @@ public class PopMember{
         //while managers is not empty, assign to tempPerson
         //getRandom Room with no respect to size.
     }
-    private getRandomRoom()
+    private Room getRandomRoom(){
+    
+    return randRoom;
+    }
+        
     
 }
