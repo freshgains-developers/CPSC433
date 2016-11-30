@@ -6,13 +6,8 @@
 package cpsc433;
 
 import cpsc433.Room.RoomSize;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Random;
-import java.util.AbstractQueue<E>;
+
+import java.util.*;
 
 /**
  *
@@ -42,34 +37,41 @@ public class PopMember{
         this.rooms = rooms;
         this.closeTo = closeTo;
 
-        AbstractQueue<People> managerQ = new AbstractQueue();
-        AbstractQueue<People> groupHeadQ = new AbstractQueue();
-        AbstractQueue<People> projectHeadQ = new AbstractQueue();
-        AbstractQueue<People> secretaryQ = new AbstractQueue();
-        AbstractQueue<People> plebQ = new AbstractQueue();
+        LinkedList<Person> managerQ = new LinkedList();
+        LinkedList<Person> groupHeadQ = new LinkedList();
+        LinkedList<Person> projectHeadQ = new LinkedList();
+        LinkedList<Person> secretaryQ = new LinkedList();
+        LinkedList<Person> plebQ = new LinkedList();
+
+
 
 
 
         //identify all managers, group heads, project heads, secretaries and plebs and assign to proper queues
-        while peopleIter.hasNext(){
-            Person tempPerson = peopleIter.next()
-            switch (tempPerson){
-                case tempPerson.isManager(): managerQ.add(tempPerson);
-                    break;
-                case tempPerson.isGroupHead(): groupHeadQ.add(tempPerson);
-                    break;
-                case tempPerson.isProjectHead(): projectHeadQ.add(tempPerson);
-                    break;
-                case tempPerson.isSecretary(): secretaryQ.add(tempPerson);
-                    break;
-                default: plebQ.add(tempPerson)
+        while (peopleIter.hasNext()){
+            Person tempPerson = peopleIter.next();
+            if (tempPerson.isManager()) {
+                managerQ.add(tempPerson); break ; }
+
+            else if (tempPerson.isGroupHead()){
+             groupHeadQ.add(tempPerson); break; }
+
+
+            else if (tempPerson.isProjectHead()){
+                projectHeadQ.add(tempPerson); break; }
+
+            else if (tempPerson.isSecretary()) {
+                secretaryQ.add(tempPerson); break; }
+
+            else {
+                plebQ.add(tempPerson);
                     break;
             }
         }
 
         //assign randomly.
-        while (managerq.peek() != null){
-            Person tempPerson = managerq.remove();
+        while (managerQ.peek() != null){
+            Person tempPerson = managerQ.remove();
             //Room tempRoom =
             try{
             tempRoom.putPerson(tempPerson);
@@ -78,7 +80,7 @@ public class PopMember{
 
 
             }
-            assignments.put(tempPerson.getName(), tempRoom)
+            assignments.put(tempPerson.getName(), tempRoom);
         }
         //while managers is not empty, assign to tempPerson
         //getRandom Room with no respect to size.
