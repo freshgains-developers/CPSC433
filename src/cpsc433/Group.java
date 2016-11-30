@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package cpsc433;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 /**
@@ -14,14 +15,14 @@ import java.util.Iterator;
  */
 public class Group extends Entity{
     
-    private final HashMap<String, Person> groupMap;
+    private final ArrayList<Person> groupList;
     private final HashMap<String, Person> headMap;
     
     //constructor of group
     public Group(String name){
         super(name);
         //hashmap for people
-        groupMap = new HashMap();
+        groupList = new ArrayList<Person>();
         headMap = new HashMap();
     }
     /**
@@ -31,17 +32,17 @@ public class Group extends Entity{
      */
     public boolean memberOfGroup(Person p){
         String personKey = p.getName();
-        return groupMap.containsKey(personKey);
+        return groupList.contains(p);
     }
-    
-    public Iterator<Person> getHeads(){
-        return headMap.values().iterator();
+
+    public HashMap<String, Person> getHeadMap (){
+        return headMap;
     }
-    
-    public Iterator<Person> getMembers(){
-        return groupMap.values().iterator();
+
+    public ArrayList<Person> getGroupList (){
+        return groupList;
     }
-    
+
     /**
      * @param p person to check
      * @return true if person is a head of the group
@@ -58,8 +59,8 @@ public class Group extends Entity{
     public void addToGroup(Person p){
         //check if person is in group && add to group if absent
         String personKey = p.getName();
-        if (!groupMap.containsKey(personKey))
-            groupMap.put(personKey, p); 
+        //if (!groupList.contains(personKey))
+            groupList.add(p);
     }
     
     /**
@@ -70,8 +71,8 @@ public class Group extends Entity{
     public void remove(Person p){
         //check if a person is in the group and remove if present
         String personKey = p.getName();
-        if (groupMap.containsKey(personKey))
-            groupMap.remove(personKey);
+        //if (groupList.contains(p))
+        groupList.remove(p);
         if (headMap.containsKey(personKey)) //group heads must be a member of the group
             headMap.remove(personKey);
     }
@@ -86,8 +87,8 @@ public class Group extends Entity{
         //check if person is in head subgroup
         //add appropriately
         String personKey = p.getName();
-        if (!groupMap.containsKey(personKey)) //group heads must be a member of the group.
-            groupMap.put(personKey, p); 
+        if (!groupList.contains(p)) //group heads must be a member of the group.
+            groupList.add(p);
         if (!headMap.containsKey(personKey))
             headMap.put(personKey, p);
     }

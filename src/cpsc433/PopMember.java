@@ -41,43 +41,50 @@ public class PopMember{
         this.rooms = rooms;
         this.closeTo = closeTo;
 
-        Queue managerQ = new Queue();
-        Queue groupHeadQ = new Queue();
-        Queue projectHeadQ = new Queue();
-        Queue secretaryQ = new Queue();
-        Queue plebQ = new Queue();
+        LinkedList<Person> managerQ = new LinkedList();
+        LinkedList<Person> groupHeadQ = new LinkedList();
+        LinkedList<Person> projectHeadQ = new LinkedList();
+        LinkedList<Person> secretaryQ = new LinkedList();
+        LinkedList<Person> plebQ = new LinkedList();
+
+
 
 
 
         //identify all managers, group heads, project heads, secretaries and plebs and assign to proper queues
-        while peopleIter.hasNext(){
-            Person tempPerson = peopleIter.next()
-            switch (tempPerson){
-                case tempPerson.isManager(): managerQ.add(tempPerson);
-                    break;
-                case tempPerson.isGroupHead(): groupHeadQ.add(tempPerson);
-                    break;
-                case tempPerson.isProjectHead(): projectHeadQ.add(tempPerson);
-                    break;
-                case tempPerson.isSecretary(): secretaryQ.add(tempPerson);
-                    break;
-                default: plebQ.add(tempPerson)
+        while (peopleIter.hasNext()){
+            Person tempPerson = peopleIter.next();
+            if (tempPerson.isManager()) {
+                managerQ.add(tempPerson); break ; }
+
+            else if (tempPerson.isGroupHead()){
+             groupHeadQ.add(tempPerson); break; }
+
+
+            else if (tempPerson.isProjectHead()){
+                projectHeadQ.add(tempPerson); break; }
+
+            else if (tempPerson.isSecretary()) {
+                secretaryQ.add(tempPerson); break; }
+
+            else {
+                plebQ.add(tempPerson);
                     break;
             }
         }
 
         //assign randomly.
-        while (managerq.peek() != null){
-            Person tempPerson = managerq.remove();
+        while (managerQ.peek() != null){
+            Person tempPerson = managerQ.remove();
             //Room tempRoom =
             try{
             tempRoom.putPerson(tempPerson);
             }
             catch(FullRoomException e){
 
-                
+
             }
-            assignments.put(tempPerson.getName(), tempRoom)
+            assignments.put(tempPerson.getName(), tempRoom);
         }
         //while managers is not empty, assign to tempPerson
         //getRandom Room with no respect to size.
@@ -124,7 +131,40 @@ public class PopMember{
                 score -= 50;
             }
         }
-        
+
+        // Constraint Number 2)
+        Iterator<Group> groupIter;
+        groupIter = groups.values().iterator();
+
+        while(groupIter.hasNext()) { // group loop
+            Group group = groupIter.next();
+            HashMap<String, Person> headMap =  group.getHeadMap();
+            Iterator<Person> headIter;
+            headIter = headMap.values().iterator();
+            ArrayList<Person> peopleList = group.getGroupList();
+
+            while (headIter.hasNext()){ // head loop
+                Person headValue = headIter.next();
+
+                for (Person person : peopleList){ // person loop
+                    if (!closeTo.contains(new SymmetricPair<Room,Room>(headValue.assignedRoom(),person.assignedRoom()))){
+                        score -= 2;
+                        break;
+                    }
+
+
+                }
+
+
+            }
+
+            // iterate through heads, then nested loop through members of each member to be close
+
+
+
+
+        }
+
         Iterator<Project> projectIter;
         projectIter = projects.values().iterator();
         
