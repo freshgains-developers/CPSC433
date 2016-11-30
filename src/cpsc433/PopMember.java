@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Random;
-import java.util.Queue;
+import java.util.AbstractQueue<E>;
 
 /**
  *
@@ -42,11 +42,11 @@ public class PopMember{
         this.rooms = rooms;
         this.closeTo = closeTo;
 
-        Queue managerQ = new Queue();
-        Queue groupHeadQ = new Queue();
-        Queue projectHeadQ = new Queue();
-        Queue secretaryQ = new Queue();
-        Queue plebQ = new Queue();
+        AbstractQueue<People> managerQ = new AbstractQueue();
+        AbstractQueue<People> groupHeadQ = new AbstractQueue();
+        AbstractQueue<People> projectHeadQ = new AbstractQueue();
+        AbstractQueue<People> secretaryQ = new AbstractQueue();
+        AbstractQueue<People> plebQ = new AbstractQueue();
 
 
 
@@ -76,7 +76,7 @@ public class PopMember{
             }
             catch(FullRoomException e){
 
-                
+
             }
             assignments.put(tempPerson.getName(), tempRoom)
         }
