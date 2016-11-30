@@ -7,9 +7,6 @@ package cpsc433;
 
 import cpsc433.Room.RoomSize;
 import cpsc433.Room.FullRoomException;
-import java.lang.reflect.Array;
-
-
 import java.util.*;
 
 /**
@@ -75,26 +72,105 @@ public class PopMember{
         Room[] roomAddresses = (Room[]) rooms.values().toArray();
         int roomsLeft = rooms.size();
         
-        //assign randomly.
+        //assign managers randomly.
         while (managerQ.peek() != null){
             
             Person tempPerson = managerQ.remove();
             int roomIndex = randGen.nextInt(roomsLeft);
             Room tempRoom = roomAddresses[roomIndex];
+            
+            try{
+                tempRoom.putPerson(tempPerson);
+            } catch (FullRoomException e){
+                ;  
+            }
+            assignments.put(tempPerson, tempRoom);
             //update rooms left
             if (tempRoom.isFull()){
                 roomAddresses[roomIndex] = roomAddresses[roomsLeft]; //move last element to take the place of the full one
                 roomsLeft -= roomsLeft;
             }
+        }
+        //assign groupHeads randomly
+        while (groupHeadQ.peek() != null){
+            
+            Person tempPerson = groupHeadQ.remove();
+            int roomIndex = randGen.nextInt(roomsLeft);
+            Room tempRoom = roomAddresses[roomIndex];
+            
             try{
-            tempRoom.putPerson(tempPerson);
-            }catch (FullRoomException e){
+                tempRoom.putPerson(tempPerson);
+            } catch (FullRoomException e){
                 ;  
             }
             assignments.put(tempPerson, tempRoom);
+            //update rooms left
+            if (tempRoom.isFull()){
+                roomAddresses[roomIndex] = roomAddresses[roomsLeft]; //move last element to take the place of the full one
+                roomsLeft -= roomsLeft;
+            }
         }
-        //while managers is not empty, assign to tempPerson
-        //getRandom Room with no respect to size.
+        
+         //assign projectHeads randomly
+        while (projectHeadQ.peek() != null){
+            
+            Person tempPerson = projectHeadQ.remove();
+            int roomIndex = randGen.nextInt(roomsLeft);
+            Room tempRoom = roomAddresses[roomIndex];
+            
+            try{
+                tempRoom.putPerson(tempPerson);
+            } catch (FullRoomException e){
+                ;  
+            }
+            assignments.put(tempPerson, tempRoom);
+            //update rooms left
+            if (tempRoom.isFull()){
+                roomAddresses[roomIndex] = roomAddresses[roomsLeft]; //move last element to take the place of the full one
+                roomsLeft -= roomsLeft;
+            }
+        }
+        
+         //assign secretaries randomly
+        while (secretaryQ.peek() != null){
+            
+            Person tempPerson =secretaryQ.remove();
+            int roomIndex = randGen.nextInt(roomsLeft);
+            Room tempRoom = roomAddresses[roomIndex];
+            
+            try{
+                tempRoom.putPerson(tempPerson);
+            } catch (FullRoomException e){
+                ;  
+            }
+            assignments.put(tempPerson, tempRoom);
+            //update rooms left
+            if (tempRoom.isFull()){
+                roomAddresses[roomIndex] = roomAddresses[roomsLeft]; //move last element to take the place of the full one
+                roomsLeft -= roomsLeft;
+            }
+        }
+        
+         //assign plebs randomly
+        while (plebQ.peek() != null){
+            
+            Person tempPerson = plebQ.remove();
+            int roomIndex = randGen.nextInt(roomsLeft);
+            Room tempRoom = roomAddresses[roomIndex];
+            
+            try{
+                tempRoom.putPerson(tempPerson);
+            } catch (FullRoomException e){
+                ;  
+            }
+            assignments.put(tempPerson, tempRoom);
+            //update rooms left
+            if (tempRoom.isFull()){
+                roomAddresses[roomIndex] = roomAddresses[roomsLeft]; //move last element to take the place of the full one
+                roomsLeft -= roomsLeft;
+            }
+        }
+        
     }
     
     public int score() {
