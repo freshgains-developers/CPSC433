@@ -132,31 +132,63 @@ public class PopMember{
             }
         }
 
-        // Constraint Number 2)
+
         Iterator<Group> groupIter;
         groupIter = groups.values().iterator();
 
         while(groupIter.hasNext()) { // group loop
+
             Group group = groupIter.next();
             HashMap<String, Person> headMap =  group.getHeadMap();
             Iterator<Person> headIter;
             headIter = headMap.values().iterator();
             ArrayList<Person> peopleList = group.getGroupList();
 
+
+
+
+
+
+
+
+
             while (headIter.hasNext()){ // head loop
                 Person headValue = headIter.next();
 
-                for (Person person : peopleList){ // person loop
-                    if (!closeTo.contains(new SymmetricPair<Room,Room>(headValue.assignedRoom(),person.assignedRoom()))){
-                        score -= 2;
-                        break;
-                    }
-
-
+                if (headValue.assignedRoom().getSize() != RoomSize.LARGE){
+                    score -= 40; // CONSTRAINT NUMBER 1
                 }
 
 
-            }
+                boolean hasSecretary = true;
+                boolean constraintTWo = true;
+                for (Person person : peopleList){ // person loop
+
+
+                    if (hasSecretary==true && closeTo.contains(new SymmetricPair<Room,Room>(headValue.assignedRoom(),person.assignedRoom())) && person.isSecretary()){
+                      hasSecretary = false; // PART OF CONSTRAINT 3
+                    }
+
+
+                    if (person.isManager() && !closeTo.contains(new SymmetricPair<Room,Room>(headValue.assignedRoom(),person.assignedRoom()))){
+                        score -= 20; // CONSTRAINT 6
+                    }
+
+                    if (constraintTWo) {
+                        if (!closeTo.contains(new SymmetricPair<Room,Room>(headValue.assignedRoom(),person.assignedRoom()))) {
+                        score -= 2;  //CONSTRAINT 2
+                        constraintTWo = false;
+                        // constraint 2 failing implies constraint 3 failing as well as constraint 6
+                        }
+                    }
+
+
+                }  // end person loop
+                if (hasSecretary){
+                    score -= 30; // CONSTRAINT 3
+                }
+
+            } // end head loop
 
             // iterate through heads, then nested loop through members of each member to be close
 
