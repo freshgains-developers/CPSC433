@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.TreeSet;
+import java.util.ArrayList;
 
 /**
  * This is class extends {@link cpsc433.PredicateReader} just as required to
@@ -192,14 +193,13 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                 while(groupIter.hasNext()){
                     Group group = groupIter.next();
                     writer.println("group(" + group.getName() + ")");
-                    Iterator<Person> headIterator = group.getHeads();
+                    Iterator<Person> headIterator = group.getHeadMap().values().iterator();
                     while (headIterator.hasNext()) {
                         Person tempPerson = headIterator.next();    //gets every person that is a head in the group
                         writer.println("heads-group(" + tempPerson.getName() + ", " + group.getName() + ")");
                     }
-                    Iterator<Person> memberIterator = group.getMembers();
-                    while (memberIterator.hasNext()){
-                        Person tempPerson = memberIterator.next();  //gets every person that is a member of the group
+                    ArrayList<Person> personList = group.getGroupList();
+                    for(Person tempPerson:personList){
                         writer.println("group(" + tempPerson.getName() + "," + group.getName() + ")");
                     }
                 }
