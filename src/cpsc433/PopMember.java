@@ -127,7 +127,40 @@ public class PopMember{
                 score -= 50;
             }
         }
-        
+
+        // Constraint Number 2)
+        Iterator<Group> groupIter;
+        groupIter = groups.values().iterator();
+
+        while(groupIter.hasNext()) { // group loop
+            Group group = groupIter.next();
+            HashMap<String, Person> headMap =  group.getHeadMap();
+            Iterator<Person> headIter;
+            headIter = headMap.values().iterator();
+            ArrayList<Person> peopleList = group.getGroupList();
+
+            while (headIter.hasNext()){ // head loop
+                Person headValue = headIter.next();
+
+                for (Person person : peopleList){ // person loop
+                    if (!closeTo.contains(new SymmetricPair<Room,Room>(headValue.assignedRoom(),person.assignedRoom()))){
+                        score -= 2;
+                        break;
+                    }
+
+
+                }
+
+
+            }
+
+            // iterate through heads, then nested loop through members of each member to be close
+
+
+
+
+        }
+
         Iterator<Project> projectIter;
         projectIter = projects.values().iterator();
         
