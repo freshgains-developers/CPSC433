@@ -128,11 +128,12 @@ public class PopMember{
             }
         }
 
-        // Constraint Number 2)
+
         Iterator<Group> groupIter;
         groupIter = groups.values().iterator();
 
         while(groupIter.hasNext()) { // group loop
+
             Group group = groupIter.next();
             HashMap<String, Person> headMap =  group.getHeadMap();
             Iterator<Person> headIter;
@@ -147,15 +148,25 @@ public class PopMember{
                 }
 
 
+                boolean hasSecretary = false;
                 for (Person person : peopleList){ // person loop
+
+                    if (hasSecretary==false && closeTo.contains(new SymmetricPair<Room,Room>(headValue.assignedRoom(),person.assignedRoom())) && person.isSecretary()){
+                      hasSecretary = true;
+                    }
+
+
+
                     if (!closeTo.contains(new SymmetricPair<Room,Room>(headValue.assignedRoom(),person.assignedRoom()))){
-                        score -= 2;
+                        score -= 2;  //CONSTRAINT 2
                         break;
                     }
 
 
                 }
-
+                if (hasSecretary){
+                    score -= 30; // CONSTRAINT 3
+                }
 
             }
 
