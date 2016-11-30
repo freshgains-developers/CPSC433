@@ -10,8 +10,8 @@ import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Random;
-import java.util.Queue;
 
 /**
  *
@@ -170,15 +170,15 @@ public class PopMember{
         
         while(projectIter.hasNext()) {
             Project project = projectIter.next();
+            ArrayList<Person> projectMembers = project.getPersonList();
             
             // 12) members of the same project should not share
             //     an office 
-            ArrayList<Person> pList = project.getPersonList();
-            for(int i = 0; i < pList.size(); i++) {
-                Person p1 = pList.get(i);
+            for(int i = 0; i < projectMembers.size(); i++) {
+                Person p1 = projectMembers.get(i);
                 
-                for(int j = i; j < pList.size(); j++) {
-                    Person p2 = pList.get(j);
+                for(int j = i; j < projectMembers.size(); j++) {
+                    Person p2 = projectMembers.get(j);
                     
                     if(p1.assignedRoom() == p2.assignedRoom() && p1 != p2) {
                         score -= 7;
@@ -186,39 +186,59 @@ public class PopMember{
                 }
             }
             
-           
-            if(project.getLarge()) {
-                Iterator<Person> projectHeadIter;
-                projectHeadIter = project.getHeadMap().values().iterator();
+            Iterator<Person> projectHeadIter;
+            projectHeadIter = project.getHeadMap().values().iterator();
+
+            while (projectHeadIter.hasNext()) {
+                Person projectHead = projectHeadIter.next();
+                ArrayList<Group> headGroups = projectHead.getGroups();
                 
-                while(projectHeadIter.hasNext()) {
-                    Person projectHead = projectHeadIter.next();
-                    ArrayList<Group> headGroups = projectHead.getGroups();
+                Room projectHeadRoom = projectHead.assignedRoom();
+                
+                // 8) the heads of projects should be close to all 
+                //    members of their project
+                for(Person projectMember : projectMembers) {
+                    Room pmr = projectMember.assignedRoom();
                     
-                    for(Group group : headGroups) {
+                    if(!closeTo.contains(new SymmetricPair<>(projectHeadRoom, pmr))) {
+                        score -= -5;
+                        break;
+                    }
+                }
+                
+                if(project.getLarge()) {
+                    for (Group group : headGroups) {
                         // 9) the heads of large projects should be close to
                         //    at least one secretary in their group
-                        
-                        
-                        // 10) The heads of large projects should be close to the 
+                        boolean hasSecretary = false;
+                        ArrayList<Person> groupMembers = group.getGroupList();
+                        for (Person groupMember : groupMembers) {
+                            Room gmr = groupMember.assignedRoom();
+                            
+                            if (groupMember.isSecretary() && closeTo.contains(new SymmetricPair<>(projectHeadRoom, gmr))) {
+                                hasSecretary = true;
+                                break;
+                            }
+                        }
+
+                        if (!hasSecretary) {
+                            score -= 10;
+                        }
+
+                         // 10) The heads of large projects should be close to the 
                         //     head of their group
-                        Iterator<Person> groupHeadIter = group.getHeads();
-                        
-                        while(groupHeadIter.hasNext()) {
+                        Iterator<Person> groupHeadIter = group.getHeadMap().values().iterator();
+                        while (groupHeadIter.hasNext()) {
                             Person groupHead = groupHeadIter.next();
                             Room rgh = groupHead.assignedRoom();
-                            Room rph = projectHead.assignedRoom();
-                            
-                            if(!closeTo.contains(new SymmetricPair<Room,Room>(rgh, rph))) {
+
+                            if (!closeTo.contains(new SymmetricPair<>(rgh, projectHeadRoom))) {
                                 score -= 10;
                             }
                         }
                     }
                 }
             }
-            
-            
-            // 9) 
         }
         
         return score;
