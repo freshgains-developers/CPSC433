@@ -7,7 +7,6 @@ package cpsc433;
 
 import cpsc433.Room.RoomSize;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -102,7 +101,7 @@ public class PopMember{
             }
             
             // 15) If two people share an office, they sould work together
-            if(!worksWith.contains(new SymmetricPair(p1, p2))) {
+            if(!worksWith.contains(new SymmetricPair<Person,Person>(p1, p2))) {
                 score -= 3;
             }
             
@@ -132,7 +131,54 @@ public class PopMember{
         while(projectIter.hasNext()) {
             Project project = projectIter.next();
             
+            // 12) members of the same project should not share
+            //     an office 
+            ArrayList<Person> pList = project.getPersonList();
+            for(int i = 0; i < pList.size(); i++) {
+                Person p1 = pList.get(i);
+                
+                for(int j = i; j < pList.size(); j++) {
+                    Person p2 = pList.get(j);
+                    
+                    if(p1.assignedRoom() == p2.assignedRoom() && p1 != p2) {
+                        score -= 7;
+                    }
+                }
+            }
             
+           
+            if(project.getLarge()) {
+                Iterator<Person> projectHeadIter;
+                projectHeadIter = project.getHeadMap().values().iterator();
+                
+                while(projectHeadIter.hasNext()) {
+                    Person projectHead = projectHeadIter.next();
+                    ArrayList<Group> headGroups = projectHead.getGroups();
+                    
+                    for(Group group : headGroups) {
+                        // 9) the heads of large projects should be close to
+                        //    at least one secretary in their group
+                        
+                        
+                        // 10) The heads of large projects should be close to the 
+                        //     head of their group
+                        Iterator<Person> groupHeadIter = group.getHeads();
+                        
+                        while(groupHeadIter.hasNext()) {
+                            Person groupHead = groupHeadIter.next();
+                            Room rgh = groupHead.assignedRoom();
+                            Room rph = projectHead.assignedRoom();
+                            
+                            if(!closeTo.contains(new SymmetricPair<Room,Room>(rgh, rph))) {
+                                score -= 10;
+                            }
+                        }
+                    }
+                }
+            }
+            
+            
+            // 9) 
         }
         
         return score;
