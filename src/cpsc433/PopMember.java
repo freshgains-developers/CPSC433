@@ -142,6 +142,11 @@ public class PopMember{
             while (headIter.hasNext()){ // head loop
                 Person headValue = headIter.next();
 
+                if (headValue.assignedRoom().getSize() != RoomSize.LARGE){
+                    score -= 40; // CONSTRAINT NUMBER 1
+                }
+
+
                 for (Person person : peopleList){ // person loop
                     if (!closeTo.contains(new SymmetricPair<Room,Room>(headValue.assignedRoom(),person.assignedRoom()))){
                         score -= 2;
