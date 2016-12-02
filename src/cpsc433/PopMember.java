@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Random;
 
@@ -32,7 +33,7 @@ public class PopMember {
     private HashMap<String, Project> projects = null;
     private HashMap<String, Room> rooms = null;
     private HashSet<SymmetricPair<Room, Room>> closeTo = null;
-    private HashMap<Person, Room> assignments;
+    private final LinkedHashSet<Room> assignedRooms;
 
 
     /**
@@ -47,7 +48,7 @@ public class PopMember {
      * @throws cpsc433.Environment.UnsolvableInstanceException thrown if solution is not possible without violating hard constraints
      * @throws cpsc433.Room.FullRoomException ** (shouldn't happen) ** thrown if initialization error occurs (this would be a bug)
      */
-    public void PopMember(HashSet worksWith, HashMap people, HashMap groups, HashMap projects, HashMap rooms,HashSet closeTo) throws UnsolvableInstanceException,FullRoomException {
+    public PopMember(HashSet worksWith, HashMap people, HashMap groups, HashMap projects, HashMap rooms,HashSet closeTo) throws UnsolvableInstanceException,FullRoomException {
         //initialize population randomly.
         Random randGen = new Random();
         Iterator<Person> peopleIter = people.values().iterator();
@@ -56,7 +57,9 @@ public class PopMember {
         this.groups = groups;
         this.projects = projects;
         this.rooms = rooms;
-        this.closeTo = closeTo;        
+        this.closeTo = closeTo;    
+        
+        this.assignedRooms = new LinkedHashSet();
         
         if(people.size()<=2*rooms.size()){
         
@@ -84,7 +87,7 @@ public class PopMember {
                 }
             }
 
-            Room[] roomAddresses = (Room[]) rooms.values().toArray();
+            Room[] roomAddresses = (Room[]) rooms.values().toArray(new Room[0]);
             int roomsLeft = rooms.size();
 
             //assign managers randomly.
@@ -95,7 +98,8 @@ public class PopMember {
                 Room tempRoom = roomAddresses[roomIndex];
 
                 tempRoom.putPerson(tempPerson);
-                assignments.put(tempPerson, tempRoom);
+                tempPerson.assignToRoom(tempRoom);
+                assignedRooms.add(tempRoom);
                 
                 //update rooms left
                 if (tempRoom.isFull()) {
@@ -113,7 +117,8 @@ public class PopMember {
                 Room tempRoom = roomAddresses[roomIndex];
 
                 tempRoom.putPerson(tempPerson);
-                assignments.put(tempPerson, tempRoom);
+                tempPerson.assignToRoom(tempRoom);
+                assignedRooms.add(tempRoom);
                 
                 //update rooms left
                 if (tempRoom.isFull()) {
@@ -132,7 +137,8 @@ public class PopMember {
                 Room tempRoom = roomAddresses[roomIndex];
 
                 tempRoom.putPerson(tempPerson);
-                assignments.put(tempPerson, tempRoom);
+                tempPerson.assignToRoom(tempRoom);
+                assignedRooms.add(tempRoom);
                 
                 //update rooms left
                 if (tempRoom.isFull()) {
@@ -151,7 +157,8 @@ public class PopMember {
                 Room tempRoom = roomAddresses[roomIndex];
 
                 tempRoom.putPerson(tempPerson);
-                assignments.put(tempPerson, tempRoom);
+                tempPerson.assignToRoom(tempRoom);
+                assignedRooms.add(tempRoom);
                 
                 //update rooms left
                 if (tempRoom.isFull()) {
@@ -170,7 +177,8 @@ public class PopMember {
                 Room tempRoom = roomAddresses[roomIndex];
 
                 tempRoom.putPerson(tempPerson);
-                assignments.put(tempPerson, tempRoom);
+                tempPerson.assignToRoom(tempRoom);
+                assignedRooms.add(tempRoom);
                 
                 //update rooms left
                 if (tempRoom.isFull()) {
@@ -185,13 +193,25 @@ public class PopMember {
         }
     }
     
+    /**
+     * Getter for rooms that have people in them
+     * 
+     * @return ArrayList of rooms with people assigned to them
+     */
+    public LinkedHashSet<Room> getAssignedRooms() {
+        return assignedRooms;
+    }
+    
+    /**
+     * Evaluates and returns the score of a population member
+     * 
+     * @return sum of soft constraint penalties for this population member
+     */
     public int score() {
         int score = 0;
         
-        Iterator <Room> roomIter;
-        roomIter = assignments.values().iterator();
-        
-        while(roomIter.hasNext()) {
+        Iterator<Room> roomIter = assignedRooms.iterator();
+        while(roomIter.hasNext()) { 
             Room r = roomIter.next();
             
             Person p1 = r.getAssignedPeople()[0];
@@ -209,27 +229,27 @@ public class PopMember {
                     score -= 3;
                 }
                 
+                // 13) if a non-secretary hacker/non-hacker shares an office, 
+                //     then he/she should share with another hacker/non-hacker
+                //
+                //   If one is a hacker and the other is not and niether is
+                //   a secretary -2 ?
+                if ((p1.isHacker() != p2.isHacker()) && !p1.isSecretary() && !p2.isSecretary()) {
+                    score -= 2;
+                }
+                
+                // 11) A smoker shouldn't share an office with a non-smoker
+                if (p1.isSmoker() != p2.isSmoker()) {
+                    score -= 50;
+                }
+                
+                // 4) secretaries should share offices with other secretaries
+                if (p1.isSecretary() != p2.isSecretary()) {
+                    score -= 5;
+                }
+                
                 // 14) People prefer to have their own offices 
                 score -= 4;
-            }
-            
-            // 13) if a non-secretary hacker/non-hacker shares an office, 
-            //     then he/she should share with another hacker/non-hacker
-            //
-            //   If one is a hacker and the other is not and niether is
-            //   a secretary -2 ?
-            if( (p1.isHacker() != p2.isHacker()) && !p1.isSecretary() && !p2.isSecretary()) {
-                score -= 2;
-            }
-            
-            // 11) A smoker shouldn't share an office with a non-smoker
-            if( p1.isSmoker() != p2.isSmoker() ) {
-                score -= 50;
-            }
-            
-            // 4) secretaries should share offices with other secretaries
-            if( p1.isSecretary() != p2.isSecretary() ) {
-                score -= 5;
             }
         }
 
@@ -288,18 +308,18 @@ public class PopMember {
                             break;
                         }
                     } else if(!allGroupMembersClose && !person.isManager() && !person.isSecretary()) {
-                        // 3) group heads should be located close to at least
-                        //    one secretary in the group
-                        if(!secretaryIsClose) {
-                            score -= 30;
-                        }
-                        
                         // At this point both managers and secretaries have been
                         // processed so if allGroupMembersClose is false then
                         // constraint 2 does not need further evaluation and the
                         // loop can terminate
                         break;
                     }
+                }
+                
+                // 3) group heads should be located close to at least
+                //    one secretary in the group
+                if (!secretaryIsClose) {
+                    score -= 30;
                 }
               
             } // end head loop
@@ -320,6 +340,8 @@ public class PopMember {
                         Person p2 = peopleList.get(j);
                         if (!p2.isManager()) {
                             secretaryStartIndex = j;
+                            skipManagers = true;
+                            
                             break;
                         }
 
@@ -334,8 +356,6 @@ public class PopMember {
                             }
                         }
                     }
-                    
-                    skipManagers = true;
                 }
                 
                 if(p1.isCloseToGroupMembers) {
@@ -383,7 +403,7 @@ public class PopMember {
                         //    secretary in their group
                         score -= 20;
                     }
-                } else {
+                } else if(secretaryStartIndex != -1) {
                     // Loop through secretaries (7 is already implied so don't
                     // need to check for that)
                     for(int j = secretaryStartIndex; j < peopleList.size(); j++) {

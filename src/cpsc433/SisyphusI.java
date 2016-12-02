@@ -1,5 +1,7 @@
 package cpsc433;
 
+import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.Scanner;
 
 /**
@@ -118,6 +120,42 @@ public class SisyphusI {
 	protected void doSearch(Environment env, long timeLimit) {
             // Finalize projects and groups
             env.finalizeGroups();
+            
+            try {
+                PopMember p = env.createPopulationMember();
+                 
+                System.out.println("Population member created...");
+                
+                LinkedHashSet<Room> assignedRooms = p.getAssignedRooms();
+                Iterator<Room> valueIter = assignedRooms.iterator();
+                
+                while(valueIter.hasNext()) {
+                    Room r = valueIter.next();
+                    Person[] ass = r.getAssignedPeople();
+                    
+                    System.out.print("Room " + r.getName() + ": " + "[");
+                    
+                    if(ass[0] == null) {
+                        System.out.print("Empty");
+                    } else if(ass[1] == null) {
+                        System.out.print(ass[0].getName());
+                    } else {
+                        System.out.print(ass[0].getName() + ", " + ass[1].getName());
+                    }
+                    
+                    System.out.println("]");
+                }
+                
+                try {
+                    System.out.println();
+                    System.out.println("Score: " + p.score());
+                } catch(NullPointerException e) {
+                    e.printStackTrace();
+                }
+                
+            } catch (Environment.UnsolvableInstanceException | Room.FullRoomException ex) {
+                ex.printStackTrace();
+            }
 	}
 	
 	protected void printResults() {

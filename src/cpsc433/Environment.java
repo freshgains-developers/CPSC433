@@ -89,6 +89,11 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 		if (instance==null) instance = new Environment(null);
 		return instance;
 	}
+        
+        public PopMember createPopulationMember() throws UnsolvableInstanceException,FullRoomException {
+            PopMember p = new PopMember(worksWith, people, groups, projects, rooms, closeTo);
+            return p;
+        }
 
         @Override
         public int fromFile(String fileName) {

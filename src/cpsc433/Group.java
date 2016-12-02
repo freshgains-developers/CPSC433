@@ -7,7 +7,6 @@ package cpsc433;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 /**
  *
  * @author Brenton Kruger
