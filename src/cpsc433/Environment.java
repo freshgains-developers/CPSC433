@@ -232,16 +232,6 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                 }
         }
         
-        public void finalizeGroups() {
-            Iterator<Group> groupIter;
-            groupIter = groups.values().iterator();
-            
-            while(groupIter.hasNext()) {
-                Group g = groupIter.next();
-                g.finalizeGroup();
-            }
-        }
-        
         @Override
 	public void a_person(String p) {
             // Check to see if there is a person of name p.

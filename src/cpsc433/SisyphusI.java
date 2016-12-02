@@ -118,9 +118,6 @@ public class SisyphusI {
 	 * @param timeLimit A time limit in milliseconds.
 	 */
 	protected void doSearch(Environment env, long timeLimit) {
-            // Finalize projects and groups
-            env.finalizeGroups();
-            
             try {
                 PopMember p = env.createPopulationMember();
                  
