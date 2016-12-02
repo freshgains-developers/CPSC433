@@ -6,15 +6,15 @@
 package cpsc433;
 
 import cpsc433.Room.RoomSize;
+import cpsc433.Room.FullRoomException;
+import cpsc433.Environment.UnsolvableInstanceException;
+
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Random;
-import cpsc433.Room.FullRoomException;
-import java.util.*;
-import cpsc433.Environment.UnsolvableInstanceException;
 
 /**
  *
