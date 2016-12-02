@@ -10,6 +10,7 @@ import cpsc433.Room.RoomSize;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -67,6 +68,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
         private HashMap<String, Project> projects = null;
 
         private HashMap<String, Room> rooms = null;
+        private HashMap<String, Room> largeRooms = null;
         private HashSet<SymmetricPair<Room, Room>> closeTo = null;
 
 	protected Environment(String name) {
@@ -77,7 +79,9 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                 groups = new HashMap();
                 projects = new HashMap();
                 rooms = new HashMap();
+                largeRooms = new HashMap();
                 closeTo = new HashSet();
+
 	}
 
 	/**
@@ -265,6 +269,11 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                 Person personWithNameP;
                 personWithNameP = people.get(p);
                 personWithNameP.setSecretary(true);
+                ArrayList<Group> personGroups = personWithNameP.getGroups();
+
+                for (Group i : personGroups) {
+                    i.addToGroup(personWithNameP);
+                }
             }
             // If no person exists:
             else{
@@ -324,6 +333,11 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                 Person personWithNameP;
                 personWithNameP = people.get(p);
                 personWithNameP.setManager(true);
+                ArrayList<Group> personGroups = personWithNameP.getGroups();
+
+                for (Group i : personGroups) {
+                    i.addToGroup(personWithNameP);
+                }
             }
             // If no person exists:
             else{
@@ -788,16 +802,16 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 	public void a_large_room(String r) {
             if(!rooms.containsKey(r)) {
                 // Add room if it doesn't already exist
-                rooms.put(r, new Room(r, RoomSize.LARGE));
+                largeRooms.put(r, new Room(r, RoomSize.LARGE));
             } else {
                 // If the room already exists update the size
-                Room room = rooms.get(r);
-                room.setSize(RoomSize.LARGE);
+                rooms.remove(r);
+                largeRooms.put(r, new Room(r, RoomSize.LARGE));
             }
         }
         @Override
 	public boolean e_large_room(String r) {
-            return (rooms.containsKey(r) && rooms.get(r).getSize() == RoomSize.LARGE);
+            return (largeRooms.containsKey(r) );
         }
 
         @Override

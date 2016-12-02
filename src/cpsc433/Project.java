@@ -15,7 +15,7 @@ public class Project extends Entity {
 
     public Project(String name) {
         super(name);
-        personList = new ArrayList<>();
+        personList = new ArrayList();
         headMap = new HashMap();
     }
 
