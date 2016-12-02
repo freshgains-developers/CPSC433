@@ -12,11 +12,14 @@ import cpsc433.Environment.UnsolvableInstanceException;
 
 /**
  *
- * @author Brenton effing Kruger
- * Container for a complete solution
+ * @author Brenton Kruger, Chris Kinzel
+ * 
+ * Container for a complete solution to the SisyphusI problem
+ * 
+ * Provides methods to evaluate and mutate population members
  *
  */
-public class PopMember{
+public class PopMember {
     private HashSet<SymmetricPair<Person, Person>> worksWith = null;
     private HashMap<String, Person> people = null;
     private HashMap<String, Group> groups = null;
@@ -24,11 +27,21 @@ public class PopMember{
     private HashMap<String, Room> rooms = null;
     private HashSet<SymmetricPair<Room, Room>> closeTo = null;
     private HashMap<Person, Room> assignments;
-    private boolean solutionPossible;
 
 
-    @SuppressWarnings("empty-statement")
-    public void PopMember(HashSet worksWith, HashMap people, HashMap groups, HashMap projects, HashMap rooms,HashSet closeTo) throws UnsolvableInstanceException{
+    /**
+     * Construct population member
+     * 
+     * @param worksWith HashSet of works with relations
+     * @param people HashMap of people
+     * @param groups HashMap of groups
+     * @param projects HashMap of projects
+     * @param rooms HashMap of rooms
+     * @param closeTo HashSet of close relations
+     * @throws cpsc433.Environment.UnsolvableInstanceException thrown if solution is not possible without violating hard constraints
+     * @throws cpsc433.Room.FullRoomException ** (shouldn't happen) ** thrown if initialization error occurs (this would be a bug)
+     */
+    public void PopMember(HashSet worksWith, HashMap people, HashMap groups, HashMap projects, HashMap rooms,HashSet closeTo) throws UnsolvableInstanceException,FullRoomException {
         //initialize population randomly.
         Random randGen = new Random();
         Iterator<Person> peopleIter = people.values().iterator();
@@ -37,9 +50,7 @@ public class PopMember{
         this.groups = groups;
         this.projects = projects;
         this.rooms = rooms;
-        this.closeTo = closeTo;
-        solutionPossible = true;
-        
+        this.closeTo = closeTo;        
         
         if(people.size()<=2*rooms.size()){
         
@@ -47,26 +58,23 @@ public class PopMember{
             LinkedList<Person> groupHeadQ = new LinkedList();
             LinkedList<Person> projectHeadQ = new LinkedList();
             LinkedList<Person> secretaryQ = new LinkedList();
-            LinkedList<Person> plebQ = new LinkedList();
+            LinkedList<Person> personQ = new LinkedList();
 
-            //identify all managers, group heads, project heads, secretaries and plebs and assign to proper queues
+            // identify all managers, group heads, project heads, secretaries 
+            // and assign to proper queues
             while (peopleIter.hasNext()) {
                 Person tempPerson = peopleIter.next();
+                
                 if (tempPerson.isManager()) {
                     managerQ.add(tempPerson);
-                    break;
                 } else if (tempPerson.isGroupHead()) {
                     groupHeadQ.add(tempPerson);
-                    break;
                 } else if (tempPerson.isProjectHead()) {
                     projectHeadQ.add(tempPerson);
-                    break;
                 } else if (tempPerson.isSecretary()) {
                     secretaryQ.add(tempPerson);
-                    break;
                 } else {
-                    plebQ.add(tempPerson);
-                    break;
+                    personQ.add(tempPerson);
                 }
             }
 
@@ -80,16 +88,15 @@ public class PopMember{
                 int roomIndex = randGen.nextInt(roomsLeft);
                 Room tempRoom = roomAddresses[roomIndex];
 
-                try {
-                    tempRoom.putPerson(tempPerson);
-                } catch (FullRoomException e) {
-                    ;
-                }
+                tempRoom.putPerson(tempPerson);
                 assignments.put(tempPerson, tempRoom);
+                
                 //update rooms left
                 if (tempRoom.isFull()) {
-                    roomAddresses[roomIndex] = roomAddresses[roomsLeft]; //move last element to take the place of the full one
-                    roomsLeft -= roomsLeft;
+                    roomsLeft--;
+                    
+                    //move last element to take the place of the full one
+                    roomAddresses[roomIndex] = roomAddresses[roomsLeft]; 
                 }
             }
             //assign groupHeads randomly
@@ -99,16 +106,15 @@ public class PopMember{
                 int roomIndex = randGen.nextInt(roomsLeft);
                 Room tempRoom = roomAddresses[roomIndex];
 
-                try {
-                    tempRoom.putPerson(tempPerson);
-                } catch (FullRoomException e) {
-                    ;
-                }
+                tempRoom.putPerson(tempPerson);
                 assignments.put(tempPerson, tempRoom);
+                
                 //update rooms left
                 if (tempRoom.isFull()) {
-                    roomAddresses[roomIndex] = roomAddresses[roomsLeft]; //move last element to take the place of the full one
-                    roomsLeft -= roomsLeft;
+                    roomsLeft--;
+                    
+                    //move last element to take the place of the full one
+                    roomAddresses[roomIndex] = roomAddresses[roomsLeft]; 
                 }
             }
 
@@ -119,16 +125,15 @@ public class PopMember{
                 int roomIndex = randGen.nextInt(roomsLeft);
                 Room tempRoom = roomAddresses[roomIndex];
 
-                try {
-                    tempRoom.putPerson(tempPerson);
-                } catch (FullRoomException e) {
-                    ;
-                }
+                tempRoom.putPerson(tempPerson);
                 assignments.put(tempPerson, tempRoom);
+                
                 //update rooms left
                 if (tempRoom.isFull()) {
-                    roomAddresses[roomIndex] = roomAddresses[roomsLeft]; //move last element to take the place of the full one
-                    roomsLeft -= roomsLeft;
+                    roomsLeft--;
+                    
+                    //move last element to take the place of the full one
+                    roomAddresses[roomIndex] = roomAddresses[roomsLeft]; 
                 }
             }
 
@@ -139,42 +144,39 @@ public class PopMember{
                 int roomIndex = randGen.nextInt(roomsLeft);
                 Room tempRoom = roomAddresses[roomIndex];
 
-                try {
-                    tempRoom.putPerson(tempPerson);
-                } catch (FullRoomException e) {
-                    ;
-                }
+                tempRoom.putPerson(tempPerson);
                 assignments.put(tempPerson, tempRoom);
+                
                 //update rooms left
                 if (tempRoom.isFull()) {
-                    roomAddresses[roomIndex] = roomAddresses[roomsLeft]; //move last element to take the place of the full one
-                    roomsLeft -= roomsLeft;
+                    roomsLeft--;
+                    
+                    //move last element to take the place of the full one
+                    roomAddresses[roomIndex] = roomAddresses[roomsLeft]; 
                 }
             }
 
-            //assign plebs randomly
-            while (plebQ.peek() != null) {
+            // assign everyone else randomly
+            while (personQ.peek() != null) {
 
-                Person tempPerson = plebQ.remove();
+                Person tempPerson = personQ.remove();
                 int roomIndex = randGen.nextInt(roomsLeft);
                 Room tempRoom = roomAddresses[roomIndex];
 
-                try {
-                    tempRoom.putPerson(tempPerson);
-                } catch (FullRoomException e) {
-                    ;
-                }
+                tempRoom.putPerson(tempPerson);
                 assignments.put(tempPerson, tempRoom);
+                
                 //update rooms left
                 if (tempRoom.isFull()) {
-                    roomAddresses[roomIndex] = roomAddresses[roomsLeft]; //move last element to take the place of the full one
-                    roomsLeft -= roomsLeft;
+                    roomsLeft--;
+                    
+                    //move last element to take the place of the full one
+                    roomAddresses[roomIndex] = roomAddresses[roomsLeft]; 
                 }
             }
+        } else {
+            throw new Environment.UnsolvableInstanceException("Instance is unsolvable. No solution possible."); 
         }
-        else
-            throw new Environment.UnsolvableInstanceException("Instance is unsolvable. No solution possible."); //send this sucker to hell
-        
     }
     
     public int score() {
