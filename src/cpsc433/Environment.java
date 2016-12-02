@@ -10,7 +10,6 @@ import cpsc433.Room.RoomSize;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -207,8 +206,22 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                         Person tempPerson = headIterator.next();    //gets every person that is a head in the group
                         writer.println("heads-group(" + tempPerson.getName() + ", " + group.getName() + ")");
                     }
-                    ArrayList<Person> personList = group.getGroupList();
-                    for(Person tempPerson:personList){
+                    
+                    Iterator<Person> personIter = group.getPersonMap().values().iterator();
+                    while(personIter.hasNext()) {
+                        Person tempPerson = personIter.next();
+                        writer.println("group(" + tempPerson.getName() + "," + group.getName() + ")");
+                    }
+                    
+                    Iterator<Person> secretaryIter = group.getSecretaryMap().values().iterator();
+                    while(secretaryIter.hasNext()) {
+                        Person tempPerson = secretaryIter.next();
+                        writer.println("group(" + tempPerson.getName() + "," + group.getName() + ")");
+                    }
+                    
+                    Iterator<Person> managerIter = group.getManagerMap().values().iterator();
+                    while(managerIter.hasNext()) {
+                        Person tempPerson = managerIter.next();
                         writer.println("group(" + tempPerson.getName() + "," + group.getName() + ")");
                     }
                 }
