@@ -107,7 +107,7 @@ public class PopMember {
                 tempPerson.assignToRoom(tempRoom);
                 
                 //move last element to take the place of the full one && update rooms left
-                roomAddresses[roomIndex] = roomAddresses[roomsLeft--];
+                roomAddresses[roomIndex] = roomAddresses[--roomsLeft];
 
             }
             //assign groupHeads randomly
@@ -126,7 +126,7 @@ public class PopMember {
                 tempPerson.assignToRoom(tempRoom);
                 
                 //move last element to take the place of the full one && update rooms left
-                roomAddresses[roomIndex] = roomAddresses[roomsLeft--];
+                roomAddresses[roomIndex] = roomAddresses[--roomsLeft];
                 
             }
 
@@ -146,7 +146,7 @@ public class PopMember {
                 tempPerson.assignToRoom(tempRoom);
                 
                 //move last element to take the place of the full one && update rooms left
-                roomAddresses[roomIndex] = roomAddresses[roomsLeft--];
+                roomAddresses[roomIndex] = roomAddresses[--roomsLeft];
             }
 
             //assign secretaries randomly
@@ -160,10 +160,10 @@ public class PopMember {
                 assignments.put(tempPerson, tempRoom);
                 tempPerson.assignToRoom(tempRoom);
                 
-                //update rooms left
+                
                 if (tempRoom.isFull()) {
-                    //move last element to take the place of the full one
-                    roomAddresses[roomIndex] = roomAddresses[roomsLeft--]; 
+                    //move last element to take the place of the full one && update rooms left
+                    roomAddresses[roomIndex] = roomAddresses[--roomsLeft]; 
                 }
             }
 
@@ -178,10 +178,10 @@ public class PopMember {
                 assignments.put(tempPerson, tempRoom);
                 tempPerson.assignToRoom(tempRoom);
                 
-                //update rooms left
+                
                 if (tempRoom.isFull()) {
-                    //move last element to take the place of the full one
-                    roomAddresses[roomIndex] = roomAddresses[roomsLeft--]; 
+                    //move last element to take the place of the full one && update rooms left
+                    roomAddresses[roomIndex] = roomAddresses[--roomsLeft]; 
                 }
             }
         } else {
