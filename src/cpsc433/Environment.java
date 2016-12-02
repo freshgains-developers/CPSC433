@@ -10,6 +10,7 @@ import cpsc433.Room.RoomSize;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -174,14 +175,13 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                 while(groupIter.hasNext()){
                     Group group = groupIter.next();
                     writer.println("group(" + group.getName() + ")");
-                    Iterator<Person> headIterator = group.getHeads();
+                    Iterator<Person> headIterator = group.getHeadMap().values().iterator();
                     while (headIterator.hasNext()) {
                         Person tempPerson = headIterator.next();    //gets every person that is a head in the group
                         writer.println("heads-group(" + tempPerson.getName() + ", " + group.getName() + ")");
                     }
-                    Iterator<Person> memberIterator = group.getMembers();
-                    while (memberIterator.hasNext()){
-                        Person tempPerson = memberIterator.next();  //gets every person that is a member of the group
+                    ArrayList<Person> groupMembers = group.getGroupList();
+                    for(Person tempPerson : groupMembers) {
                         writer.println("group(" + tempPerson.getName() + "," + group.getName() + ")");
                     }
                 }
@@ -200,13 +200,23 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                         Person tempPerson = headIterator.next();    //gets every person that is a head in the group
                         writer.println("heads-project(" + tempPerson.getName() + ", " + project.getName() + ")");
                     }
-                    Iterator<Person> memberIterator = project.getMembers();
-                    while (memberIterator.hasNext()){
-                        Person tempPerson = memberIterator.next();  //gets every person that is a member of the group
+                    ArrayList<Person> projectMembers = project.getPersonList();
+                    for(Person tempPerson : projectMembers) {
                         writer.println("project(" + tempPerson.getName() + "," + project.getName() + ")");
                     }
                 }
         }
+        
+        public void finalizeGroups() {
+            Iterator<Group> groupIter;
+            groupIter = groups.values().iterator();
+            
+            while(groupIter.hasNext()) {
+                Group g = groupIter.next();
+                g.finalizeGroup();
+            }
+        }
+        
         @Override
 	public void a_person(String p) {
             // Check to see if there is a person of name p.
@@ -442,9 +452,10 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
         }
         @Override
 	public boolean e_project(String p, String prj) {
+            // *** NON-FUNCTIONAL ***
             if (people.containsKey(p) && projects.containsKey(prj)) {
-                Project project = projects.get(prj);
-                return project.checkPerson(p);
+                //Project project = projects.get(prj);
+                //return project.checkPerson(p);
             }
             return false;
         }

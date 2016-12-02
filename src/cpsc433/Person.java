@@ -25,6 +25,9 @@ public class Person extends Entity{
     private boolean hacker = false;
     private boolean projectHead = false;
     private boolean groupHead = false;
+   
+    // USE FOR MANAGERS ONLY
+    public boolean isCloseToGroupMembers = true;
 
     private boolean researcher = false;
     // Smoker (default false)

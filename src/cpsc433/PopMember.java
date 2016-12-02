@@ -102,33 +102,39 @@ public class PopMember{
             Person p1 = r.getAssignedPeople()[0];
             Person p2 = r.getAssignedPeople()[1];
             
-            // 16) Two people shouldn't share a small room
-            if(p1 != null && p2 != null && r.getSize() == RoomSize.SMALL) {
-                score -= 25;
-            }
-            
-            // 15) If two people share an office, they sould work together
-            if(!worksWith.contains(new SymmetricPair<Person,Person>(p1, p2))) {
-                score -= 3;
-            }
-            
-            // 14) People prefer to have their own offices 
-            if(p2 != null) {
+            // Two people in the room
+            if(p1 != null && p2 != null) {
+                // 16) Two people shouldn't share a small room
+                if(r.getSize() == RoomSize.SMALL) {
+                    score -= 25;
+                }
+                
+                // 15) If two people share an office, they sould work together
+                if(!worksWith.contains(new SymmetricPair<>(p1, p2))) {
+                    score -= 3;
+                }
+                
+                // 14) People prefer to have their own offices 
                 score -= 4;
             }
             
             // 13) if a non-secretary hacker/non-hacker shares an office, 
             //     then he/she should share with another hacker/non-hacker
-            if(p1.isHacker() && !p2.isHacker() && !p2.isSecretary()) {
-                score -= 2;
-            }
-            if(p2.isHacker() && !p1.isHacker() && !p1.isSecretary()) {
+            //
+            //   If one is a hacker and the other is not and niether is
+            //   a secretary -2 ?
+            if( (p1.isHacker() != p2.isHacker()) && !p1.isSecretary() && !p2.isSecretary()) {
                 score -= 2;
             }
             
             // 11) A smoker shouldn't share an office with a non-smoker
-            if( (p1.isSmoker() || p2.isSmoker()) && (!p1.isSmoker() || !p2.isSmoker()) ) {
+            if( p1.isSmoker() != p2.isSmoker() ) {
                 score -= 50;
+            }
+            
+            // 4) secretaries should share offices with other secretaries
+            if( p1.isSecretary() != p2.isSecretary() ) {
+                score -= 5;
             }
         }
 
@@ -143,59 +149,166 @@ public class PopMember{
             Iterator<Person> headIter;
             headIter = headMap.values().iterator();
             ArrayList<Person> peopleList = group.getGroupList();
-
-
-
-
-
-
-
-
-
+           
+            
             while (headIter.hasNext()){ // head loop
                 Person headValue = headIter.next();
 
+                // 1) Group heads should have a large office
                 if (headValue.assignedRoom().getSize() != RoomSize.LARGE){
-                    score -= 40; // CONSTRAINT NUMBER 1
+                    score -= 40; 
                 }
-
-
-                boolean hasSecretary = true;
-                boolean constraintTWo = true;
-                for (Person person : peopleList){ // person loop
-
-
-                    if (hasSecretary==true && closeTo.contains(new SymmetricPair<Room,Room>(headValue.assignedRoom(),person.assignedRoom())) && person.isSecretary()){
-                      hasSecretary = false; // PART OF CONSTRAINT 3
+               
+                boolean allGroupMembersClose = true;
+                boolean secretaryIsClose = false;
+                
+                for(Person person : peopleList) {
+                    boolean personIsClose = closeTo.contains(new SymmetricPair<>(headValue.assignedRoom(), person.assignedRoom()));
+                    
+                    // 2) group heads should be close to all members of their group
+                    if(!personIsClose && allGroupMembersClose) {
+                        allGroupMembersClose = false;
+                        score -= 2;
                     }
+                    
+                    // 6) Managers should be close to their group's head
+                    if(person.isManager()) {
+                        if(!personIsClose) {
+                            score -= 20;
 
-
-                    if (person.isManager() && !closeTo.contains(new SymmetricPair<Room,Room>(headValue.assignedRoom(),person.assignedRoom()))){
-                        score -= 20; // CONSTRAINT 6
+                            // IMPLIED - 7) managers should be close to all members 
+                            //              of their group
+                            person.isCloseToGroupMembers = false;
+                            score -= -2;
+                        }
+                        
+                        person.isCloseToGroupMembers = true;
+                    } else if(person.isSecretary() && personIsClose) {
+                        secretaryIsClose = true;
+                        
+                        // This break is allowed since at this point all managers
+                        // have been processed (due to sorting) so if constraint
+                        // 2 has already been violated we can break
+                        if(!allGroupMembersClose) {
+                            break;
+                        }
+                    } else if(!allGroupMembersClose && !person.isManager() && !person.isSecretary()) {
+                        // 3) group heads should be located close to at least
+                        //    one secretary in the group
+                        if(!secretaryIsClose) {
+                            score -= 30;
+                        }
+                        
+                        // At this point both managers and secretaries have been
+                        // processed so if allGroupMembersClose is false then
+                        // constraint 2 does not need further evaluation and the
+                        // loop can terminate
+                        break;
                     }
+                }
+              
+            } // end head loop
+            
+            // Manager loop
+            int secretaryStartIndex = -1;
+            for(int i=0; i < peopleList.size(); i++) {
+                Person p1 = peopleList.get(i);
+                if(!p1.isManager()) {
+                    break;
+                }
+                
+                // Haven't found secretary start index yet
+                boolean skipManagers = false;
+                if(secretaryStartIndex == -1) {
+                    // Compare to other managers
+                    for (int j = i + 1; j < peopleList.size(); j++) {
+                        Person p2 = peopleList.get(j);
+                        if (!p2.isManager()) {
+                            secretaryStartIndex = j;
+                            break;
+                        }
 
-                    if (constraintTWo) {
-                        if (!closeTo.contains(new SymmetricPair<Room,Room>(headValue.assignedRoom(),person.assignedRoom()))) {
-                        score -= 2;  //CONSTRAINT 2
-                        constraintTWo = false;
-                        // constraint 2 failing implies constraint 3 failing as well as constraint 6
+                        if (p1.isCloseToGroupMembers) {
+                            boolean personIsClose = closeTo.contains(new SymmetricPair<>(p1.assignedRoom(), p2.assignedRoom()));
+                            if (!personIsClose) {
+                                // 7) managers should be close to all members of
+                                //    their group
+                                p1.isCloseToGroupMembers = false;
+                                p2.isCloseToGroupMembers = false;
+                                score -= 2*2;
+                            }
                         }
                     }
-
-
-                }  // end person loop
-                if (hasSecretary){
-                    score -= 30; // CONSTRAINT 3
+                    
+                    skipManagers = true;
                 }
-
-            } // end head loop
-
-            // iterate through heads, then nested loop through members of each member to be close
-
-
-
-
-        }
+                
+                if(p1.isCloseToGroupMembers) {
+                    // Loop through all group members
+                    boolean secretaryIsClose = false;
+                    for (int j = (skipManagers) ? secretaryStartIndex : (i + 1); j < peopleList.size(); j++) {
+                        Person p2 = peopleList.get(j);
+                        
+                        boolean personIsClose = closeTo.contains(new SymmetricPair<>(p1.assignedRoom(), p2.assignedRoom()));
+                        if(p2.isSecretary() && personIsClose) {
+                            secretaryIsClose = true;
+                            
+                            // ** Ideally if this break fails we would skip to 
+                            // normal people
+                            if(!p1.isCloseToGroupMembers) {
+                                break;
+                            }
+                        } else if(!p2.isManager() && !personIsClose) {
+                            if(p1.isCloseToGroupMembers) {
+                                // 7) managers should be close to all members of
+                                //    their group
+                                score -= 2;
+                            
+                                p1.isCloseToGroupMembers = false;
+                            }
+                            
+                            if(!p2.isSecretary()) {
+                                break;
+                            }
+                        } else if(p2.isManager() && !personIsClose) {
+                            // 7) managers should be close to all members of
+                            //    their group
+                            score -= (p2.isCloseToGroupMembers) ? 4 : 2;
+                            
+                            p1.isCloseToGroupMembers = false;
+                            p2.isCloseToGroupMembers = false;
+                            
+                            // Skip to secretaries
+                            j = secretaryStartIndex-1;
+                        }
+                    }
+                    
+                    if(!secretaryIsClose) {
+                        // 5) managers should be close to at least one
+                        //    secretary in their group
+                        score -= 20;
+                    }
+                } else {
+                    // Loop through secretaries (7 is already implied so don't
+                    // need to check for that)
+                    for(int j = secretaryStartIndex; j < peopleList.size(); j++) {
+                        Person secretary = peopleList.get(j);
+                        if(!secretary.isSecretary()) {
+                            // 5) managers should be close to at least one
+                            //    secretary in their group
+                            score -= 20;
+                            
+                            break;
+                        }
+                        
+                        if(closeTo.contains(new SymmetricPair<>(p1.assignedRoom(), secretary.assignedRoom()))) {
+                            break;
+                        }
+                    }
+                }
+            }
+            
+        } // end group loop
 
         Iterator<Project> projectIter;
         projectIter = projects.values().iterator();
@@ -209,7 +322,7 @@ public class PopMember{
             for(int i = 0; i < projectMembers.size(); i++) {
                 Person p1 = projectMembers.get(i);
                 
-                for(int j = i; j < projectMembers.size(); j++) {
+                for(int j = i+1; j < projectMembers.size(); j++) {
                     Person p2 = projectMembers.get(j);
                     
                     if(p1.assignedRoom() == p2.assignedRoom() && p1 != p2) {
@@ -230,6 +343,10 @@ public class PopMember{
                 // 8) the heads of projects should be close to all 
                 //    members of their project
                 for(Person projectMember : projectMembers) {
+                    if(projectMember == projectHead) {
+                        continue;
+                    }
+                    
                     Room pmr = projectMember.assignedRoom();
                     
                     if(!closeTo.contains(new SymmetricPair<>(projectHeadRoom, pmr))) {
@@ -242,18 +359,21 @@ public class PopMember{
                     for (Group group : headGroups) {
                         // 9) the heads of large projects should be close to
                         //    at least one secretary in their group
-                        boolean hasSecretary = false;
+                        boolean secretaryIsClose = false;
                         ArrayList<Person> groupMembers = group.getGroupList();
+                        
+                        // This loop runs O(num_secretaries + num_managers) 
+                        // since the groupList is sorted 
                         for (Person groupMember : groupMembers) {
                             Room gmr = groupMember.assignedRoom();
                             
                             if (groupMember.isSecretary() && closeTo.contains(new SymmetricPair<>(projectHeadRoom, gmr))) {
-                                hasSecretary = true;
+                                secretaryIsClose = true;
                                 break;
                             }
                         }
 
-                        if (!hasSecretary) {
+                        if (!secretaryIsClose) {
                             score -= 10;
                         }
 

@@ -5,6 +5,7 @@
  */
 package cpsc433;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 /**
@@ -104,5 +105,35 @@ public class Group extends Entity{
         String personKey = p.getName();
         if (headMap.containsKey(personKey))
             headMap.remove(personKey, p);
+    }
+    
+    /**
+     * Call when no further changes will be made to the group
+     * this sorts the members of the group (groupList) in the
+     * following order: Managers -> Secretaries -> Everyone else
+     */
+    public void finalizeGroup() {
+        groupList.sort(new Comparator<Person>() {
+
+            @Override
+            public int compare(Person p1, Person p2) {
+                // Managers come before anyone else
+                if(p1.isManager() && !p2.isManager()) {
+                    return -1;
+                } else if(p2.isManager() && !p1.isManager()) {
+                    return 1;
+                }
+                
+                // Secretaries come after managers and before
+                // everyone else
+                if(p1.isSecretary() && !p2.isSecretary()) {
+                    return -1;
+                } else if(p2.isSecretary() && !p1.isSecretary()) {
+                    return 1;
+                }
+                
+                return 0;
+            }
+        });
     }
 }
