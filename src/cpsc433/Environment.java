@@ -213,14 +213,15 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                     if (project.getLarge()){
                         writer.println("large-project(" + project.getName() + ")");
                     }
+                    
                     Iterator<Person> headIterator = project.getHeads();
                     while (headIterator.hasNext()) {
                         Person tempPerson = headIterator.next();    //gets every person that is a head in the group
                         writer.println("heads-project(" + tempPerson.getName() + ", " + project.getName() + ")");
                     }
-                    Iterator<Person> memberIterator = project.getMembers();
-                    while (memberIterator.hasNext()){
-                        Person tempPerson = memberIterator.next();  //gets every person that is a member of the group
+                    
+                    ArrayList<Person> projectMembers = project.getPersonList();
+                    for (Person tempPerson : projectMembers) {
                         writer.println("project(" + tempPerson.getName() + "," + project.getName() + ")");
                     }
                 }
