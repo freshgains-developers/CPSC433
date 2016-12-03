@@ -29,8 +29,6 @@ public class PopMember {
     private HashMap<String, Person> people = null;
     private HashMap<String, Group> groups = null;
     private HashMap<String, Project> projects = null;
-    private HashMap<String, Room> rooms = null;
-    private HashMap<String, Room> largeRooms = null;
     private HashSet<SymmetricPair<Room, Room>> closeTo = null;
     private LinkedHashSet<Room> assignedRooms;
 
@@ -42,16 +40,15 @@ public class PopMember {
      * @param people HashMap of people
      * @param groups HashMap of groups
      * @param projects HashMap of projects
-     * @param rooms HashMap of rooms
-     * @param largeRooms HashMap of largeRooms
      * @param closeTo HashSet of close relations
-     * @param managerQ
-     * @param groupHeadQ
-     * @param projectHeadQ
-     * @param secretaryQ
-     * @param personQ
-     * @param roomAddresses
-     * @param largeRoomAddresses
+     * @param managerQ LinkedList of managers
+     * @param groupHeadQ LinkedList of groupHeads
+     * @param projectHeadQ LinkedList of projectHeads
+     * @param secretaryQ LinkedList of secretaries
+     * @param personQ LinkedList of people
+     * @param roomAddresses ArrayList of medium rooms
+     * @param largeRoomAddresses ArrayList of large rooms
+     * @param smallRoomAddresses ArrayList of small rooms
      * @throws cpsc433.Room.FullRoomException ** (shouldn't happen) ** thrown if initialization error occurs (this would be a bug)
      */
     public PopMember(HashSet worksWith, HashMap people, HashMap groups, HashMap projects, HashSet closeTo, LinkedList<Person> managerQ, LinkedList<Person> groupHeadQ, LinkedList<Person> projectHeadQ, LinkedList<Person> secretaryQ, LinkedList<Person> personQ, Room[] roomAddresses, Room[] largeRoomAddresses, Room[] smallRoomAddresses) throws FullRoomException {
@@ -60,8 +57,6 @@ public class PopMember {
         this.people = people;
         this.groups = groups;
         this.projects = projects;
-        this.rooms = rooms;
-        this.largeRooms = largeRooms;
         this.closeTo = closeTo;    
         
         Random randGen = new Random();
@@ -120,6 +115,7 @@ public class PopMember {
 
         //assign managers randomly.
         while (managerIter.hasNext()) {
+            //small, then medium, then large
 
             Person tempPerson = managerIter.next();
             Room tempRoom;
@@ -160,6 +156,7 @@ public class PopMember {
 
         //assign projectHeads randomly
         while (projectHeadIter.hasNext()) {
+            //small, then medium, then large
 
             Person tempPerson = projectHeadIter.next();
             Room tempRoom;
@@ -199,6 +196,7 @@ public class PopMember {
 
         //assign secretaries randomly
         while (secretaryIter.hasNext()) {
+            //large, then medium, then small
             
             Person tempPerson = secretaryIter.next();
             Room tempRoom;
@@ -247,6 +245,7 @@ public class PopMember {
 
         // assign everyone else randomly
         while (personIter.hasNext()) {
+            //large, then medium, then small
 
             Person tempPerson = personIter.next();
             Room tempRoom;
