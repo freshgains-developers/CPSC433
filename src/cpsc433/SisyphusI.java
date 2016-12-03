@@ -121,13 +121,16 @@ public class SisyphusI {
 	protected void doSearch(Environment env, long timeLimit) throws Environment.UnsolvableInstanceException {
 
 		Iterator<Person> peopleIter = env.people.values().iterator();
+                
 		LinkedList<Person> managerQ = new LinkedList();
 		LinkedList<Person> groupHeadQ = new LinkedList();
 		LinkedList<Person> projectHeadQ = new LinkedList();
 		LinkedList<Person> secretaryQ = new LinkedList();
 		LinkedList<Person> personQ = new LinkedList();
+                
                 Room[] roomAddresses = (Room[]) env.rooms.values().toArray(new Room[0]);
                 Room[] largeRoomAddresses = (Room[]) env.largeRooms.values().toArray(new Room[0]);
+                Room[] smallRoomAddresses = (Room[]) env.smallRooms.values().toArray(new Room[0]);
 
 		// identify all managers, group heads, project heads, secretaries
 		// and assign to proper queues

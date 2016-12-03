@@ -64,6 +64,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 
         public HashMap<String, Room> rooms = null;
         public HashMap<String, Room> largeRooms = null;
+        public HashMap<String, Room> smallRooms = null;
         private HashSet<SymmetricPair<Room, Room>> closeTo = null;
 
 	protected Environment(String name) {
@@ -75,6 +76,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                 projects = new HashMap();
                 rooms = new HashMap();
                 largeRooms = new HashMap();
+                smallRooms = new HashMap();
                 closeTo = new HashSet();
 
 	}
@@ -89,8 +91,8 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 		return instance;
 	}
         
-        public PopMember createPopulationMember(LinkedList<Person> managerQ, LinkedList<Person> groupHeadQ, LinkedList<Person> projectHeadQ, LinkedList<Person> secretaryQ, LinkedList<Person> personQ, Room[] roomAddresses, Room[] largeRoomAddresses) throws FullRoomException {
-            PopMember p = new PopMember(worksWith, people, groups, projects, closeTo, managerQ, groupHeadQ, projectHeadQ, secretaryQ, personQ, roomAddresses, largeRoomAddresses);
+        public PopMember createPopulationMember(LinkedList<Person> managerQ, LinkedList<Person> groupHeadQ, LinkedList<Person> projectHeadQ, LinkedList<Person> secretaryQ, LinkedList<Person> personQ, Room[] roomAddresses, Room[] largeRoomAddresses, Room[] smallRoomAddresses) throws FullRoomException {
+            PopMember p = new PopMember(worksWith, people, groups, projects, closeTo, managerQ, groupHeadQ, projectHeadQ, secretaryQ, personQ, roomAddresses, largeRoomAddresses, smallRoomAddresses);
             return p;
         }
 
@@ -154,6 +156,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
         }
 
         private void printRoomPredicates(PrintWriter writer) {
+            // NON-FUNCTIONAL
             Iterator<Room> roomIter = rooms.values().iterator();
             while (roomIter.hasNext()) {
                 Room room = roomIter.next();
@@ -838,16 +841,16 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 	public void a_small_room(String r) {
             if(!rooms.containsKey(r)) {
                 // Add room if it doesn't already exist
-                rooms.put(r, new Room(r, RoomSize.SMALL));
+                smallRooms.put(r, new Room(r, RoomSize.SMALL));
             } else {
                 // If the room already exists update the size
-                Room room = rooms.get(r);
-                room.setSize(RoomSize.SMALL);
+                rooms.remove(r);
+                smallRooms.put(r, new Room(r, RoomSize.SMALL));
             }
         }
         @Override
 	public boolean e_small_room(String r) {
-            return (rooms.containsKey(r) && rooms.get(r).getSize() == RoomSize.SMALL);
+            return smallRooms.containsKey(r);
         }
 
 	// GROUPS
