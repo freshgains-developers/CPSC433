@@ -9,6 +9,7 @@ import cpsc433.Room.RoomSize;
 import cpsc433.Room.FullRoomException;
 import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -76,8 +77,8 @@ public class PopMember {
 
         //assign groupHeads randomly
         while (groupHeadIter.hasNext()) {
-
             Person tempPerson = groupHeadIter.next();
+            
             if (tempPerson.assignedRoom() == null){
                 Room tempRoom;
                 int roomIndex;
@@ -192,7 +193,7 @@ public class PopMember {
                 }
             }
         }
-
+        
 
         //assign projectHeads randomly
         while (projectHeadIter.hasNext()) {
@@ -333,9 +334,10 @@ public class PopMember {
                         tempRoom = largeRoomAddresses[roomIndex];
                         if (tempRoom.hasProod()) {
                             //remove room because it already has a prood in it
+                            assignedRooms.add(tempRoom);
                             largeRoomAddresses[roomIndex] = largeRoomAddresses[--largeRoomsLeft];
                         }
-                    } while (tempRoom.hasProod());
+                    } while (tempRoom.hasProod() && largeRoomsLeft > 0);
 
                     tempRoom.putPerson(tempPerson);
                     assignedRooms.add(tempRoom);

@@ -668,6 +668,10 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 
             if(rooms.containsKey(room)) {
                 roomObj = rooms.get(room);
+            } else if(smallRooms.containsKey(room)) {
+                roomObj = smallRooms.get(room);
+            } else if(largeRooms.containsKey(room)) {
+                roomObj = largeRooms.get(room);
             } else {
                 roomObj = new Room(room, RoomSize.MEDIUM);
                 rooms.put(room, roomObj);
@@ -676,7 +680,6 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
             roomObj.putPerson(person);
             person.assignToRoom(roomObj);
             
-            rooms.remove(room);
             //if person is manager then remove room from selection?
             
         }
@@ -705,9 +708,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
         @Override
 	public void a_room(String r) {
             // Add room if it doesn't already exist
-            if(!rooms.containsKey(r)) {
-                rooms.put(r, new Room(r, RoomSize.MEDIUM));
-            }
+            a_medium_room(r);
         }
         @Override
 	public boolean e_room(String r) {
@@ -811,13 +812,21 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 
         @Override
 	public void a_large_room(String r) {
-            if(!rooms.containsKey(r)) {
+            if(!rooms.containsKey(r) && !smallRooms.containsKey(r)) {
                 // Add room if it doesn't already exist
-                largeRooms.put(r, new Room(r, RoomSize.LARGE));
-            } else {
+                if(!largeRooms.containsKey(r)) {
+                    largeRooms.put(r, new Room(r, RoomSize.LARGE));
+                }
+            } else if(!smallRooms.containsKey(r)) {
                 // If the room already exists update the size
-                rooms.remove(r);
-                largeRooms.put(r, new Room(r, RoomSize.LARGE));
+                Room room = rooms.remove(r);
+                room.setSize(RoomSize.LARGE);
+                largeRooms.put(r, room);
+            } else if(!rooms.containsKey(r)) {
+                // If the room already exists update the size
+                Room room = smallRooms.remove(r);
+                room.setSize(RoomSize.LARGE);
+                largeRooms.put(r, room);
             }
         }
         @Override
@@ -827,29 +836,45 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 
         @Override
 	public void a_medium_room(String r) {
-            if(!rooms.containsKey(r)) {
+            if(!smallRooms.containsKey(r) && !largeRooms.containsKey(r)) {
                 // Add room if it doesn't already exist
-                rooms.put(r, new Room(r, RoomSize.MEDIUM));
-            } else {
+                if(!rooms.containsKey(r)) {
+                    rooms.put(r, new Room(r, RoomSize.MEDIUM));
+                }
+            } else if(!largeRooms.containsKey(r)) {
                 // If the room already exists update the size
-                Room room = rooms.get(r);
+                Room room = smallRooms.remove(r);
                 room.setSize(RoomSize.MEDIUM);
+                rooms.put(r, room);
+            } else if(!smallRooms.containsKey(r)) {
+                // If the room already exists update the size
+                Room room = largeRooms.remove(r);
+                room.setSize(RoomSize.MEDIUM);
+                rooms.put(r, room);
             }
         }
         @Override
 	public boolean e_medium_room(String r) {
-            return (rooms.containsKey(r) && rooms.get(r).getSize() == RoomSize.MEDIUM);
+            return rooms.containsKey(r);
         }
 
         @Override
 	public void a_small_room(String r) {
-            if(!rooms.containsKey(r)) {
+            if(!rooms.containsKey(r) && !largeRooms.containsKey(r)) {
                 // Add room if it doesn't already exist
-                smallRooms.put(r, new Room(r, RoomSize.SMALL));
-            } else {
+                if(!smallRooms.containsKey(r)) {
+                    smallRooms.put(r, new Room(r, RoomSize.SMALL));
+                }
+            } else if(!largeRooms.containsKey(r)) {
                 // If the room already exists update the size
-                rooms.remove(r);
-                smallRooms.put(r, new Room(r, RoomSize.SMALL));
+                Room room = rooms.remove(r);
+                room.setSize(RoomSize.SMALL);
+                smallRooms.put(r, room);
+            } else if(!rooms.containsKey(r)) {
+                // If the room already exists update the size
+                Room room = largeRooms.remove(r);
+                room.setSize(RoomSize.SMALL);
+                smallRooms.put(r, room);
             }
         }
         @Override
