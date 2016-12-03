@@ -126,8 +126,8 @@ public class SisyphusI {
 		LinkedList<Person> projectHeadQ = new LinkedList();
 		LinkedList<Person> secretaryQ = new LinkedList();
 		LinkedList<Person> personQ = new LinkedList();
-                Room[] roomAddresses = (Room[]) env.rooms.values().toArray();
-                Room[] largeRoomAddresses = (Room[]) env.largeRooms.values().toArray();
+                Room[] roomAddresses = (Room[]) env.rooms.values().toArray(new Room[0]);
+                Room[] largeRoomAddresses = (Room[]) env.largeRooms.values().toArray(new Room[0]);
 
 		// identify all managers, group heads, project heads, secretaries
 		// and assign to proper queues
