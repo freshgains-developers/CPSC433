@@ -56,7 +56,7 @@ public class PopMember {
      * @param largeRoomAddresses
      * @throws cpsc433.Room.FullRoomException ** (shouldn't happen) ** thrown if initialization error occurs (this would be a bug)
      */
-    public PopMember(HashSet worksWith, HashMap people, HashMap groups, HashMap projects, HashSet closeTo, LinkedList<Person> managerQ, LinkedList<Person> groupHeadQ, LinkedList<Person> projectHeadQ, LinkedList<Person> secretaryQ, LinkedList<Person> personQ, Room[] roomAddresses, Room[] largeRoomAddresses) throws FullRoomException {
+    public PopMember(HashSet worksWith, HashMap people, HashMap groups, HashMap projects, HashSet closeTo, LinkedList<Person> managerQ, LinkedList<Person> groupHeadQ, LinkedList<Person> projectHeadQ, LinkedList<Person> secretaryQ, LinkedList<Person> personQ, Room[] roomAddresses, Room[] largeRoomAddresses, Room[] smallRoomAddresses) throws FullRoomException {
         //initialize population randomly.
         this.worksWith = worksWith;
         this.people = people;
@@ -72,6 +72,7 @@ public class PopMember {
         
         int roomsLeft = roomAddresses.length;
         int largeRoomsLeft = largeRoomAddresses.length;
+        int smallRoomsLeft = smallRoomAddresses.length;
         
 
         Iterator<Person> groupHeadIter = groupHeadQ.iterator();
@@ -97,6 +98,16 @@ public class PopMember {
                 largeRoomAddresses[roomIndex] = largeRoomAddresses[--largeRoomsLeft];
                 
             }
+            else if (smallRoomsLeft != 0){
+                roomIndex = randGen.nextInt(smallRoomsLeft);
+                tempRoom = smallRoomAddresses[roomIndex];
+
+                tempRoom.putPerson(tempPerson);
+                assignedRooms.add(tempRoom);
+                tempPerson.assignToRoom(tempRoom);
+                //move last element to take the place of the full one && update  small rooms left
+                smallRoomAddresses[roomIndex] = smallRoomAddresses[--smallRoomsLeft];
+            }
             else {
                 roomIndex = randGen.nextInt(roomsLeft);
                 tempRoom = roomAddresses[roomIndex];
@@ -115,7 +126,17 @@ public class PopMember {
             Person tempPerson = managerIter.next();
             Room tempRoom;
             int roomIndex;
-            if (roomsLeft != 0){
+            if (smallRoomsLeft != 0){
+                roomIndex = randGen.nextInt(smallRoomsLeft);
+                tempRoom = smallRoomAddresses[roomIndex];
+
+                tempRoom.putPerson(tempPerson);
+                assignedRooms.add(tempRoom);
+                tempPerson.assignToRoom(tempRoom);
+                //move last element to take the place of the full one && update  small rooms left
+                smallRoomAddresses[roomIndex] = smallRoomAddresses[--smallRoomsLeft];
+            }
+            else if (roomsLeft != 0){
                 roomIndex = randGen.nextInt(roomsLeft);
                 tempRoom = roomAddresses[roomIndex];
 
@@ -145,7 +166,17 @@ public class PopMember {
             Person tempPerson = projectHeadIter.next();
             Room tempRoom;
             int roomIndex;
-            if (roomsLeft != 0){
+            if (smallRoomsLeft != 0){
+                roomIndex = randGen.nextInt(smallRoomsLeft);
+                tempRoom = smallRoomAddresses[roomIndex];
+
+                tempRoom.putPerson(tempPerson);
+                assignedRooms.add(tempRoom);
+                tempPerson.assignToRoom(tempRoom);
+                //move last element to take the place of the full one && update  small rooms left
+                smallRoomAddresses[roomIndex] = smallRoomAddresses[--smallRoomsLeft];
+            }
+            else if (roomsLeft != 0){
                 roomIndex = randGen.nextInt(roomsLeft);
                 tempRoom = roomAddresses[roomIndex];
 
@@ -174,8 +205,21 @@ public class PopMember {
             Person tempPerson = secretaryIter.next();
             Room tempRoom;
             int roomIndex;
-            if (roomsLeft != 0){
-                roomIndex = randGen.nextInt(roomsLeft);
+            if (largeRoomsLeft != 0){
+                
+                roomIndex = randGen.nextInt(largeRoomsLeft);
+                tempRoom = largeRoomAddresses[roomIndex];
+                
+                tempRoom.putPerson(tempPerson);
+                assignedRooms.add(tempRoom);
+                tempPerson.assignToRoom(tempRoom);
+                if (tempRoom.isFull()) {
+                    //move last element to take the place of the full one && update rooms left
+                    largeRoomAddresses[roomIndex] = largeRoomAddresses[--largeRoomsLeft];
+                }
+            }
+            else if (roomsLeft != 0){
+            roomIndex = randGen.nextInt(roomsLeft);
                 tempRoom = roomAddresses[roomIndex];
 
                 tempRoom.putPerson(tempPerson);
@@ -189,15 +233,16 @@ public class PopMember {
 
             }
             else{
-                roomIndex = randGen.nextInt(largeRoomsLeft);
-                tempRoom = largeRoomAddresses[roomIndex];
-                
+                roomIndex = randGen.nextInt(smallRoomsLeft);
+                tempRoom = smallRoomAddresses[roomIndex];
+
                 tempRoom.putPerson(tempPerson);
                 assignedRooms.add(tempRoom);
                 tempPerson.assignToRoom(tempRoom);
+                //check if full
                 if (tempRoom.isFull()) {
                     //move last element to take the place of the full one && update rooms left
-                    largeRoomAddresses[roomIndex] = largeRoomAddresses[--largeRoomsLeft];
+                    smallRoomAddresses[roomIndex] = smallRoomAddresses[--smallRoomsLeft];
                 }
             }
         }
@@ -208,11 +253,23 @@ public class PopMember {
             Person tempPerson = personIter.next();
             Room tempRoom;
             int roomIndex;
-            if (roomsLeft != 0){
-                roomIndex = randGen.nextInt(roomsLeft);
+            if (largeRoomsLeft != 0){
+                
+                roomIndex = randGen.nextInt(largeRoomsLeft);
+                tempRoom = largeRoomAddresses[roomIndex];
+                
+                tempRoom.putPerson(tempPerson);
+                assignedRooms.add(tempRoom);
+                tempPerson.assignToRoom(tempRoom);
+                if (tempRoom.isFull()) {
+                    //move last element to take the place of the full one && update rooms left
+                    largeRoomAddresses[roomIndex] = largeRoomAddresses[--largeRoomsLeft];
+                }
+            }
+            else if (roomsLeft != 0){
+            roomIndex = randGen.nextInt(roomsLeft);
                 tempRoom = roomAddresses[roomIndex];
 
-                
                 tempRoom.putPerson(tempPerson);
                 assignedRooms.add(tempRoom);
                 tempPerson.assignToRoom(tempRoom);
@@ -224,15 +281,16 @@ public class PopMember {
 
             }
             else{
-                roomIndex = randGen.nextInt(largeRoomsLeft);
-                tempRoom = largeRoomAddresses[roomIndex];
-                
+                roomIndex = randGen.nextInt(smallRoomsLeft);
+                tempRoom = smallRoomAddresses[roomIndex];
+
                 tempRoom.putPerson(tempPerson);
                 assignedRooms.add(tempRoom);
-                tempPerson.assignToRoom(tempRoom);//check if full
+                tempPerson.assignToRoom(tempRoom);
+                //check if full
                 if (tempRoom.isFull()) {
                     //move last element to take the place of the full one && update rooms left
-                    largeRoomAddresses[roomIndex] = largeRoomAddresses[--largeRoomsLeft];
+                    smallRoomAddresses[roomIndex] = smallRoomAddresses[--smallRoomsLeft];
                 }
             }
         }
