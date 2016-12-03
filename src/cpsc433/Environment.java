@@ -814,8 +814,9 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                 largeRooms.put(r, new Room(r, RoomSize.LARGE));
             } else {
                 // If the room already exists update the size
-                rooms.remove(r);
-                largeRooms.put(r, new Room(r, RoomSize.LARGE));
+                Room room = rooms.remove(r);
+                room.setSize(RoomSize.LARGE);
+                largeRooms.put(r, room);
             }
         }
         @Override
