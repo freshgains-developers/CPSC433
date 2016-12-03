@@ -1,3 +1,6 @@
+room(r2)
+medium-room(r2)
+assign-to(Eva, r2)
 room(r4)
 medium-room(r4)
 room(r5)
