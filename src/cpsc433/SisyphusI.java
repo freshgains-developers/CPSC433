@@ -117,6 +117,7 @@ public class SisyphusI {
 	 * Perform the actual search
 	 * @param env An Environment object.
 	 * @param timeLimit A time limit in milliseconds.
+         * @throws cpsc433.Environment.UnsolvableInstanceException
 	 */
 	protected void doSearch(Environment env, long timeLimit) throws Environment.UnsolvableInstanceException {
 

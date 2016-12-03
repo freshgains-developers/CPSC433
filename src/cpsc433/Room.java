@@ -58,6 +58,32 @@ public class Room extends Entity {
         return size;
     }
     
+    /**
+     *
+     * @return boolean true if either person in room is a manager, groupHead or projectHead
+     */
+    public boolean hasProod(){
+        if(this.assignedPeople[0] == null){
+            if (this.assignedPeople[1] == null){
+                //first not a person, second not a person
+                return false;
+            }
+            else
+                //first not a person, check if second is a prood
+                return (this.assignedPeople[1].isManager() || this.assignedPeople[1].isProjectHead() || this.assignedPeople[1].isGroupHead());
+        }else{
+            if (this.assignedPeople[1] == null){
+                //check if first is a prood, second null
+                return (this.assignedPeople[0].isManager() || this.assignedPeople[0].isProjectHead() || this.assignedPeople[0].isGroupHead());
+            }
+            else
+                //both people, check if either is a prood
+                return (this.assignedPeople[0].isManager() || this.assignedPeople[0].isProjectHead() || this.assignedPeople[0].isGroupHead() || this.assignedPeople[1].isManager() || this.assignedPeople[1].isProjectHead() || this.assignedPeople[1].isGroupHead());
+        }      
+        
+            
+    }
+    
     // Getter for assigned people
     public Person[] getAssignedPeople() {
         return assignedPeople;

@@ -78,38 +78,59 @@ public class PopMember {
         while (groupHeadIter.hasNext()) {
 
             Person tempPerson = groupHeadIter.next();
-            Room tempRoom;
-            int roomIndex;
-            if (largeRoomsLeft != 0){
-                roomIndex = randGen.nextInt(largeRoomsLeft);
-                tempRoom = largeRoomAddresses[roomIndex];
-                
-                tempRoom.putPerson(tempPerson);
-                assignedRooms.add(tempRoom);
-                tempPerson.assignToRoom(tempRoom);
-                //move last element to take the place of the full one && update large rooms left
-                largeRoomAddresses[roomIndex] = largeRoomAddresses[--largeRoomsLeft];
-                
-            }
-            else if (smallRoomsLeft != 0){
-                roomIndex = randGen.nextInt(smallRoomsLeft);
-                tempRoom = smallRoomAddresses[roomIndex];
+            if (tempPerson.assignedRoom() == null){
+                Room tempRoom;
+                int roomIndex;
+                if (largeRoomsLeft != 0) {
+                    do{
+                        roomIndex = randGen.nextInt(largeRoomsLeft);
+                        tempRoom = largeRoomAddresses[roomIndex];
+                        if (tempRoom.hasProod()) {
+                            //remove room because it already has a prood in it
+                            largeRoomAddresses[roomIndex] = largeRoomAddresses[--largeRoomsLeft];
+                        }
+                    } while (tempRoom.hasProod());
+                    
 
-                tempRoom.putPerson(tempPerson);
-                assignedRooms.add(tempRoom);
-                tempPerson.assignToRoom(tempRoom);
-                //move last element to take the place of the full one && update  small rooms left
-                smallRoomAddresses[roomIndex] = smallRoomAddresses[--smallRoomsLeft];
-            }
-            else {
-                roomIndex = randGen.nextInt(roomsLeft);
-                tempRoom = roomAddresses[roomIndex];
+                    tempRoom.putPerson(tempPerson);
+                    assignedRooms.add(tempRoom);
+                    tempPerson.assignToRoom(tempRoom);
+                    //move last element to take the place of the full one && update large rooms left
+                    largeRoomAddresses[roomIndex] = largeRoomAddresses[--largeRoomsLeft];
 
-                tempRoom.putPerson(tempPerson);
-                assignedRooms.add(tempRoom);
-                tempPerson.assignToRoom(tempRoom);
-                //move last element to take the place of the full one && update rooms left
-                roomAddresses[roomIndex] = roomAddresses[--roomsLeft];
+                } 
+                else if (smallRoomsLeft != 0) {
+                    do{
+                        roomIndex = randGen.nextInt(smallRoomsLeft);
+                        tempRoom = smallRoomAddresses[roomIndex];
+                        if (tempRoom.hasProod()) {
+                            //remove room because it already has a prood in it
+                            smallRoomAddresses[roomIndex] = smallRoomAddresses[--smallRoomsLeft];
+                        }
+                    } while (tempRoom.hasProod());
+
+                    tempRoom.putPerson(tempPerson);
+                    assignedRooms.add(tempRoom);
+                    tempPerson.assignToRoom(tempRoom);
+                    //move last element to take the place of the full one && update  small rooms left
+                    smallRoomAddresses[roomIndex] = smallRoomAddresses[--smallRoomsLeft];
+                } 
+                else {
+                    do{
+                        roomIndex = randGen.nextInt(roomsLeft);
+                        tempRoom = roomAddresses[roomIndex];
+                        if (tempRoom.hasProod()) {
+                            //remove room because it already has a prood in it
+                            roomAddresses[roomIndex] = roomAddresses[--roomsLeft];
+                        }
+                    } while (tempRoom.hasProod());
+
+                    tempRoom.putPerson(tempPerson);
+                    assignedRooms.add(tempRoom);
+                    tempPerson.assignToRoom(tempRoom);
+                    //move last element to take the place of the full one && update rooms left
+                    roomAddresses[roomIndex] = roomAddresses[--roomsLeft];
+                }
             }
         }
 
@@ -118,38 +139,57 @@ public class PopMember {
             //small, then medium, then large
 
             Person tempPerson = managerIter.next();
-            Room tempRoom;
-            int roomIndex;
-            if (smallRoomsLeft != 0){
-                roomIndex = randGen.nextInt(smallRoomsLeft);
-                tempRoom = smallRoomAddresses[roomIndex];
+            if (tempPerson.assignedRoom() == null){
+                Room tempRoom;
+                int roomIndex;
+                if (smallRoomsLeft != 0) {
+                   do{
+                        roomIndex = randGen.nextInt(smallRoomsLeft);
+                        tempRoom = smallRoomAddresses[roomIndex];
+                        if (tempRoom.hasProod()) {
+                            //remove room because it already has a prood in it
+                            smallRoomAddresses[roomIndex] = smallRoomAddresses[--smallRoomsLeft];
+                        }
+                    } while (tempRoom.hasProod());
 
-                tempRoom.putPerson(tempPerson);
-                assignedRooms.add(tempRoom);
-                tempPerson.assignToRoom(tempRoom);
-                //move last element to take the place of the full one && update  small rooms left
-                smallRoomAddresses[roomIndex] = smallRoomAddresses[--smallRoomsLeft];
-            }
-            else if (roomsLeft != 0){
-                roomIndex = randGen.nextInt(roomsLeft);
-                tempRoom = roomAddresses[roomIndex];
+                    tempRoom.putPerson(tempPerson);
+                    assignedRooms.add(tempRoom);
+                    tempPerson.assignToRoom(tempRoom);
+                    //move last element to take the place of the full one && update  small rooms left
+                    smallRoomAddresses[roomIndex] = smallRoomAddresses[--smallRoomsLeft];
+                } else if (roomsLeft != 0) {
+                    do{
+                        roomIndex = randGen.nextInt(roomsLeft);
+                        tempRoom = roomAddresses[roomIndex];
+                        if (tempRoom.hasProod()) {
+                            //remove room because it already has a prood in it
+                            roomAddresses[roomIndex] = roomAddresses[--roomsLeft];
+                        }
+                    } while (tempRoom.hasProod());
 
-                tempRoom.putPerson(tempPerson);
-                assignedRooms.add(tempRoom);
-                tempPerson.assignToRoom(tempRoom);
-                //move last element to take the place of the full one && update rooms left
-                roomAddresses[roomIndex] = roomAddresses[--roomsLeft];
+                    tempRoom.putPerson(tempPerson);
+                    assignedRooms.add(tempRoom);
+                    tempPerson.assignToRoom(tempRoom);
+                    //move last element to take the place of the full one && update rooms left
+                    roomAddresses[roomIndex] = roomAddresses[--roomsLeft];
 
-            }
-            else{
-                roomIndex = randGen.nextInt(largeRoomsLeft);
-                tempRoom = largeRoomAddresses[roomIndex];
-                
-                tempRoom.putPerson(tempPerson);
-                assignedRooms.add(tempRoom);
-                tempPerson.assignToRoom(tempRoom);
-                //move last element to take the place of the full one && update large rooms left
-                largeRoomAddresses[roomIndex] = largeRoomAddresses[--largeRoomsLeft];
+                } else {
+                    do{
+                        roomIndex = randGen.nextInt(largeRoomsLeft);
+                        tempRoom = largeRoomAddresses[roomIndex];
+                        if (tempRoom.hasProod()) {
+                            //remove room because it already has a prood in it
+                            largeRoomAddresses[roomIndex] = largeRoomAddresses[--largeRoomsLeft];
+                        }
+                    } while (tempRoom.hasProod());
+                    
+
+                    tempRoom.putPerson(tempPerson);
+                    assignedRooms.add(tempRoom);
+                    tempPerson.assignToRoom(tempRoom);
+                    //move last element to take the place of the full one && update large rooms left
+                    largeRoomAddresses[roomIndex] = largeRoomAddresses[--largeRoomsLeft];
+                }
             }
         }
 
@@ -159,38 +199,57 @@ public class PopMember {
             //small, then medium, then large
 
             Person tempPerson = projectHeadIter.next();
-            Room tempRoom;
-            int roomIndex;
-            if (smallRoomsLeft != 0){
-                roomIndex = randGen.nextInt(smallRoomsLeft);
-                tempRoom = smallRoomAddresses[roomIndex];
+            if (tempPerson.assignedRoom() == null){
+                Room tempRoom;
+                int roomIndex;
+                if (smallRoomsLeft != 0) {
+                   do{
+                        roomIndex = randGen.nextInt(smallRoomsLeft);
+                        tempRoom = smallRoomAddresses[roomIndex];
+                        if (tempRoom.hasProod()) {
+                            //remove room because it already has a prood in it
+                            smallRoomAddresses[roomIndex] = smallRoomAddresses[--smallRoomsLeft];
+                        }
+                    } while (tempRoom.hasProod());
 
-                tempRoom.putPerson(tempPerson);
-                assignedRooms.add(tempRoom);
-                tempPerson.assignToRoom(tempRoom);
-                //move last element to take the place of the full one && update  small rooms left
-                smallRoomAddresses[roomIndex] = smallRoomAddresses[--smallRoomsLeft];
-            }
-            else if (roomsLeft != 0){
-                roomIndex = randGen.nextInt(roomsLeft);
-                tempRoom = roomAddresses[roomIndex];
+                    tempRoom.putPerson(tempPerson);
+                    assignedRooms.add(tempRoom);
+                    tempPerson.assignToRoom(tempRoom);
+                    //move last element to take the place of the full one && update  small rooms left
+                    smallRoomAddresses[roomIndex] = smallRoomAddresses[--smallRoomsLeft];
+                } else if (roomsLeft != 0) {
+                    do{
+                        roomIndex = randGen.nextInt(roomsLeft);
+                        tempRoom = roomAddresses[roomIndex];
+                        if (tempRoom.hasProod()) {
+                            //remove room because it already has a prood in it
+                            roomAddresses[roomIndex] = roomAddresses[--roomsLeft];
+                        }
+                    } while (tempRoom.hasProod());
 
-                tempRoom.putPerson(tempPerson);
-                assignedRooms.add(tempRoom);
-                tempPerson.assignToRoom(tempRoom);
-                //move last element to take the place of the full one && update rooms left
-                roomAddresses[roomIndex] = roomAddresses[--roomsLeft];
+                    tempRoom.putPerson(tempPerson);
+                    assignedRooms.add(tempRoom);
+                    tempPerson.assignToRoom(tempRoom);
+                    //move last element to take the place of the full one && update rooms left
+                    roomAddresses[roomIndex] = roomAddresses[--roomsLeft];
 
-            }
-            else{
-                roomIndex = randGen.nextInt(largeRoomsLeft);
-                tempRoom = largeRoomAddresses[roomIndex];
-                
-                tempRoom.putPerson(tempPerson);
-                assignedRooms.add(tempRoom);
-                tempPerson.assignToRoom(tempRoom);
-                //move last element to take the place of the full one && update large rooms left
-                largeRoomAddresses[roomIndex] = largeRoomAddresses[--largeRoomsLeft];
+                } else {
+                    do{
+                        roomIndex = randGen.nextInt(largeRoomsLeft);
+                        tempRoom = largeRoomAddresses[roomIndex];
+                        if (tempRoom.hasProod()) {
+                            //remove room because it already has a prood in it
+                            largeRoomAddresses[roomIndex] = largeRoomAddresses[--largeRoomsLeft];
+                        }
+                    } while (tempRoom.hasProod());
+                    
+
+                    tempRoom.putPerson(tempPerson);
+                    assignedRooms.add(tempRoom);
+                    tempPerson.assignToRoom(tempRoom);
+                    //move last element to take the place of the full one && update large rooms left
+                    largeRoomAddresses[roomIndex] = largeRoomAddresses[--largeRoomsLeft];
+                }
             }
         }
 
@@ -199,46 +258,63 @@ public class PopMember {
             //large, then medium, then small
             
             Person tempPerson = secretaryIter.next();
-            Room tempRoom;
-            int roomIndex;
-            if (largeRoomsLeft != 0){
-                
-                roomIndex = randGen.nextInt(largeRoomsLeft);
-                tempRoom = largeRoomAddresses[roomIndex];
-                
-                tempRoom.putPerson(tempPerson);
-                assignedRooms.add(tempRoom);
-                tempPerson.assignToRoom(tempRoom);
-                if (tempRoom.isFull()) {
-                    //move last element to take the place of the full one && update rooms left
-                    largeRoomAddresses[roomIndex] = largeRoomAddresses[--largeRoomsLeft];
-                }
-            }
-            else if (roomsLeft != 0){
-            roomIndex = randGen.nextInt(roomsLeft);
-                tempRoom = roomAddresses[roomIndex];
+            if (tempPerson.assignedRoom() == null){
+                Room tempRoom;
+                int roomIndex;
+                if (largeRoomsLeft != 0) {
+                    do{
+                        roomIndex = randGen.nextInt(largeRoomsLeft);
+                        tempRoom = largeRoomAddresses[roomIndex];
+                        if (tempRoom.hasProod()) {
+                            //remove room because it already has a prood in it
+                            largeRoomAddresses[roomIndex] = largeRoomAddresses[--largeRoomsLeft];
+                        }
+                    } while (tempRoom.hasProod());
 
-                tempRoom.putPerson(tempPerson);
-                assignedRooms.add(tempRoom);
-                tempPerson.assignToRoom(tempRoom);
-                //check if full
-                if (tempRoom.isFull()) {
-                    //move last element to take the place of the full one && update rooms left
-                    roomAddresses[roomIndex] = roomAddresses[--roomsLeft];
-                }
+                    tempRoom.putPerson(tempPerson);
+                    assignedRooms.add(tempRoom);
+                    tempPerson.assignToRoom(tempRoom);
+                    if (tempRoom.isFull()) {
+                        //move last element to take the place of the full one && update rooms left
+                        largeRoomAddresses[roomIndex] = largeRoomAddresses[--largeRoomsLeft];
+                    }
+                } else if (roomsLeft != 0) {
+                    do{
+                        roomIndex = randGen.nextInt(roomsLeft);
+                        tempRoom = roomAddresses[roomIndex];
+                        if (tempRoom.hasProod()) {
+                            //remove room because it already has a prood in it
+                            roomAddresses[roomIndex] = roomAddresses[--roomsLeft];
+                        }
+                    } while (tempRoom.hasProod());
 
-            }
-            else{
-                roomIndex = randGen.nextInt(smallRoomsLeft);
-                tempRoom = smallRoomAddresses[roomIndex];
+                    tempRoom.putPerson(tempPerson);
+                    assignedRooms.add(tempRoom);
+                    tempPerson.assignToRoom(tempRoom);
+                    //check if full
+                    if (tempRoom.isFull()) {
+                        //move last element to take the place of the full one && update rooms left
+                        roomAddresses[roomIndex] = roomAddresses[--roomsLeft];
+                    }
 
-                tempRoom.putPerson(tempPerson);
-                assignedRooms.add(tempRoom);
-                tempPerson.assignToRoom(tempRoom);
-                //check if full
-                if (tempRoom.isFull()) {
-                    //move last element to take the place of the full one && update rooms left
-                    smallRoomAddresses[roomIndex] = smallRoomAddresses[--smallRoomsLeft];
+                } else {
+                    do{
+                        roomIndex = randGen.nextInt(smallRoomsLeft);
+                        tempRoom = smallRoomAddresses[roomIndex];
+                        if (tempRoom.hasProod()) {
+                            //remove room because it already has a prood in it
+                            smallRoomAddresses[roomIndex] = smallRoomAddresses[--smallRoomsLeft];
+                        }
+                    } while (tempRoom.hasProod());
+
+                    tempRoom.putPerson(tempPerson);
+                    assignedRooms.add(tempRoom);
+                    tempPerson.assignToRoom(tempRoom);
+                    //check if full
+                    if (tempRoom.isFull()) {
+                        //move last element to take the place of the full one && update rooms left
+                        smallRoomAddresses[roomIndex] = smallRoomAddresses[--smallRoomsLeft];
+                    }
                 }
             }
         }
@@ -248,48 +324,66 @@ public class PopMember {
             //large, then medium, then small
 
             Person tempPerson = personIter.next();
-            Room tempRoom;
-            int roomIndex;
-            if (largeRoomsLeft != 0){
-                
-                roomIndex = randGen.nextInt(largeRoomsLeft);
-                tempRoom = largeRoomAddresses[roomIndex];
-                
-                tempRoom.putPerson(tempPerson);
-                assignedRooms.add(tempRoom);
-                tempPerson.assignToRoom(tempRoom);
-                if (tempRoom.isFull()) {
-                    //move last element to take the place of the full one && update rooms left
-                    largeRoomAddresses[roomIndex] = largeRoomAddresses[--largeRoomsLeft];
+            if (tempPerson.assignedRoom() == null){
+                Room tempRoom;
+                int roomIndex;
+                if (largeRoomsLeft != 0) {
+                    do{
+                        roomIndex = randGen.nextInt(largeRoomsLeft);
+                        tempRoom = largeRoomAddresses[roomIndex];
+                        if (tempRoom.hasProod()) {
+                            //remove room because it already has a prood in it
+                            largeRoomAddresses[roomIndex] = largeRoomAddresses[--largeRoomsLeft];
+                        }
+                    } while (tempRoom.hasProod());
+
+                    tempRoom.putPerson(tempPerson);
+                    assignedRooms.add(tempRoom);
+                    tempPerson.assignToRoom(tempRoom);
+                    if (tempRoom.isFull()) {
+                        //move last element to take the place of the full one && update rooms left
+                        largeRoomAddresses[roomIndex] = largeRoomAddresses[--largeRoomsLeft];
+                    }
+                } else if (roomsLeft != 0) {
+                    do{
+                        roomIndex = randGen.nextInt(roomsLeft);
+                        tempRoom = roomAddresses[roomIndex];
+                        if (tempRoom.hasProod()) {
+                            //remove room because it already has a prood in it
+                            roomAddresses[roomIndex] = roomAddresses[--roomsLeft];
+                        }
+                    } while (tempRoom.hasProod());
+
+                    tempRoom.putPerson(tempPerson);
+                    assignedRooms.add(tempRoom);
+                    tempPerson.assignToRoom(tempRoom);
+                    //check if full
+                    if (tempRoom.isFull()) {
+                        //move last element to take the place of the full one && update rooms left
+                        roomAddresses[roomIndex] = roomAddresses[--roomsLeft];
+                    }
+
+                } else {
+                    do{
+                        roomIndex = randGen.nextInt(smallRoomsLeft);
+                        tempRoom = smallRoomAddresses[roomIndex];
+                        if (tempRoom.hasProod()) {
+                            //remove room because it already has a prood in it
+                            smallRoomAddresses[roomIndex] = smallRoomAddresses[--smallRoomsLeft];
+                        }
+                    } while (tempRoom.hasProod());
+
+                    tempRoom.putPerson(tempPerson);
+                    assignedRooms.add(tempRoom);
+                    tempPerson.assignToRoom(tempRoom);
+                    //check if full
+                    if (tempRoom.isFull()) {
+                        //move last element to take the place of the full one && update rooms left
+                        smallRoomAddresses[roomIndex] = smallRoomAddresses[--smallRoomsLeft];
+                    }
                 }
             }
-            else if (roomsLeft != 0){
-            roomIndex = randGen.nextInt(roomsLeft);
-                tempRoom = roomAddresses[roomIndex];
-
-                tempRoom.putPerson(tempPerson);
-                assignedRooms.add(tempRoom);
-                tempPerson.assignToRoom(tempRoom);
-                //check if full
-                if (tempRoom.isFull()) {
-                    //move last element to take the place of the full one && update rooms left
-                    roomAddresses[roomIndex] = roomAddresses[--roomsLeft];
-                }
-
-            }
-            else{
-                roomIndex = randGen.nextInt(smallRoomsLeft);
-                tempRoom = smallRoomAddresses[roomIndex];
-
-                tempRoom.putPerson(tempPerson);
-                assignedRooms.add(tempRoom);
-                tempPerson.assignToRoom(tempRoom);
-                //check if full
-                if (tempRoom.isFull()) {
-                    //move last element to take the place of the full one && update rooms left
-                    smallRoomAddresses[roomIndex] = smallRoomAddresses[--smallRoomsLeft];
-                }
-            }
+            
         }
     }
     

@@ -514,13 +514,13 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                 tempPerson = people.get(p);
                 tempGroup.addAsHead(tempPerson);
                 tempPerson.addGroup(tempGroup);
-				tempPerson.setGroupHead(true);
+                tempPerson.setGroupHead(true);
             }
             else{
                 tempPerson = new Person(p);
                 tempGroup.addAsHead(tempPerson);
                 tempPerson.addGroup(tempGroup);
-				tempPerson.setGroupHead(true);
+                tempPerson.setGroupHead(true);
 
                 people.put(p, tempPerson);
             }
@@ -675,6 +675,8 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 
             roomObj.putPerson(person);
             person.assignToRoom(roomObj);
+            //if person is manager then remove room from selection?
+            
         }
         @Override
 	public boolean e_assign_to(String p, String room) {
