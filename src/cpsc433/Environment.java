@@ -63,7 +63,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
         private HashMap<String, Project> projects = null;
 
         public HashMap<String, Room> rooms = null;
-        private HashMap<String, Room> largeRooms = null;
+        public HashMap<String, Room> largeRooms = null;
         private HashSet<SymmetricPair<Room, Room>> closeTo = null;
 
 	protected Environment(String name) {
@@ -89,8 +89,8 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 		return instance;
 	}
         
-        public PopMember createPopulationMember(LinkedList<Person> managerQ, LinkedList<Person> groupHeadQ, LinkedList<Person> projectHeadQ, LinkedList<Person> secretaryQ, LinkedList<Person> personQ) throws FullRoomException {
-            PopMember p = new PopMember(worksWith, people, groups, projects, rooms, largeRooms, closeTo, managerQ, groupHeadQ, projectHeadQ, secretaryQ, personQ);
+        public PopMember createPopulationMember(LinkedList<Person> managerQ, LinkedList<Person> groupHeadQ, LinkedList<Person> projectHeadQ, LinkedList<Person> secretaryQ, LinkedList<Person> personQ, Room[] roomAddresses, Room[] largeRoomAddresses) throws FullRoomException {
+            PopMember p = new PopMember(worksWith, people, groups, projects, closeTo, managerQ, groupHeadQ, projectHeadQ, secretaryQ, personQ, roomAddresses, largeRoomAddresses);
             return p;
         }
 

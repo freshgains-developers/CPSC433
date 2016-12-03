@@ -126,6 +126,8 @@ public class SisyphusI {
 		LinkedList<Person> projectHeadQ = new LinkedList();
 		LinkedList<Person> secretaryQ = new LinkedList();
 		LinkedList<Person> personQ = new LinkedList();
+                Room[] roomAddresses = (Room[]) env.rooms.values().toArray();
+                Room[] largeRoomAddresses = (Room[]) env.largeRooms.values().toArray();
 
 		// identify all managers, group heads, project heads, secretaries
 		// and assign to proper queues
@@ -147,46 +149,46 @@ public class SisyphusI {
 
 		//cutoff for unsolvable instances. Dependant on number of people, rooms, managers, and heads.
 		int proods = managerQ.size() + groupHeadQ.size() + projectHeadQ.size();// TODO change cutoff with changed fields
-		if(env.people.size()-proods<=2*(env.rooms.size()-proods)){
-            try {
-				PopMember p = env.createPopulationMember(managerQ, groupHeadQ, projectHeadQ, secretaryQ, personQ);
+		if (env.people.size() - proods <= 2 * (env.rooms.size() - proods)) {
+                try {
+                    PopMember p = env.createPopulationMember(managerQ, groupHeadQ, projectHeadQ, secretaryQ, personQ, roomAddresses, largeRoomAddresses);
 
-                System.out.println("Population member created...");
+                    System.out.println("Population member created...");
 
-                LinkedHashSet<Room> assignedRooms = p.getAssignedRooms();
-                Iterator<Room> valueIter = assignedRooms.iterator();
+                    LinkedHashSet<Room> assignedRooms = p.getAssignedRooms();
+                    Iterator<Room> valueIter = assignedRooms.iterator();
 
-                while(valueIter.hasNext()) {
-                    Room r = valueIter.next();
-                    Person[] ass = r.getAssignedPeople();
+                    while (valueIter.hasNext()) {
+                        Room r = valueIter.next();
+                        Person[] ass = r.getAssignedPeople();
 
-                    System.out.print("Room " + r.getName() + ": " + "[");
+                        System.out.print("Room " + r.getName() + ": " + "[");
 
-                    if(ass[0] == null) {
-                        System.out.print("Empty");
-                    } else if(ass[1] == null) {
-                        System.out.print(ass[0].getName());
-                    } else {
-                        System.out.print(ass[0].getName() + ", " + ass[1].getName());
+                        if (ass[0] == null) {
+                            System.out.print("Empty");
+                        } else if (ass[1] == null) {
+                            System.out.print(ass[0].getName());
+                        } else {
+                            System.out.print(ass[0].getName() + ", " + ass[1].getName());
+                        }
+
+                        System.out.println("]");
                     }
 
-                    System.out.println("]");
-                }
+                    try {
+                        System.out.println();
+                        System.out.println("Score: " + p.score());
+                    } catch (NullPointerException e) {
+                        e.printStackTrace();
+                    }
 
-                try {
-                    System.out.println();
-                    System.out.println("Score: " + p.score());
-                } catch(NullPointerException e) {
-                    e.printStackTrace();
+                } catch (Room.FullRoomException ex) {
+                    ex.printStackTrace();
                 }
-
-            } catch (Room.FullRoomException ex) {
-                ex.printStackTrace();
+            } else {
+                throw new Environment.UnsolvableInstanceException("Instance is unsolvable. No solution possible.");
             }
-		} else {
-			throw new Environment.UnsolvableInstanceException("Instance is unsolvable. No solution possible.");
-		}
-	}
+    }
 
 
 	protected void printResults() {
