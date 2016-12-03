@@ -31,6 +31,7 @@ public class PopMember {
     private HashMap<String, Group> groups = null;
     private HashMap<String, Project> projects = null;
     private HashMap<String, Room> rooms = null;
+    private HashMap<String, Room> largeRooms = null;
     private HashSet<SymmetricPair<Room, Room>> closeTo = null;
     private HashMap<Person, Room> assignments;
 
@@ -47,17 +48,18 @@ public class PopMember {
      * @throws cpsc433.Environment.UnsolvableInstanceException thrown if solution is not possible without violating hard constraints
      * @throws cpsc433.Room.FullRoomException ** (shouldn't happen) ** thrown if initialization error occurs (this would be a bug)
      */
-    public void PopMember(HashSet worksWith, HashMap people, HashMap groups, HashMap projects, HashMap rooms,HashSet closeTo) throws UnsolvableInstanceException,FullRoomException {
+    public void PopMember(HashSet worksWith, HashMap people, HashMap groups, HashMap projects, HashMap rooms, HashMap largeRooms, HashSet closeTo) throws UnsolvableInstanceException,FullRoomException {
         //initialize population randomly.
-        Random randGen = new Random();
-        Iterator<Person> peopleIter = people.values().iterator();
         this.worksWith = worksWith;
         this.people = people;
         this.groups = groups;
         this.projects = projects;
         this.rooms = rooms;
-        this.closeTo = closeTo;        
+        this.largeRooms = largeRooms;
+        this.closeTo = closeTo;    
         
+        Random randGen = new Random();
+        Iterator<Person> peopleIter = people.values().iterator();
         
         LinkedList<Person> managerQ = new LinkedList();
         LinkedList<Person> groupHeadQ = new LinkedList();
@@ -70,10 +72,10 @@ public class PopMember {
         while (peopleIter.hasNext()) {
             Person tempPerson = peopleIter.next();
 
-            if (tempPerson.isManager()) {
-                managerQ.add(tempPerson);
-            } else if (tempPerson.isGroupHead()) {
+            if (tempPerson.isGroupHead()) {
                 groupHeadQ.add(tempPerson);
+            } else if (tempPerson.isManager()) {
+                managerQ.add(tempPerson);
             } else if (tempPerson.isProjectHead()) {
                 projectHeadQ.add(tempPerson);
             } else if (tempPerson.isSecretary()) {
@@ -84,11 +86,37 @@ public class PopMember {
         }
         
         //cutoff for unsolvable instances. Dependant on number of people, rooms, managers, and heads.
-        int proods = managerQ.size() + groupHeadQ.size() + projectHeadQ.size();
+        int proods = managerQ.size() + groupHeadQ.size() + projectHeadQ.size();// TODO change cutoff with changed fields
         if(people.size()-proods<=2*(rooms.size()-proods)){
             
             Room[] roomAddresses = (Room[]) rooms.values().toArray();
             int roomsLeft = rooms.size();
+            Iterator<Room> largeRoomIter = largeRooms.values().iterator();
+            
+            //assign groupHeads randomly
+            while (groupHeadQ.peek() != null) {
+
+                Person tempPerson = groupHeadQ.remove();
+                Room tempRoom;
+                int roomIndex;//
+                if (largeRoomIter.hasNext()){
+                    tempRoom = largeRoomIter.next();
+                    tempRoom.putPerson(tempPerson);
+                    assignments.put(tempPerson, tempRoom);
+                    tempPerson.assignToRoom(tempRoom);
+                }
+                else {
+                    roomIndex = randGen.nextInt(roomsLeft);
+                    tempRoom = roomAddresses[roomIndex];
+
+                    tempRoom.putPerson(tempPerson);
+                    assignments.put(tempPerson, tempRoom);
+                    tempPerson.assignToRoom(tempRoom);
+
+                    //move last element to take the place of the full one && update rooms left
+                    roomAddresses[roomIndex] = roomAddresses[--roomsLeft];
+                }
+            }
 
             //assign managers randomly.
             while (managerQ.peek() != null) {
@@ -110,25 +138,7 @@ public class PopMember {
                 roomAddresses[roomIndex] = roomAddresses[--roomsLeft];
 
             }
-            //assign groupHeads randomly
-            while (groupHeadQ.peek() != null) {
-
-                Person tempPerson = groupHeadQ.remove();
-                Room tempRoom;
-                int roomIndex;
-                do{
-                    roomIndex = randGen.nextInt(roomsLeft);
-                    tempRoom = roomAddresses[roomIndex];
-                }while(tempRoom.getSize().name().equals("LARGE"));
-
-                tempRoom.putPerson(tempPerson);
-                assignments.put(tempPerson, tempRoom);
-                tempPerson.assignToRoom(tempRoom);
-                
-                //move last element to take the place of the full one && update rooms left
-                roomAddresses[roomIndex] = roomAddresses[--roomsLeft];
-                
-            }
+            
 
             //assign projectHeads randomly
             while (projectHeadQ.peek() != null) {
