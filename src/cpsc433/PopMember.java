@@ -353,6 +353,8 @@ public class PopMember {
                 
                 // 14) People prefer to have their own offices 
                 score -= 8; // * 2
+            } else if (p1 != null && p2 == null && p1.isSecretary()) {
+                score -= 5;
             }
         }
 
