@@ -63,14 +63,25 @@ public class Room extends Entity {
      * @return boolean true if either person in room is a manager, groupHead or projectHead
      */
     public boolean hasProod(){
-        Person tempPerson = this.assignedPeople[0];
-        Person tempPerson2 = this.assignedPeople[1];
-        if (tempPerson.isManager() || tempPerson.isProjectHead() || tempPerson.isGroupHead())
-            return true;
-        else if (tempPerson2.isManager() || tempPerson2.isProjectHead() || tempPerson2.isGroupHead())
-            return true;
-        else
-            return false;
+        if(this.assignedPeople[0] == null){
+            if (this.assignedPeople[1] == null){
+                //first not a person, second not a person
+                return false;
+            }
+            else
+                //first not a person, check if second is a prood
+                return (this.assignedPeople[1].isManager() || this.assignedPeople[1].isProjectHead() || this.assignedPeople[1].isGroupHead());
+        }else{
+            if (this.assignedPeople[1] == null){
+                //check if first is a prood, second null
+                return (this.assignedPeople[0].isManager() || this.assignedPeople[0].isProjectHead() || this.assignedPeople[0].isGroupHead());
+            }
+            else
+                //both people, check if either is a prood
+                return (this.assignedPeople[0].isManager() || this.assignedPeople[0].isProjectHead() || this.assignedPeople[0].isGroupHead() || this.assignedPeople[1].isManager() || this.assignedPeople[1].isProjectHead() || this.assignedPeople[1].isGroupHead());
+        }      
+        
+            
     }
     
     // Getter for assigned people
