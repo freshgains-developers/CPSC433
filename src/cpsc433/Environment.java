@@ -679,7 +679,6 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 
             roomObj.putPerson(person);
             person.assignToRoom(roomObj);
-            
             //if person is manager then remove room from selection?
             
         }
@@ -822,11 +821,13 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                 Room room = rooms.remove(r);
                 room.setSize(RoomSize.LARGE);
                 largeRooms.put(r, room);
+
             } else if(!rooms.containsKey(r)) {
                 // If the room already exists update the size
                 Room room = smallRooms.remove(r);
                 room.setSize(RoomSize.LARGE);
                 largeRooms.put(r, room);
+
             }
         }
         @Override
