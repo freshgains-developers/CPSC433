@@ -50,7 +50,7 @@ public class PopMember {
      * @throws cpsc433.Environment.UnsolvableInstanceException thrown if solution is not possible without violating hard constraints
      * @throws cpsc433.Room.FullRoomException ** (shouldn't happen) ** thrown if initialization error occurs (this would be a bug)
      */
-    public PopMember(HashSet worksWith, HashMap people, HashMap groups, HashMap projects, HashMap rooms, HashMap largeRooms, HashSet closeTo) throws UnsolvableInstanceException,FullRoomException {
+    public PopMember(HashSet worksWith, HashMap people, HashMap groups, HashMap projects, HashMap rooms, HashMap largeRooms, HashSet closeTo, LinkedList<Person> managerQ, LinkedList<Person> groupHeadQ, LinkedList<Person> projectHeadQ, LinkedList<Person> secretaryQ, LinkedList<Person> personQ) throws FullRoomException {
         //initialize population randomly.
         this.worksWith = worksWith;
         this.people = people;
@@ -61,144 +61,118 @@ public class PopMember {
         this.closeTo = closeTo;    
         
         Random randGen = new Random();
-        Iterator<Person> peopleIter = people.values().iterator();
-        
-        LinkedList<Person> managerQ = new LinkedList();
-        LinkedList<Person> groupHeadQ = new LinkedList();
-        LinkedList<Person> projectHeadQ = new LinkedList();
-        LinkedList<Person> secretaryQ = new LinkedList();
-        LinkedList<Person> personQ = new LinkedList();
         assignedRooms = new LinkedHashSet();
 
-        // identify all managers, group heads, project heads, secretaries 
-        // and assign to proper queues
-        while (peopleIter.hasNext()) {
-            Person tempPerson = peopleIter.next();
+        Room[] roomAddresses = (Room[]) rooms.values().toArray();
+        int roomsLeft = rooms.size();
 
-            if (tempPerson.isGroupHead()) {
-                groupHeadQ.add(tempPerson);
-            } else if (tempPerson.isManager()) {
-                managerQ.add(tempPerson);
-            } else if (tempPerson.isProjectHead()) {
-                projectHeadQ.add(tempPerson);
-            } else if (tempPerson.isSecretary()) {
-                secretaryQ.add(tempPerson);
-            } else {
-                personQ.add(tempPerson);
+        Iterator<Room> largeRoomIter = largeRooms.values().iterator();
+        Iterator<Person> groupHeadIter = groupHeadQ.iterator();
+        Iterator<Person> managerIter = managerQ.iterator();
+        Iterator<Person> projectHeadIter = projectHeadQ.iterator();
+        Iterator<Person> secretaryIter = secretaryQ.iterator();
+        Iterator<Person> personIter = personQ.iterator();
+
+        //assign groupHeads randomly
+        while (groupHeadIter.hasNext()) {
+
+            Person tempPerson = groupHeadIter.next();
+            Room tempRoom;
+            int roomIndex;//
+            if (largeRoomIter.hasNext()){
+                tempRoom = largeRoomIter.next();
+                tempRoom.putPerson(tempPerson);
+                assignedRooms.add(tempRoom);
+                tempPerson.assignToRoom(tempRoom);
+            }
+            else {
+                roomIndex = randGen.nextInt(roomsLeft);
+                tempRoom = roomAddresses[roomIndex];
+
+                tempRoom.putPerson(tempPerson);
+                assignedRooms.add(tempRoom);
+                tempPerson.assignToRoom(tempRoom);
+
+                //move last element to take the place of the full one && update rooms left
+                roomAddresses[roomIndex] = roomAddresses[--roomsLeft];
             }
         }
-        
-        //cutoff for unsolvable instances. Dependant on number of people, rooms, managers, and heads.
-        int proods = managerQ.size() + groupHeadQ.size() + projectHeadQ.size();// TODO change cutoff with changed fields
-        if(people.size()-proods<=2*(rooms.size()-proods)){
-            
-            Room[] roomAddresses = (Room[]) rooms.values().toArray();
-            int roomsLeft = rooms.size();
-            Iterator<Room> largeRoomIter = largeRooms.values().iterator();
-            
-            //assign groupHeads randomly
-            while (groupHeadQ.peek() != null) {
 
-                Person tempPerson = groupHeadQ.remove();
-                Room tempRoom;
-                int roomIndex;//
-                if (largeRoomIter.hasNext()){
-                    tempRoom = largeRoomIter.next();
-                    tempRoom.putPerson(tempPerson);
-                    assignedRooms.add(tempRoom);
-                    tempPerson.assignToRoom(tempRoom);
-                }
-                else {
-                    roomIndex = randGen.nextInt(roomsLeft);
-                    tempRoom = roomAddresses[roomIndex];
+        //assign managers randomly.
+        while (managerIter.hasNext()) {
 
-                    tempRoom.putPerson(tempPerson);
-                    assignedRooms.add(tempRoom);
-                    tempPerson.assignToRoom(tempRoom);
+            Person tempPerson = managerIter.next();
+            Room tempRoom;
+            int roomIndex;
+            do{
+                roomIndex = randGen.nextInt(roomsLeft);
+                tempRoom = roomAddresses[roomIndex];
+            }while(tempRoom.getSize().name().equals("LARGE"));
 
-                    //move last element to take the place of the full one && update rooms left
-                    roomAddresses[roomIndex] = roomAddresses[--roomsLeft];
-                }
-            }
 
-            //assign managers randomly.
-            while (managerQ.peek() != null) {
+            tempRoom.putPerson(tempPerson);
+            assignedRooms.add(tempRoom);
+            tempPerson.assignToRoom(tempRoom);
 
-                Person tempPerson = managerQ.remove();
-                Room tempRoom;
-                int roomIndex;
-                do{
-                    roomIndex = randGen.nextInt(roomsLeft);
-                    tempRoom = roomAddresses[roomIndex];
-                }while(tempRoom.getSize().name().equals("LARGE"));
-                
+            //move last element to take the place of the full one && update rooms left
+            roomAddresses[roomIndex] = roomAddresses[--roomsLeft];
 
-                tempRoom.putPerson(tempPerson);
-                assignedRooms.add(tempRoom);
-                tempPerson.assignToRoom(tempRoom);
-                
-                //move last element to take the place of the full one && update rooms left
-                roomAddresses[roomIndex] = roomAddresses[--roomsLeft];
-                
-            }
-            
+        }
 
-            //assign projectHeads randomly
-            while (projectHeadQ.peek() != null) {
 
-                Person tempPerson = projectHeadQ.remove();
-                Room tempRoom;
-                int roomIndex;
-                do{
-                    roomIndex = randGen.nextInt(roomsLeft);
-                    tempRoom = roomAddresses[roomIndex];
-                }while(tempRoom.getSize().name().equals("LARGE"));
+        //assign projectHeads randomly
+        while (projectHeadIter.hasNext()) {
 
-                tempRoom.putPerson(tempPerson);
-                tempPerson.assignToRoom(tempRoom);
-                assignedRooms.add(tempRoom);
-                
+            Person tempPerson = projectHeadIter.next();
+            Room tempRoom;
+            int roomIndex;
+            do{
+                roomIndex = randGen.nextInt(roomsLeft);
+                tempRoom = roomAddresses[roomIndex];
+            }while(tempRoom.getSize().name().equals("LARGE"));
+
+            tempRoom.putPerson(tempPerson);
+            tempPerson.assignToRoom(tempRoom);
+            assignedRooms.add(tempRoom);
+
+            //move last element to take the place of the full one && update rooms left
+            roomAddresses[roomIndex] = roomAddresses[--roomsLeft];
+        }
+
+        //assign secretaries randomly
+        while (secretaryIter.hasNext()) {
+
+            Person tempPerson = secretaryIter.next();
+            int roomIndex = randGen.nextInt(roomsLeft);
+            Room tempRoom = roomAddresses[roomIndex];
+
+            tempRoom.putPerson(tempPerson);
+            tempPerson.assignToRoom(tempRoom);
+            assignedRooms.add(tempRoom);
+
+
+            if (tempRoom.isFull()) {
                 //move last element to take the place of the full one && update rooms left
                 roomAddresses[roomIndex] = roomAddresses[--roomsLeft];
             }
+        }
 
-            //assign secretaries randomly
-            while (secretaryQ.peek() != null) {
+        // assign everyone else randomly
+        while (personIter.hasNext()) {
 
-                Person tempPerson = secretaryQ.remove();
-                int roomIndex = randGen.nextInt(roomsLeft);
-                Room tempRoom = roomAddresses[roomIndex];
+            Person tempPerson = personIter.next();
+            int roomIndex = randGen.nextInt(roomsLeft);
+            Room tempRoom = roomAddresses[roomIndex];
 
-                tempRoom.putPerson(tempPerson);
-                tempPerson.assignToRoom(tempRoom);
-                assignedRooms.add(tempRoom);
-                
-                
-                if (tempRoom.isFull()) {
-                    //move last element to take the place of the full one && update rooms left
-                    roomAddresses[roomIndex] = roomAddresses[--roomsLeft]; 
-                }
+            tempRoom.putPerson(tempPerson);
+            tempPerson.assignToRoom(tempRoom);
+            assignedRooms.add(tempRoom);
+
+
+            if (tempRoom.isFull()) {
+                //move last element to take the place of the full one && update rooms left
+                roomAddresses[roomIndex] = roomAddresses[--roomsLeft];
             }
-
-            // assign everyone else randomly
-            while (personQ.peek() != null) {
-
-                Person tempPerson = personQ.remove();
-                int roomIndex = randGen.nextInt(roomsLeft);
-                Room tempRoom = roomAddresses[roomIndex];
-
-                tempRoom.putPerson(tempPerson);
-                tempPerson.assignToRoom(tempRoom);
-                assignedRooms.add(tempRoom);
-                
-                
-                if (tempRoom.isFull()) {
-                    //move last element to take the place of the full one && update rooms left
-                    roomAddresses[roomIndex] = roomAddresses[--roomsLeft]; 
-                }
-            }
-        } else {
-            throw new Environment.UnsolvableInstanceException("Instance is unsolvable. No solution possible."); 
         }
     }
     

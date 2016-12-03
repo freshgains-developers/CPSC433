@@ -10,11 +10,7 @@ import cpsc433.Room.RoomSize;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.TreeSet;
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  * This is class extends {@link cpsc433.PredicateReader} just as required to
@@ -60,13 +56,13 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 	protected boolean fixedAssignments=false;
 
         // TODO: Maybe use LinkedHashMap instead ?
-        private HashMap<String, Person> people = null;
+        public HashMap<String, Person> people = null;
         private HashSet<SymmetricPair<Person, Person>> worksWith = null;
 
         private HashMap<String, Group> groups = null;
         private HashMap<String, Project> projects = null;
 
-        private HashMap<String, Room> rooms = null;
+        public HashMap<String, Room> rooms = null;
         private HashMap<String, Room> largeRooms = null;
         private HashSet<SymmetricPair<Room, Room>> closeTo = null;
 
@@ -93,8 +89,8 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 		return instance;
 	}
         
-        public PopMember createPopulationMember() throws UnsolvableInstanceException,FullRoomException {
-            PopMember p = new PopMember(worksWith, people, groups, projects, rooms, largeRooms, closeTo);
+        public PopMember createPopulationMember(LinkedList<Person> managerQ, LinkedList<Person> groupHeadQ, LinkedList<Person> projectHeadQ, LinkedList<Person> secretaryQ, LinkedList<Person> personQ) throws FullRoomException {
+            PopMember p = new PopMember(worksWith, people, groups, projects, rooms, largeRooms, closeTo, managerQ, groupHeadQ, projectHeadQ, secretaryQ, personQ);
             return p;
         }
 

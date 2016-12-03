@@ -2,6 +2,7 @@ package cpsc433;
 
 import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.Scanner;
 
 /**
@@ -117,21 +118,50 @@ public class SisyphusI {
 	 * @param env An Environment object.
 	 * @param timeLimit A time limit in milliseconds.
 	 */
-	protected void doSearch(Environment env, long timeLimit) {
+	protected void doSearch(Environment env, long timeLimit) throws Environment.UnsolvableInstanceException {
+
+		Iterator<Person> peopleIter = env.people.values().iterator();
+		LinkedList<Person> managerQ = new LinkedList();
+		LinkedList<Person> groupHeadQ = new LinkedList();
+		LinkedList<Person> projectHeadQ = new LinkedList();
+		LinkedList<Person> secretaryQ = new LinkedList();
+		LinkedList<Person> personQ = new LinkedList();
+
+		// identify all managers, group heads, project heads, secretaries
+		// and assign to proper queues
+		while (peopleIter.hasNext()) {
+			Person tempPerson = peopleIter.next();
+
+			if (tempPerson.isGroupHead()) {
+				groupHeadQ.add(tempPerson);
+			} else if (tempPerson.isManager()) {
+				managerQ.add(tempPerson);
+			} else if (tempPerson.isProjectHead()) {
+				projectHeadQ.add(tempPerson);
+			} else if (tempPerson.isSecretary()) {
+				secretaryQ.add(tempPerson);
+			} else {
+				personQ.add(tempPerson);
+			}
+		}
+
+		//cutoff for unsolvable instances. Dependant on number of people, rooms, managers, and heads.
+		int proods = managerQ.size() + groupHeadQ.size() + projectHeadQ.size();// TODO change cutoff with changed fields
+		if(env.people.size()-proods<=2*(env.rooms.size()-proods)){
             try {
-                PopMember p = env.createPopulationMember();
-                 
+				PopMember p = env.createPopulationMember(managerQ, groupHeadQ, projectHeadQ, secretaryQ, personQ);
+
                 System.out.println("Population member created...");
-                
+
                 LinkedHashSet<Room> assignedRooms = p.getAssignedRooms();
                 Iterator<Room> valueIter = assignedRooms.iterator();
-                
+
                 while(valueIter.hasNext()) {
                     Room r = valueIter.next();
                     Person[] ass = r.getAssignedPeople();
-                    
+
                     System.out.print("Room " + r.getName() + ": " + "[");
-                    
+
                     if(ass[0] == null) {
                         System.out.print("Empty");
                     } else if(ass[1] == null) {
@@ -139,22 +169,26 @@ public class SisyphusI {
                     } else {
                         System.out.print(ass[0].getName() + ", " + ass[1].getName());
                     }
-                    
+
                     System.out.println("]");
                 }
-                
+
                 try {
                     System.out.println();
                     System.out.println("Score: " + p.score());
                 } catch(NullPointerException e) {
                     e.printStackTrace();
                 }
-                
-            } catch (Environment.UnsolvableInstanceException | Room.FullRoomException ex) {
+
+            } catch (Room.FullRoomException ex) {
                 ex.printStackTrace();
             }
+		} else {
+			throw new Environment.UnsolvableInstanceException("Instance is unsolvable. No solution possible.");
+		}
 	}
-	
+
+
 	protected void printResults() {
 		System.out.println("Would print results here, but the search isn't implemented yet.");
 	}
