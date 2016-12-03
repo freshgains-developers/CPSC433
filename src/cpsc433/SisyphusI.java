@@ -151,10 +151,10 @@ public class SisyphusI {
 		}
 
 		//cutoff for unsolvable instances. Dependant on number of people, rooms, managers, and heads.
-		int proods = managerQ.size() + groupHeadQ.size() + projectHeadQ.size();// TODO change cutoff with changed fields
-		if (env.people.size() - proods <= 2 * (env.rooms.size() - proods)) {
+		int proods = managerQ.size() + groupHeadQ.size() + projectHeadQ.size();
+		if (env.people.size() - proods <= 2 * (env.rooms.size() + env.smallRooms.size() + env.largeRooms.size() - proods)) {
                 try {
-                    PopMember p = env.createPopulationMember(managerQ, groupHeadQ, projectHeadQ, secretaryQ, personQ, roomAddresses, largeRoomAddresses);
+                    PopMember p = env.createPopulationMember(managerQ, groupHeadQ, projectHeadQ, secretaryQ, personQ, roomAddresses, largeRoomAddresses, smallRoomAddresses);
 
                     System.out.println("Population member created...");
 
