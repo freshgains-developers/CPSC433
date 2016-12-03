@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Random;
 
@@ -33,7 +34,7 @@ public class PopMember {
     private HashMap<String, Room> rooms = null;
     private HashMap<String, Room> largeRooms = null;
     private HashSet<SymmetricPair<Room, Room>> closeTo = null;
-    private HashMap<Person, Room> assignments;
+    private LinkedHashSet<Room> assignedRooms;
 
 
     /**
@@ -44,11 +45,12 @@ public class PopMember {
      * @param groups HashMap of groups
      * @param projects HashMap of projects
      * @param rooms HashMap of rooms
+     * @param largeRooms HashMap of largeRooms
      * @param closeTo HashSet of close relations
      * @throws cpsc433.Environment.UnsolvableInstanceException thrown if solution is not possible without violating hard constraints
      * @throws cpsc433.Room.FullRoomException ** (shouldn't happen) ** thrown if initialization error occurs (this would be a bug)
      */
-    public void PopMember(HashSet worksWith, HashMap people, HashMap groups, HashMap projects, HashMap rooms, HashMap largeRooms, HashSet closeTo) throws UnsolvableInstanceException,FullRoomException {
+    public PopMember(HashSet worksWith, HashMap people, HashMap groups, HashMap projects, HashMap rooms, HashMap largeRooms, HashSet closeTo) throws UnsolvableInstanceException,FullRoomException {
         //initialize population randomly.
         this.worksWith = worksWith;
         this.people = people;
@@ -66,6 +68,7 @@ public class PopMember {
         LinkedList<Person> projectHeadQ = new LinkedList();
         LinkedList<Person> secretaryQ = new LinkedList();
         LinkedList<Person> personQ = new LinkedList();
+        assignedRooms = new LinkedHashSet();
 
         // identify all managers, group heads, project heads, secretaries 
         // and assign to proper queues
@@ -102,7 +105,7 @@ public class PopMember {
                 if (largeRoomIter.hasNext()){
                     tempRoom = largeRoomIter.next();
                     tempRoom.putPerson(tempPerson);
-                    assignments.put(tempPerson, tempRoom);
+                    assignedRooms.add(tempRoom);
                     tempPerson.assignToRoom(tempRoom);
                 }
                 else {
@@ -110,7 +113,7 @@ public class PopMember {
                     tempRoom = roomAddresses[roomIndex];
 
                     tempRoom.putPerson(tempPerson);
-                    assignments.put(tempPerson, tempRoom);
+                    assignedRooms.add(tempRoom);
                     tempPerson.assignToRoom(tempRoom);
 
                     //move last element to take the place of the full one && update rooms left
@@ -131,12 +134,12 @@ public class PopMember {
                 
 
                 tempRoom.putPerson(tempPerson);
-                assignments.put(tempPerson, tempRoom);
+                assignedRooms.add(tempRoom);
                 tempPerson.assignToRoom(tempRoom);
                 
                 //move last element to take the place of the full one && update rooms left
                 roomAddresses[roomIndex] = roomAddresses[--roomsLeft];
-
+                
             }
             
 
@@ -152,8 +155,8 @@ public class PopMember {
                 }while(tempRoom.getSize().name().equals("LARGE"));
 
                 tempRoom.putPerson(tempPerson);
-                assignments.put(tempPerson, tempRoom);
                 tempPerson.assignToRoom(tempRoom);
+                assignedRooms.add(tempRoom);
                 
                 //move last element to take the place of the full one && update rooms left
                 roomAddresses[roomIndex] = roomAddresses[--roomsLeft];
@@ -167,8 +170,8 @@ public class PopMember {
                 Room tempRoom = roomAddresses[roomIndex];
 
                 tempRoom.putPerson(tempPerson);
-                assignments.put(tempPerson, tempRoom);
                 tempPerson.assignToRoom(tempRoom);
+                assignedRooms.add(tempRoom);
                 
                 
                 if (tempRoom.isFull()) {
@@ -185,8 +188,8 @@ public class PopMember {
                 Room tempRoom = roomAddresses[roomIndex];
 
                 tempRoom.putPerson(tempPerson);
-                assignments.put(tempPerson, tempRoom);
                 tempPerson.assignToRoom(tempRoom);
+                assignedRooms.add(tempRoom);
                 
                 
                 if (tempRoom.isFull()) {
@@ -199,13 +202,25 @@ public class PopMember {
         }
     }
     
+    /**
+     * Getter for rooms that have people in them
+     * 
+     * @return ArrayList of rooms with people assigned to them
+     */
+    public LinkedHashSet<Room> getAssignedRooms() {
+        return assignedRooms;
+    }
+    
+    /**
+     * Evaluates and returns the score of a population member
+     * 
+     * @return sum of soft constraint penalties for this population member
+     */
     public int score() {
         int score = 0;
         
-        Iterator <Room> roomIter;
-        roomIter = assignments.values().iterator();
-        
-        while(roomIter.hasNext()) {
+        Iterator<Room> roomIter = assignedRooms.iterator();
+        while(roomIter.hasNext()) { 
             Room r = roomIter.next();
             
             Person p1 = r.getAssignedPeople()[0];
@@ -215,35 +230,35 @@ public class PopMember {
             if(p1 != null && p2 != null) {
                 // 16) Two people shouldn't share a small room
                 if(r.getSize() == RoomSize.SMALL) {
-                    score -= 25;
+                    score -= 50; // * 2
                 }
                 
                 // 15) If two people share an office, they sould work together
                 if(!worksWith.contains(new SymmetricPair<>(p1, p2))) {
-                    score -= 3;
+                    score -= 6; // * 2
+                }
+                
+                // 13) if a non-secretary hacker/non-hacker shares an office, 
+                //     then he/she should share with another hacker/non-hacker
+                //
+                //   If one is a hacker and the other is not and niether is
+                //   a secretary -2 ?
+                if ((p1.isHacker() != p2.isHacker()) && !p1.isSecretary() && !p2.isSecretary()) {
+                    score -= 4; // * 2
+                }
+                
+                // 11) A smoker shouldn't share an office with a non-smoker
+                if (p1.isSmoker() != p2.isSmoker()) {
+                    score -= 100; // * 2
+                }
+                
+                // 4) secretaries should share offices with other secretaries
+                if (p1.isSecretary() != p2.isSecretary()) {
+                    score -= 10; // * 2
                 }
                 
                 // 14) People prefer to have their own offices 
-                score -= 4;
-            }
-            
-            // 13) if a non-secretary hacker/non-hacker shares an office, 
-            //     then he/she should share with another hacker/non-hacker
-            //
-            //   If one is a hacker and the other is not and niether is
-            //   a secretary -2 ?
-            if( (p1.isHacker() != p2.isHacker()) && !p1.isSecretary() && !p2.isSecretary()) {
-                score -= 2;
-            }
-            
-            // 11) A smoker shouldn't share an office with a non-smoker
-            if( p1.isSmoker() != p2.isSmoker() ) {
-                score -= 50;
-            }
-            
-            // 4) secretaries should share offices with other secretaries
-            if( p1.isSecretary() != p2.isSecretary() ) {
-                score -= 5;
+                score -= 8; // * 2
             }
         }
 
@@ -255,10 +270,18 @@ public class PopMember {
 
             Group group = groupIter.next();
             HashMap<String, Person> headMap =  group.getHeadMap();
+            
             Iterator<Person> headIter;
             headIter = headMap.values().iterator();
-            ArrayList<Person> peopleList = group.getGroupList();
-           
+            
+            Iterator<Person> peopleIter;
+            peopleIter = group.getPersonMap().values().iterator(); 
+            
+            Iterator<Person> secrIter;
+            secrIter = group.getSecretaryMap().values().iterator();
+            
+            Iterator<Person> managerIter;
+            managerIter = group.getManagerMap().values().iterator();
             
             while (headIter.hasNext()){ // head loop
                 Person headValue = headIter.next();
@@ -267,158 +290,87 @@ public class PopMember {
                 if (headValue.assignedRoom().getSize() != RoomSize.LARGE){
                     score -= 40; 
                 }
-               
-                boolean allGroupMembersClose = true;
-                boolean secretaryIsClose = false;
-                
-                for(Person person : peopleList) {
-                    boolean personIsClose = closeTo.contains(new SymmetricPair<>(headValue.assignedRoom(), person.assignedRoom()));
+                               
+                // 2.1) Group heads should be close to all members of their group
+                while(peopleIter.hasNext()) {
+                    Person person = peopleIter.next();
                     
-                    // 2) group heads should be close to all members of their group
-                    if(!personIsClose && allGroupMembersClose) {
-                        allGroupMembersClose = false;
+                    if(!closeTo.contains(new SymmetricPair<>(headValue.assignedRoom(), person.assignedRoom()))) {
                         score -= 2;
                     }
+                }
+                
+                // 2.2) Group heads should be close to all secretaries of their
+                //      group
+                boolean secretaryIsClose = false;
+                while(secrIter.hasNext()) {
+                    Person secretary = secrIter.next();
                     
-                    // 6) Managers should be close to their group's head
-                    if(person.isManager()) {
-                        if(!personIsClose) {
-                            score -= 20;
-
-                            // IMPLIED - 7) managers should be close to all members 
-                            //              of their group
-                            person.isCloseToGroupMembers = false;
-                            score -= -2;
-                        }
-                        
-                        person.isCloseToGroupMembers = true;
-                    } else if(person.isSecretary() && personIsClose) {
+                    if(!closeTo.contains(new SymmetricPair<>(headValue.assignedRoom(), secretary.assignedRoom()))) {
+                        score -= 2;
+                    } else {
                         secretaryIsClose = true;
-                        
-                        // This break is allowed since at this point all managers
-                        // have been processed (due to sorting) so if constraint
-                        // 2 has already been violated we can break
-                        if(!allGroupMembersClose) {
-                            break;
-                        }
-                    } else if(!allGroupMembersClose && !person.isManager() && !person.isSecretary()) {
-                        // 3) group heads should be located close to at least
-                        //    one secretary in the group
-                        if(!secretaryIsClose) {
-                            score -= 30;
-                        }
-                        
-                        // At this point both managers and secretaries have been
-                        // processed so if allGroupMembersClose is false then
-                        // constraint 2 does not need further evaluation and the
-                        // loop can terminate
-                        break;
                     }
                 }
+                
+                // 3) Group heads should be located close to at least one
+                //    secretary in the group
+                if(!secretaryIsClose) {
+                    score -= 30;
+                }
+                
+                // 2.3) Group heads should be close to all managers of 
+                //      their group 
+                while(managerIter.hasNext()) {
+                    Person manager = managerIter.next();
+                    
+                    if(!closeTo.contains(new SymmetricPair<>(headValue.assignedRoom(), manager.assignedRoom()))) {
+                        score -= 2;
+                        
+                        // IMPLIED - 6) managers should be close to their 
+                        //              group's head
+                        score -= 20;
+                    }
+                    
+                    peopleIter = group.getPersonMap().values().iterator(); 
+                    while (peopleIter.hasNext()) {
+                        Person person = peopleIter.next();
+                        
+                        // 7) Managers should be close to all members of 
+                        //    their group
+                        if (!closeTo.contains(new SymmetricPair<>(manager.assignedRoom(), person.assignedRoom()))) {
+                            score -= 2;
+                        }
+                    }
+                    
+                    secretaryIsClose = false;
+                    secrIter = group.getSecretaryMap().values().iterator();
+                    while (secrIter.hasNext()) {
+                        Person secretary = secrIter.next();
+
+                        // 7) Managers should be close to all members of 
+                        //    their group
+                        if (!closeTo.contains(new SymmetricPair<>(manager.assignedRoom(), secretary.assignedRoom()))) {
+                            score -= 2;
+                        } else {
+                            secretaryIsClose = true;
+                        }
+                    }
+                    
+                    // 5) managers should be close to at least one 
+                    //    secretary in their group
+                    if(!secretaryIsClose) {
+                        score -= 20;
+                    }
+                }
+                
               
             } // end head loop
             
-            // Manager loop
-            int secretaryStartIndex = -1;
-            for(int i=0; i < peopleList.size(); i++) {
-                Person p1 = peopleList.get(i);
-                if(!p1.isManager()) {
-                    break;
-                }
-                
-                // Haven't found secretary start index yet
-                boolean skipManagers = false;
-                if(secretaryStartIndex == -1) {
-                    // Compare to other managers
-                    for (int j = i + 1; j < peopleList.size(); j++) {
-                        Person p2 = peopleList.get(j);
-                        if (!p2.isManager()) {
-                            secretaryStartIndex = j;
-                            break;
-                        }
-
-                        if (p1.isCloseToGroupMembers) {
-                            boolean personIsClose = closeTo.contains(new SymmetricPair<>(p1.assignedRoom(), p2.assignedRoom()));
-                            if (!personIsClose) {
-                                // 7) managers should be close to all members of
-                                //    their group
-                                p1.isCloseToGroupMembers = false;
-                                p2.isCloseToGroupMembers = false;
-                                score -= 2*2;
-                            }
-                        }
-                    }
-                    
-                    skipManagers = true;
-                }
-                
-                if(p1.isCloseToGroupMembers) {
-                    // Loop through all group members
-                    boolean secretaryIsClose = false;
-                    for (int j = (skipManagers) ? secretaryStartIndex : (i + 1); j < peopleList.size(); j++) {
-                        Person p2 = peopleList.get(j);
-                        
-                        boolean personIsClose = closeTo.contains(new SymmetricPair<>(p1.assignedRoom(), p2.assignedRoom()));
-                        if(p2.isSecretary() && personIsClose) {
-                            secretaryIsClose = true;
-                            
-                            // ** Ideally if this break fails we would skip to 
-                            // normal people
-                            if(!p1.isCloseToGroupMembers) {
-                                break;
-                            }
-                        } else if(!p2.isManager() && !personIsClose) {
-                            if(p1.isCloseToGroupMembers) {
-                                // 7) managers should be close to all members of
-                                //    their group
-                                score -= 2;
-                            
-                                p1.isCloseToGroupMembers = false;
-                            }
-                            
-                            if(!p2.isSecretary()) {
-                                break;
-                            }
-                        } else if(p2.isManager() && !personIsClose) {
-                            // 7) managers should be close to all members of
-                            //    their group
-                            score -= (p2.isCloseToGroupMembers) ? 4 : 2;
-                            
-                            p1.isCloseToGroupMembers = false;
-                            p2.isCloseToGroupMembers = false;
-                            
-                            // Skip to secretaries
-                            j = secretaryStartIndex-1;
-                        }
-                    }
-                    
-                    if(!secretaryIsClose) {
-                        // 5) managers should be close to at least one
-                        //    secretary in their group
-                        score -= 20;
-                    }
-                } else {
-                    // Loop through secretaries (7 is already implied so don't
-                    // need to check for that)
-                    for(int j = secretaryStartIndex; j < peopleList.size(); j++) {
-                        Person secretary = peopleList.get(j);
-                        if(!secretary.isSecretary()) {
-                            // 5) managers should be close to at least one
-                            //    secretary in their group
-                            score -= 20;
-                            
-                            break;
-                        }
-                        
-                        if(closeTo.contains(new SymmetricPair<>(p1.assignedRoom(), secretary.assignedRoom()))) {
-                            break;
-                        }
-                    }
-                }
-            }
-            
         } // end group loop
 
+        
+        
         Iterator<Project> projectIter;
         projectIter = projects.values().iterator();
         
@@ -435,7 +387,7 @@ public class PopMember {
                     Person p2 = projectMembers.get(j);
                     
                     if(p1.assignedRoom() == p2.assignedRoom() && p1 != p2) {
-                        score -= 7;
+                        score -= 14; // -7 * 2
                     }
                 }
             }
@@ -460,7 +412,6 @@ public class PopMember {
                     
                     if(!closeTo.contains(new SymmetricPair<>(projectHeadRoom, pmr))) {
                         score -= -5;
-                        break;
                     }
                 }
                 
@@ -469,14 +420,15 @@ public class PopMember {
                         // 9) the heads of large projects should be close to
                         //    at least one secretary in their group
                         boolean secretaryIsClose = false;
-                        ArrayList<Person> groupMembers = group.getGroupList();
                         
-                        // This loop runs O(num_secretaries + num_managers) 
-                        // since the groupList is sorted 
-                        for (Person groupMember : groupMembers) {
-                            Room gmr = groupMember.assignedRoom();
+                        HashMap<String, Person> secretaries = group.getSecretaryMap();
+                        Iterator<Person> secrIter = secretaries.values().iterator();
+                        
+                        while(secrIter.hasNext()) {
+                            Person secretary = secrIter.next();
+                            Room gmr = secretary.assignedRoom();
                             
-                            if (groupMember.isSecretary() && closeTo.contains(new SymmetricPair<>(projectHeadRoom, gmr))) {
+                            if (closeTo.contains(new SymmetricPair<>(projectHeadRoom, gmr))) {
                                 secretaryIsClose = true;
                                 break;
                             }

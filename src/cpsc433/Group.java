@@ -4,10 +4,7 @@
  * and open the template in the editor.
  */
 package cpsc433;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 /**
  *
  * @author Brenton Kruger
@@ -16,16 +13,22 @@ import java.util.Iterator;
  */
 public class Group extends Entity{
     
-    private final ArrayList<Person> groupList;
+    private final HashMap<String ,Person> peopleList;
+    private final HashMap<String , Person> managerList;
+    private final HashMap<String, Person> secretaryList;
     private final HashMap<String, Person> headMap;
     
     //constructor of group
     public Group(String name){
         super(name);
         //hashmap for people
-        groupList = new ArrayList<Person>();
+        peopleList = new HashMap<String, Person>();
+        managerList = new HashMap<String, Person>();
+        secretaryList = new HashMap<String, Person>();
         headMap = new HashMap();
     }
+
+
     /**
      * 
      * @param p person to check
@@ -33,16 +36,24 @@ public class Group extends Entity{
      */
     public boolean memberOfGroup(Person p){
         String personKey = p.getName();
-        return groupList.contains(p);
+        return peopleList.containsKey(personKey) && managerList.containsKey(personKey) && secretaryList.containsKey(personKey);
     }
 
     public HashMap<String, Person> getHeadMap (){
         return headMap;
     }
 
-    public ArrayList<Person> getGroupList (){
-        return groupList;
+    public HashMap<String, Person> getSecretaryMap (){
+        return secretaryList;
     }
+    public HashMap<String, Person> getPersonMap (){
+        return peopleList;
+    }
+
+    public HashMap<String, Person> getManagerMap (){
+        return managerList;
+    }
+
 
     /**
      * @param p person to check
@@ -61,7 +72,19 @@ public class Group extends Entity{
         //check if person is in group && add to group if absent
         String personKey = p.getName();
         //if (!groupList.contains(personKey))
-            groupList.add(p);
+        if (p.isManager()) {
+            managerList.put(personKey, p);
+            peopleList.remove(personKey);
+        }
+
+        if (p.isSecretary()) {
+            secretaryList.put(personKey, p);
+            peopleList.remove(personKey);
+        }
+
+        else {
+            peopleList.put(personKey, p);
+        }
     }
     
     /**
@@ -73,7 +96,18 @@ public class Group extends Entity{
         //check if a person is in the group and remove if present
         String personKey = p.getName();
         //if (groupList.contains(p))
-        groupList.remove(p);
+        if (p.isManager()) {
+            managerList.remove(personKey);
+        }
+
+        if (p.isSecretary()) {
+            secretaryList.remove(personKey);
+        }
+
+        else {
+            peopleList.remove(personKey);
+        }
+
         if (headMap.containsKey(personKey)) //group heads must be a member of the group
             headMap.remove(personKey);
     }
@@ -88,8 +122,20 @@ public class Group extends Entity{
         //check if person is in head subgroup
         //add appropriately
         String personKey = p.getName();
-        if (!groupList.contains(p)) //group heads must be a member of the group.
-            groupList.add(p);
+        if (!peopleList.containsKey(personKey) && !secretaryList.containsKey(personKey) && !managerList.containsKey(personKey) ) //group heads must be a member of the group.
+        {
+            if (p.isManager()) {
+                managerList.remove(personKey);
+            }
+
+            if (p.isSecretary()) {
+                secretaryList.remove(personKey);
+            }
+
+            else {
+                peopleList.remove(personKey);
+            }
+        }
         if (!headMap.containsKey(personKey))
             headMap.put(personKey, p);
     }
@@ -104,36 +150,7 @@ public class Group extends Entity{
         //remove appropriately
         String personKey = p.getName();
         if (headMap.containsKey(personKey))
-            headMap.remove(personKey, p);
+            headMap.remove(personKey);
     }
     
-    /**
-     * Call when no further changes will be made to the group
-     * this sorts the members of the group (groupList) in the
-     * following order: Managers -> Secretaries -> Everyone else
-     */
-    public void finalizeGroup() {
-        groupList.sort(new Comparator<Person>() {
-
-            @Override
-            public int compare(Person p1, Person p2) {
-                // Managers come before anyone else
-                if(p1.isManager() && !p2.isManager()) {
-                    return -1;
-                } else if(p2.isManager() && !p1.isManager()) {
-                    return 1;
-                }
-                
-                // Secretaries come after managers and before
-                // everyone else
-                if(p1.isSecretary() && !p2.isSecretary()) {
-                    return -1;
-                } else if(p2.isSecretary() && !p1.isSecretary()) {
-                    return 1;
-                }
-                
-                return 0;
-            }
-        });
-    }
 }

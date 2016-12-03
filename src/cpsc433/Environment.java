@@ -67,6 +67,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
         private HashMap<String, Project> projects = null;
 
         private HashMap<String, Room> rooms = null;
+        private HashMap<String, Room> largeRooms = null;
         private HashSet<SymmetricPair<Room, Room>> closeTo = null;
 
 	protected Environment(String name) {
@@ -77,7 +78,9 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                 groups = new HashMap();
                 projects = new HashMap();
                 rooms = new HashMap();
+                largeRooms = new HashMap();
                 closeTo = new HashSet();
+
 	}
 
 	/**
@@ -89,6 +92,11 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 		if (instance==null) instance = new Environment(null);
 		return instance;
 	}
+        
+        public PopMember createPopulationMember() throws UnsolvableInstanceException,FullRoomException {
+            PopMember p = new PopMember(worksWith, people, groups, projects, rooms, largeRooms, closeTo);
+            return p;
+        }
 
         @Override
         public int fromFile(String fileName) {
@@ -198,8 +206,22 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                         Person tempPerson = headIterator.next();    //gets every person that is a head in the group
                         writer.println("heads-group(" + tempPerson.getName() + ", " + group.getName() + ")");
                     }
-                    ArrayList<Person> personList = group.getGroupList();
-                    for(Person tempPerson:personList){
+                    
+                    Iterator<Person> personIter = group.getPersonMap().values().iterator();
+                    while(personIter.hasNext()) {
+                        Person tempPerson = personIter.next();
+                        writer.println("group(" + tempPerson.getName() + "," + group.getName() + ")");
+                    }
+                    
+                    Iterator<Person> secretaryIter = group.getSecretaryMap().values().iterator();
+                    while(secretaryIter.hasNext()) {
+                        Person tempPerson = secretaryIter.next();
+                        writer.println("group(" + tempPerson.getName() + "," + group.getName() + ")");
+                    }
+                    
+                    Iterator<Person> managerIter = group.getManagerMap().values().iterator();
+                    while(managerIter.hasNext()) {
+                        Person tempPerson = managerIter.next();
                         writer.println("group(" + tempPerson.getName() + "," + group.getName() + ")");
                     }
                 }
@@ -225,16 +247,6 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                         writer.println("project(" + tempPerson.getName() + "," + project.getName() + ")");
                     }
                 }
-        }
-        
-        public void finalizeGroups() {
-            Iterator<Group> groupIter;
-            groupIter = groups.values().iterator();
-            
-            while(groupIter.hasNext()) {
-                Group g = groupIter.next();
-                g.finalizeGroup();
-            }
         }
         
         @Override
@@ -265,6 +277,11 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                 Person personWithNameP;
                 personWithNameP = people.get(p);
                 personWithNameP.setSecretary(true);
+                ArrayList<Group> personGroups = personWithNameP.getGroups();
+
+                for (Group i : personGroups) {
+                    i.addToGroup(personWithNameP);
+                }
             }
             // If no person exists:
             else{
@@ -324,6 +341,11 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                 Person personWithNameP;
                 personWithNameP = people.get(p);
                 personWithNameP.setManager(true);
+                ArrayList<Group> personGroups = personWithNameP.getGroups();
+
+                for (Group i : personGroups) {
+                    i.addToGroup(personWithNameP);
+                }
             }
             // If no person exists:
             else{
@@ -788,16 +810,16 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 	public void a_large_room(String r) {
             if(!rooms.containsKey(r)) {
                 // Add room if it doesn't already exist
-                rooms.put(r, new Room(r, RoomSize.LARGE));
+                largeRooms.put(r, new Room(r, RoomSize.LARGE));
             } else {
                 // If the room already exists update the size
-                Room room = rooms.get(r);
-                room.setSize(RoomSize.LARGE);
+                rooms.remove(r);
+                largeRooms.put(r, new Room(r, RoomSize.LARGE));
             }
         }
         @Override
 	public boolean e_large_room(String r) {
-            return (rooms.containsKey(r) && rooms.get(r).getSize() == RoomSize.LARGE);
+            return (largeRooms.containsKey(r) );
         }
 
         @Override
