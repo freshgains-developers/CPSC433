@@ -24,4 +24,4 @@ medium-room(r5)
 
 
 // room assignments
-assign-to(Eva, r1)
+assign-to(Eva, r2)
