@@ -178,6 +178,8 @@ public class SisyphusI {
 
                         System.out.println("]");
                     }
+                    
+                    
 
                     try {
                         System.out.println();
