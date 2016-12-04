@@ -1,7 +1,5 @@
 package cpsc433;
 
-import com.intellij.vcs.log.Hash;
-
 import java.util.*;
 
 /**
@@ -41,18 +39,7 @@ public class SisyphusI {
 	}
 
 	protected void run() {
-
-		long timeLimit = new Long(args[1]).longValue();
-
-
-		Timer timer = new Timer();
-		timer.schedule((new TimerTask() {
-			@Override
-			public void run() {
-				printResults();
-			}
-		}), (long) (timeLimit*0.9) );
-		env = getEnvironment();
+                env = getEnvironment();
 
 		String fromFile = null;
 
@@ -106,7 +93,18 @@ public class SisyphusI {
 	 */
 	protected void runCommandLineMode() {
 		try {
-			long timeLimit = new Long(args[1]).longValue();
+			long timeLimit = Long.parseLong(args[1]);
+
+                        if(timeLimit > 0) {
+                            Timer timer = new Timer();
+                            timer.schedule((new TimerTask() {
+                                @Override
+                                public void run() {
+                                    printResults();
+                                }
+                            }), (long) (timeLimit * 0.9)); 
+                        }
+                        
 			//timeLimit -= (System.currentTimeMillis()-startTime);
 			System.out.println("Performing search for "+timeLimit+"ms");
 			try {
