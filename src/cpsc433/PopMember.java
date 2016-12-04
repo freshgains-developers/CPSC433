@@ -475,10 +475,7 @@ public class PopMember {
                 } else {
                     assignedRooms.add(room2);
                 }
-
-
-
-
+                
             }
         }
     }
@@ -615,6 +612,10 @@ public class PopMember {
                 while(peopleIter.hasNext()) {
                     Person person = peopleIter.next();
                     
+                    if(person == headValue) {
+                        continue;
+                    }
+                    
                     if(!closeTo.contains(new SymmetricPair<>(headValue.assignedRoom(), person.assignedRoom()))) {
                         score -= 2;
                     }
@@ -625,6 +626,10 @@ public class PopMember {
                 boolean secretaryIsClose = false;
                 while(secrIter.hasNext()) {
                     Person secretary = secrIter.next();
+                    
+                    if(headValue == secretary) {
+                        continue;
+                    }
                     
                     if(!closeTo.contains(new SymmetricPair<>(headValue.assignedRoom(), secretary.assignedRoom()))) {
                         score -= 2;
@@ -644,6 +649,10 @@ public class PopMember {
                 while(managerIter.hasNext()) {
                     Person manager = managerIter.next();
                     
+                    if(manager == headValue) {
+                        continue;
+                    }
+                    
                     if(!closeTo.contains(new SymmetricPair<>(headValue.assignedRoom(), manager.assignedRoom()))) {
                         score -= 2;
                         
@@ -656,6 +665,10 @@ public class PopMember {
                     while (peopleIter.hasNext()) {
                         Person person = peopleIter.next();
                         
+                        if(person == manager) {
+                            continue;
+                        }
+                        
                         // 7) Managers should be close to all members of 
                         //    their group
                         if (!closeTo.contains(new SymmetricPair<>(manager.assignedRoom(), person.assignedRoom()))) {
@@ -667,6 +680,10 @@ public class PopMember {
                     secrIter = group.getSecretaryMap().values().iterator();
                     while (secrIter.hasNext()) {
                         Person secretary = secrIter.next();
+                        
+                        if(secretary == manager) {
+                            continue;
+                        }
 
                         // 7) Managers should be close to all members of 
                         //    their group
