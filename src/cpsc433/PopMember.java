@@ -405,6 +405,25 @@ public class PopMember {
         return assignedRooms;
     }
     
+    public void mutate() {
+        
+    }
+    
+    private void swapOccupants(Room r1, Room r2) throws FullRoomException {
+        Person p1 = r1.getAssignedPeople()[0];
+        Person p2 = r1.getAssignedPeople()[1];
+        
+        r1.clearRoom();
+        
+        r1.putPerson(r2.getAssignedPeople()[0]);
+        r1.putPerson(r2.getAssignedPeople()[1]);
+        
+        r2.clearRoom();
+        
+        r2.putPerson(p1);
+        r2.putPerson(p2);
+    }
+    
     /**
      * Evaluates and returns the score of a population member
      * 
