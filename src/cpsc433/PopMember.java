@@ -100,7 +100,7 @@ public class PopMember {
                 while (roomAssigned == null && (largeRoomsLeft > 0)) {
                     roomIndex = randGen.nextInt(largeRoomsLeft);
                     tempRoom = largeRoomAddresses[roomIndex];
-                    if (tempRoom.hasProod()) {
+                    if (tempRoom.hasProod() || tempRoom.isFull()) {
                         //remove room because it already has a prood in it
                         assignedRooms.add(tempRoom);
                         largeRoomAddresses[roomIndex] = largeRoomAddresses[--largeRoomsLeft];
@@ -117,7 +117,7 @@ public class PopMember {
                 while (roomAssigned == null && (smallRoomsLeft > 0)) {
                     roomIndex = randGen.nextInt(smallRoomsLeft);
                     tempRoom = smallRoomAddresses[roomIndex];
-                    if (tempRoom.hasProod()) {
+                    if (tempRoom.hasProod() || tempRoom.isFull()) {
                         //remove room because it already has a prood in it
                         assignedRooms.add(tempRoom);
                         smallRoomAddresses[roomIndex] = smallRoomAddresses[--smallRoomsLeft];
@@ -134,7 +134,7 @@ public class PopMember {
                 while (roomAssigned == null && (roomsLeft > 0)) {
                     roomIndex = randGen.nextInt(roomsLeft);
                     tempRoom = roomAddresses[roomIndex];
-                    if (tempRoom.hasProod()) {
+                    if (tempRoom.hasProod() || tempRoom.isFull()) {
                         //remove room because it already has a prood in it
                         assignedRooms.add(tempRoom);
                         roomAddresses[roomIndex] = roomAddresses[--roomsLeft];
@@ -161,7 +161,7 @@ public class PopMember {
                 while (roomAssigned == null && (smallRoomsLeft > 0)) {
                     roomIndex = randGen.nextInt(smallRoomsLeft);
                     tempRoom = smallRoomAddresses[roomIndex];
-                    if (tempRoom.hasProod()) {
+                    if (tempRoom.hasProod() || tempRoom.isFull()) {
                         //remove room because it already has a prood in it
                         assignedRooms.add(tempRoom);
                         smallRoomAddresses[roomIndex] = smallRoomAddresses[--smallRoomsLeft];
@@ -178,7 +178,7 @@ public class PopMember {
                 while (roomAssigned == null && (largeRoomsLeft > 0)) {
                     roomIndex = randGen.nextInt(largeRoomsLeft);
                     tempRoom = largeRoomAddresses[roomIndex];
-                    if (tempRoom.hasProod()) {
+                    if (tempRoom.hasProod()|| tempRoom.isFull()) {
                         //remove room because it already has a prood in it
                         assignedRooms.add(tempRoom);
                         largeRoomAddresses[roomIndex] = largeRoomAddresses[--largeRoomsLeft];
@@ -195,7 +195,7 @@ public class PopMember {
                 while (roomAssigned == null && (roomsLeft > 0)) {
                     roomIndex = randGen.nextInt(roomsLeft);
                     tempRoom = roomAddresses[roomIndex];
-                    if (tempRoom.hasProod()) {
+                    if (tempRoom.hasProod()|| tempRoom.isFull()) {
                         //remove room because it already has a prood in it
                         assignedRooms.add(tempRoom);
                         roomAddresses[roomIndex] = roomAddresses[--roomsLeft];
@@ -223,7 +223,7 @@ public class PopMember {
                 while (roomAssigned == null && (smallRoomsLeft > 0)) {
                     roomIndex = randGen.nextInt(smallRoomsLeft);
                     tempRoom = smallRoomAddresses[roomIndex];
-                    if (tempRoom.hasProod()) {
+                    if (tempRoom.hasProod()|| tempRoom.isFull()) {
                         //remove room because it already has a prood in it
                         assignedRooms.add(tempRoom);
                         smallRoomAddresses[roomIndex] = smallRoomAddresses[--smallRoomsLeft];
@@ -240,7 +240,7 @@ public class PopMember {
                 while (roomAssigned == null && (largeRoomsLeft > 0)) {
                     roomIndex = randGen.nextInt(largeRoomsLeft);
                     tempRoom = largeRoomAddresses[roomIndex];
-                    if (tempRoom.hasProod()) {
+                    if (tempRoom.hasProod()|| tempRoom.isFull()) {
                         //remove room because it already has a prood in it
                         assignedRooms.add(tempRoom);
                         largeRoomAddresses[roomIndex] = largeRoomAddresses[--largeRoomsLeft];
@@ -257,7 +257,7 @@ public class PopMember {
                 while (roomAssigned == null && (roomsLeft > 0)) {
                     roomIndex = randGen.nextInt(roomsLeft);
                     tempRoom = roomAddresses[roomIndex];
-                    if (tempRoom.hasProod()) {
+                    if (tempRoom.hasProod()|| tempRoom.isFull()) {
                         //remove room because it already has a prood in it
                         assignedRooms.add(tempRoom);
                         roomAddresses[roomIndex] = roomAddresses[--roomsLeft];
@@ -283,7 +283,7 @@ public class PopMember {
                 while (roomAssigned == null && (largeRoomsLeft > 0)) {
                     roomIndex = randGen.nextInt(largeRoomsLeft);
                     tempRoom = largeRoomAddresses[roomIndex];
-                    if (tempRoom.hasProod()) {
+                    if (tempRoom.hasProod()|| tempRoom.isFull()) {
                         //remove room because it already has a prood in it
                         assignedRooms.add(tempRoom);
                         largeRoomAddresses[roomIndex] = largeRoomAddresses[--largeRoomsLeft];
@@ -303,7 +303,7 @@ public class PopMember {
                 while (roomAssigned == null && (roomsLeft > 0)) {
                     roomIndex = randGen.nextInt(roomsLeft);
                     tempRoom = roomAddresses[roomIndex];
-                    if (tempRoom.hasProod()) {
+                    if (tempRoom.hasProod()|| tempRoom.isFull()) {
                         //remove room because it already has a prood in it
                         assignedRooms.add(tempRoom);
                         roomAddresses[roomIndex] = roomAddresses[--roomsLeft];
@@ -323,7 +323,7 @@ public class PopMember {
                 while (roomAssigned == null && (smallRoomsLeft > 0)) {
                     roomIndex = randGen.nextInt(smallRoomsLeft);
                     tempRoom = smallRoomAddresses[roomIndex];
-                    if (tempRoom.hasProod()) {
+                    if (tempRoom.hasProod()|| tempRoom.isFull()) {
                         //remove room because it already has a prood in it
                         assignedRooms.add(tempRoom);
                         smallRoomAddresses[roomIndex] = smallRoomAddresses[--smallRoomsLeft];
@@ -352,7 +352,7 @@ public class PopMember {
                 while (roomAssigned == null && (largeRoomsLeft > 0)) {
                     roomIndex = randGen.nextInt(largeRoomsLeft);
                     tempRoom = largeRoomAddresses[roomIndex];
-                    if (tempRoom.hasProod()) {
+                    if (tempRoom.hasProod()|| tempRoom.isFull()) {
                         //remove room because it already has a prood in it
                         assignedRooms.add(tempRoom);
                         largeRoomAddresses[roomIndex] = largeRoomAddresses[--largeRoomsLeft];
@@ -371,7 +371,7 @@ public class PopMember {
                 while (roomAssigned == null && (roomsLeft > 0)) {
                     roomIndex = randGen.nextInt(roomsLeft);
                     tempRoom = roomAddresses[roomIndex];
-                    if (tempRoom.hasProod()) {
+                    if (tempRoom.hasProod()|| tempRoom.isFull()) {
                         //remove room because it already has a prood in it
                         assignedRooms.add(tempRoom);
                         roomAddresses[roomIndex] = roomAddresses[--roomsLeft];
@@ -391,7 +391,7 @@ public class PopMember {
                 while (roomAssigned == null && (smallRoomsLeft > 0)) {
                     roomIndex = randGen.nextInt(smallRoomsLeft);
                     tempRoom = smallRoomAddresses[roomIndex];
-                    if (tempRoom.hasProod()) {
+                    if (tempRoom.hasProod()|| tempRoom.isFull()) {
                         //remove room because it already has a prood in it
                         assignedRooms.add(tempRoom);
                         smallRoomAddresses[roomIndex] = smallRoomAddresses[--smallRoomsLeft];
