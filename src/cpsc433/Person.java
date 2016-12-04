@@ -25,7 +25,7 @@ public class Person extends Entity{
     private boolean hacker = false;
     private boolean projectHead = false;
     private boolean groupHead = false;
-
+    private boolean fixed = false;
     private boolean researcher = false;
     // Smoker (default false)
     private boolean smoker = false;
@@ -59,6 +59,9 @@ public class Person extends Entity{
         this.secretary = b;
     }
 
+    public void setFixed(boolean b) {this.fixed = b;}
+
+    public boolean getFixed () {return this.manager;}
     public void setManager(boolean b) {
         this.manager = b;
     }
