@@ -678,6 +678,8 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                 roomObj = new Room(room, RoomSize.MEDIUM);
                 rooms.put(room, roomObj);
             }
+            
+            roomObj.setHasFixedAssignments();
 
             roomObj.putPerson(person);
             person.assignToRoom(roomObj);

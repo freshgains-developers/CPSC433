@@ -493,11 +493,11 @@ public class PopMember {
         Person b = room2[randInt2];
 
 
-        if (a.getFixed()){
+        if (a != null && a.getFixed()){
             a = room1[1-randInt];
         }
 
-        if (b.getFixed()){
+        if (b != null && b.getFixed()){
             b = room2[1-randInt2];
         }
 
