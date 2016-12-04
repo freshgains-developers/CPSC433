@@ -1,19 +1,18 @@
 package cpsc433;
 
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.Scanner;
+import com.intellij.vcs.log.Hash;
+
+import java.util.*;
 
 /**
  * This is the main class for the SysiphusI assignment.  It's main function is to
  * interpret the command line.
- * 
- * <p>Copyright: Copyright (c) 2003-16, Department of Computer Science, University 
- * of Calgary.  Permission to use, copy, modify, distribute and sell this 
- * software and its documentation for any purpose is hereby granted without 
+ *
+ * <p>Copyright: Copyright (c) 2003-16, Department of Computer Science, University
+ * of Calgary.  Permission to use, copy, modify, distribute and sell this
+ * software and its documentation for any purpose is hereby granted without
  * fee, provided that the above copyright notice appear in all copies and that
- * both that copyright notice and this permission notice appear in supporting 
+ * both that copyright notice and this permission notice appear in supporting
  * documentation.  The Department of Computer Science makes no representations
  * about the suitability of this software for any purpose.  It is provided
  * "as is" without express or implied warranty.</p>
@@ -30,18 +29,29 @@ public class SisyphusI {
 	public static void main(String[] args) {
 		new SisyphusI(args);
 	}
-	
+
 	protected final String[] args;
 	protected String out;
 	protected Environment env;
-        
-	
+
+
 	public SisyphusI(String[] args) {
 		this.args = args;
 		run();
 	}
 
 	protected void run() {
+
+		long timeLimit = new Long(args[1]).longValue();
+
+
+		Timer timer = new Timer();
+		timer.schedule((new TimerTask() {
+			@Override
+			public void run() {
+				printResults();
+			}
+		}), (long) (timeLimit*0.9) );
 		env = getEnvironment();
 
 		String fromFile = null;
@@ -67,10 +77,10 @@ public class SisyphusI {
 			killShutdownHook();
 		}
 	}
-	
+
 	/**
-	 * Return the environment object.  One should return an environment object that 
-	 * makes sense for YOUR solution to the problem: the environment could contain 
+	 * Return the environment object.  One should return an environment object that
+	 * makes sense for YOUR solution to the problem: the environment could contain
 	 * all the object instances required for the domain (like people, rooms, etc),
 	 * as well as potential solutions and partial solutions.
 	 * @return The global environment object.
@@ -78,7 +88,7 @@ public class SisyphusI {
 	protected Environment getEnvironment() {
 		return Environment.get();
 	}
-	
+
 	protected void printSynopsis() {
 		System.out.println("Synopsis: SisyphusI [<env-file> [<time-in-ms>]]");
 	}
@@ -90,20 +100,20 @@ public class SisyphusI {
 	 */
 	protected void createShutdownHook() {}
 	protected void killShutdownHook() {}
-	
+
 	/**
 	 * Run in "Command line mode", that is, batch mode.
 	 */
 	protected void runCommandLineMode() {
 		try {
-			long timeLimit = new Long(args[1]).longValue(); 
+			long timeLimit = new Long(args[1]).longValue();
 			//timeLimit -= (System.currentTimeMillis()-startTime);
-				System.out.println("Performing search for "+timeLimit+"ms");
-				try {
-					doSearch(env, timeLimit);
-				} catch (Throwable e) {
-					e.printStackTrace();
-				}
+			System.out.println("Performing search for "+timeLimit+"ms");
+			try {
+				doSearch(env, timeLimit);
+			} catch (Throwable e) {
+				e.printStackTrace();
+			}
 		}
 		catch (NumberFormatException ex) {
 			System.out.println("Error: The 2nd argument must be a long integer.");
@@ -112,26 +122,26 @@ public class SisyphusI {
 		}
 		printResults();
 	}
-	
+
 	/**
 	 * Perform the actual search
 	 * @param env An Environment object.
 	 * @param timeLimit A time limit in milliseconds.
-         * @throws cpsc433.Environment.UnsolvableInstanceException
+	 * @throws cpsc433.Environment.UnsolvableInstanceException
 	 */
 	protected void doSearch(Environment env, long timeLimit) throws Environment.UnsolvableInstanceException {
 
 		Iterator<Person> peopleIter = env.people.values().iterator();
-                
+
 		LinkedList<Person> managerQ = new LinkedList();
 		LinkedList<Person> groupHeadQ = new LinkedList();
 		LinkedList<Person> projectHeadQ = new LinkedList();
 		LinkedList<Person> secretaryQ = new LinkedList();
 		LinkedList<Person> personQ = new LinkedList();
-                
-                Room[] roomAddresses = (Room[]) env.rooms.values().toArray(new Room[0]);
-                Room[] largeRoomAddresses = (Room[]) env.largeRooms.values().toArray(new Room[0]);
-                Room[] smallRoomAddresses = (Room[]) env.smallRooms.values().toArray(new Room[0]);
+
+		Room[] roomAddresses = (Room[]) env.rooms.values().toArray(new Room[0]);
+		Room[] largeRoomAddresses = (Room[]) env.largeRooms.values().toArray(new Room[0]);
+		Room[] smallRoomAddresses = (Room[]) env.smallRooms.values().toArray(new Room[0]);
 
 		// identify all managers, group heads, project heads, secretaries
 		// and assign to proper queues
@@ -154,59 +164,96 @@ public class SisyphusI {
 		//cutoff for unsolvable instances. Dependant on number of people, rooms, managers, and heads.
 		int proods = managerQ.size() + groupHeadQ.size() + projectHeadQ.size();
 		if (env.people.size() - proods <= 2 * (env.rooms.size() + env.smallRooms.size() + env.largeRooms.size() - proods)) {
-                try {
-                    PopMember p = env.createPopulationMember(managerQ, groupHeadQ, projectHeadQ, secretaryQ, personQ, roomAddresses, largeRoomAddresses, smallRoomAddresses);
+			try {
+				PopMember p = env.createPopulationMember(managerQ, groupHeadQ, projectHeadQ, secretaryQ, personQ, roomAddresses, largeRoomAddresses, smallRoomAddresses);
 
-                    System.out.println("Population member created...");
+				System.out.println("Population member created...");
 
-                    LinkedHashSet<Room> assignedRooms = p.getAssignedRooms();
-                    Iterator<Room> valueIter = assignedRooms.iterator();
+				LinkedHashSet<Room> assignedRooms = p.getAssignedRooms();
+				Iterator<Room> valueIter = assignedRooms.iterator();
 
-                    while (valueIter.hasNext()) {
-                        Room r = valueIter.next();
-                        Person[] ass = r.getAssignedPeople();
+				while (valueIter.hasNext()) {
+					Room r = valueIter.next();
+					Person[] ass = r.getAssignedPeople();
 
-                        System.out.print("Room " + r.getName() + ": " + "[");
+					System.out.print("Room " + r.getName() + ": " + "[");
 
-                        if (ass[0] == null) {
-                            System.out.print("Empty");
-                        } else if (ass[1] == null) {
-                            System.out.print(ass[0].getName());
-                        } else {
-                            System.out.print(ass[0].getName() + ", " + ass[1].getName());
-                        }
+					if (ass[0] == null) {
+						System.out.print("Empty");
+					} else if (ass[1] == null) {
+						System.out.print(ass[0].getName());
+					} else {
+						System.out.print(ass[0].getName() + ", " + ass[1].getName());
+					}
 
-                        System.out.println("]");
-                    }
-                    
-                    
+					System.out.println("]");
+				}
 
-                    try {
-                        System.out.println();
-                        System.out.println("Score: " + p.score());
-                    } catch (NullPointerException e) {
-                        e.printStackTrace();
-                    }
 
-                } catch (Room.FullRoomException ex) {
-                    ex.printStackTrace();
-                }
-            } else {
-                throw new Environment.UnsolvableInstanceException("Instance is unsolvable. No solution possible.");
-            }
-    }
+
+				try {
+					System.out.println();
+					System.out.println("Score: " + p.score());
+				} catch (NullPointerException e) {
+					e.printStackTrace();
+				}
+
+			} catch (Room.FullRoomException ex) {
+				ex.printStackTrace();
+			}
+		} else {
+			throw new Environment.UnsolvableInstanceException("Instance is unsolvable. No solution possible.");
+		}
+	}
 
 
 	protected void printResults() {
 		System.out.println("Would print results here, but the search isn't implemented yet.");
+
+
+		Iterator<Room> iter1 = env.smallRooms.values().iterator();
+		Iterator<Room> iter2 = env.rooms.values().iterator();
+		Iterator<Room> iter3 = env.largeRooms.values().iterator();
+
+		for (Room i : env.smallRooms.values()) {
+			if (i.getAssignedPeople().length >= 1) {
+				System.out.println("assign-to(" + i.getAssignedPeople()[0] + ", " + i +")");
+			}
+
+			if (i.getAssignedPeople().length == 2 ) {
+				System.out.println("assign-to(" + i.getAssignedPeople()[1] + ", " + i +")");
+			}
+		}
+
+		for (Room i : env.rooms.values()) {
+			if (i.getAssignedPeople().length >= 1) {
+				System.out.println("assign-to(" + i.getAssignedPeople()[0] + ", " + i +")");
+			}
+
+			if (i.getAssignedPeople().length == 2 ) {
+				System.out.println("assign-to(" + i.getAssignedPeople()[1] + ", " + i +")");
+			}
+		}
+
+		for (Room i : env.largeRooms.values()) {
+			if (i.getAssignedPeople().length >= 1) {
+				System.out.println("assign-to(" + i.getAssignedPeople()[0] + ", " + i +")");
+			}
+
+			if (i.getAssignedPeople().length == 2 ) {
+				System.out.println("assign-to(" + i.getAssignedPeople()[1] + ", " + i +")");
+			}
+		}
+
+
 	}
-	
+
 	protected void runInteractiveMode() {
 		final int maxBuf = 200;
 		byte[] buf = new byte[maxBuf];
 		int length;
-                
-                Scanner scan = new Scanner(System.in);
+
+		Scanner scan = new Scanner(System.in);
 		try {
 			System.out.print("\nSisyphus I: query using predicates, assert using \"!\" prefixing predicates;\n !exit() to quit; !help() for help.\n\n> ");
 			while (scan.hasNextLine()) {
@@ -218,9 +265,9 @@ public class SisyphusI {
 					System.out.println("> !help()");
 				}
 				if (s.length()>0) {
-					if (s.charAt(0)=='!') 
+					if (s.charAt(0)=='!')
 						env.assert_(s.substring(1));
-					else 
+					else
 						System.out.print(" --> "+env.eval(s));
 				}
 				System.out.print("\n> ");
