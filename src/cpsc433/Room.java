@@ -42,6 +42,7 @@ public class Room extends Entity {
     
     private RoomSize size;
     private final Person[] assignedPeople;
+    private boolean hasFixedAssignments = false;
     
     // Constructor, accepts name and Room size
     public Room(String name, RoomSize size) {
@@ -85,6 +86,14 @@ public class Room extends Entity {
     // Setter for Room size
     public void setSize(RoomSize size) {
         this.size = size;
+    }
+    
+    public void setHasFixedAssignments() {
+        this.hasFixedAssignments = true;
+    }
+    
+    public boolean hasFixedAssignments() {
+        return hasFixedAssignments;
     }
     
     public boolean isFull(){

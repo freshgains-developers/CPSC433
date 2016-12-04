@@ -458,7 +458,7 @@ public class PopMember {
                     }
                 } while (room1 == room2);
 
-                if(room1.hasProod() || room2.hasProod() || rand.nextInt(2) == 0) {
+                if(!room1.hasFixedAssignments() && !room2.hasFixedAssignments() && (room1.hasProod() || room2.hasProod() || rand.nextInt(2) == 0)) {
                     swapOccupants(room1, room2);
                 } else {
                     swapSingle(room1, room2);
