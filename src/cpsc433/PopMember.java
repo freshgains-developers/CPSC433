@@ -424,6 +424,33 @@ public class PopMember {
         r2.putPerson(p2);
     }
     
+
+
+
+
+
+    public void swapSingle (Room r1, Room r2) throws FullRoomException {
+        Random x = new Random();
+        int randInt = x.nextInt(2);
+        int randInt2 = x.nextInt(2);
+        Person[] room1 = r1.getAssignedPeople();
+        Person[] room2 = r2.getAssignedPeople();
+
+        Person a = room1[randInt];
+        Person b = room2[randInt2];
+
+        r1.removePerson(a);
+        r2.removePerson(b);
+
+        r1.putPerson(b);
+        r2.putPerson(a);
+
+    }
+
+
+
+
+
     /**
      * Evaluates and returns the score of a population member
      * 
