@@ -82,6 +82,8 @@ public class Room extends Entity {
     public Person[] getAssignedPeople() {
         return assignedPeople;
     }
+
+    public boolean isEmpty() {return ((assignedPeople[0] == null) && (assignedPeople[1] == null));}
     
     // Setter for Room size
     public void setSize(RoomSize size) {

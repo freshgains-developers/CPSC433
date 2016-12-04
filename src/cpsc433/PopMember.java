@@ -463,6 +463,22 @@ public class PopMember {
                 } else {
                     swapSingle(room1, room2);
                 }
+
+
+                if (room1.isEmpty()){
+                    assignedRooms.remove(room1);
+                } else {
+                    assignedRooms.add(room1);
+                }
+                if (room2.isEmpty()){
+                    assignedRooms.remove(room2);
+                } else {
+                    assignedRooms.add(room2);
+                }
+
+
+
+
             }
         }
     }
@@ -532,7 +548,7 @@ public class PopMember {
             if(p1 != null && p2 != null) {
                 // 16) Two people shouldn't share a small room
                 if(r.getSize() == RoomSize.SMALL) {
-                    score -= 50; // * 2
+                    score -= 50;// * 2
                 }
                 
                 // 15) If two people share an office, they sould work together
@@ -543,7 +559,7 @@ public class PopMember {
                 // 13) if a non-secretary hacker/non-hacker shares an office, 
                 //     then he/she should share with another hacker/non-hacker
                 //
-                //   If one is a hacker and the other is not and niether is
+                //   If one is a hacker and the other is not and neither is
                 //   a secretary -2 ?
                 if ((p1.isHacker() != p2.isHacker()) && !p1.isSecretary() && !p2.isSecretary()) {
                     score -= 4; // * 2
