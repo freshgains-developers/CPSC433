@@ -98,6 +98,10 @@ public class Room extends Entity {
         return hasFixedAssignments;
     }
     
+    public boolean allFixed() {
+        return isFull() && assignedPeople[0].getFixed() && assignedPeople[1].getFixed();
+    }
+    
     public boolean isFull(){
          if(this.assignedPeople[1] == null)
             return false;
