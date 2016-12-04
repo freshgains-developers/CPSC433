@@ -165,6 +165,7 @@ public class SisyphusI {
 			try {
 				PopMember p = env.createPopulationMember(managerQ, groupHeadQ, projectHeadQ, secretaryQ, personQ, roomAddresses, largeRoomAddresses, smallRoomAddresses);
 				System.out.println("Population member created...");
+    
                                 
 				try {
 					System.out.println("Score: " + p.score());

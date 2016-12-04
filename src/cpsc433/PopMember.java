@@ -424,11 +424,6 @@ public class PopMember {
         r2.putPerson(p2);
     }
     
-
-
-
-
-
     public void swapSingle (Room r1, Room r2) throws FullRoomException {
         Random x = new Random();
         int randInt = x.nextInt(2);
