@@ -460,11 +460,11 @@ public class PopMember {
                 // If room1 has fixed assignments and a prood then we
                 // can't do any swaps, move it to the back
                 if( (room1.hasProod() && room1.hasFixedAssignments()) || room1.allFixed()) {
-                    rooms[ri1] = rooms[roomsLength-1];
-                    rooms[roomsLength-1] = room1;
+                    rooms[ri1] = rooms[--roomsLength];
+                    rooms[roomsLength] = room1;
                     
                     totalRooms--;
-                    
+
                     switch(i) {
                         case 0:
                             smallRoomMutateCount--;
