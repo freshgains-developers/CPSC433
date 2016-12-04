@@ -165,7 +165,7 @@ public class SisyphusI {
 			try {
 				PopMember p = env.createPopulationMember(managerQ, groupHeadQ, projectHeadQ, secretaryQ, personQ, roomAddresses, largeRoomAddresses, smallRoomAddresses);
 				System.out.println("Population member created...");
-
+                                
 				try {
 					System.out.println("Score: " + p.score());
                                         System.out.println();
@@ -177,7 +177,8 @@ public class SisyphusI {
 				ex.printStackTrace();
 			}
 		} else {
-			throw new Environment.UnsolvableInstanceException("Instance is unsolvable. No solution possible.");
+                    // TODO: Remove this exception and replace with comment write
+                    throw new Environment.UnsolvableInstanceException("Instance is unsolvable. No solution possible.");
 		}
 	}
 
