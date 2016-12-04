@@ -442,24 +442,26 @@ public class PopMember {
             }
             
             for (Room room1 : rooms) {
-                if (room1.hasProod()) {
-                    Room room2 = null;
-                    do {
-                        int roomIndex = rand.nextInt(totalRooms);
+                Room room2 = null;
+                do {
+                    int roomIndex = rand.nextInt(totalRooms);
 
-                        if (roomIndex >= smallRooms.length && roomIndex < mediumRooms.length + smallRooms.length) {
-                            // Picked medium room
-                            room2 = mediumRooms[roomIndex - smallRooms.length];
-                        } else if (roomIndex >= mediumRooms.length + smallRooms.length) {
-                            // Picked large room
-                            room2 = largeRooms[roomIndex - mediumRooms.length - smallRooms.length];
-                        } else {
-                            // Picked small room
-                            room2 = smallRooms[roomIndex];
-                        }
-                    } while(room1 == room2);
-                    
+                    if (roomIndex >= smallRooms.length && roomIndex < mediumRooms.length + smallRooms.length) {
+                        // Picked medium room
+                        room2 = mediumRooms[roomIndex - smallRooms.length];
+                    } else if (roomIndex >= mediumRooms.length + smallRooms.length) {
+                        // Picked large room
+                        room2 = largeRooms[roomIndex - mediumRooms.length - smallRooms.length];
+                    } else {
+                        // Picked small room
+                        room2 = smallRooms[roomIndex];
+                    }
+                } while (room1 == room2);
+
+                if(room1.hasProod() || room2.hasProod() || rand.nextInt(2) == 0) {
                     swapOccupants(room1, room2);
+                } else {
+                    swapSingle(room1, room2);
                 }
             }
         }
