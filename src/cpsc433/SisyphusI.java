@@ -106,7 +106,7 @@ public class SisyphusI {
                         }
                         
 			//timeLimit -= (System.currentTimeMillis()-startTime);
-			System.out.println("Performing search for "+timeLimit+"ms");
+			System.out.println("Performing search for "+timeLimit+"ms\n");
 			try {
 				doSearch(env, timeLimit);
 			} catch (Throwable e) {
@@ -164,34 +164,11 @@ public class SisyphusI {
 		if (env.people.size() - proods <= 2 * (env.rooms.size() + env.smallRooms.size() + env.largeRooms.size() - proods)) {
 			try {
 				PopMember p = env.createPopulationMember(managerQ, groupHeadQ, projectHeadQ, secretaryQ, personQ, roomAddresses, largeRoomAddresses, smallRoomAddresses);
-
 				System.out.println("Population member created...");
 
-				LinkedHashSet<Room> assignedRooms = p.getAssignedRooms();
-				Iterator<Room> valueIter = assignedRooms.iterator();
-
-				while (valueIter.hasNext()) {
-					Room r = valueIter.next();
-					Person[] ass = r.getAssignedPeople();
-
-					System.out.print("Room " + r.getName() + ": " + "[");
-
-					if (ass[0] == null) {
-						System.out.print("Empty");
-					} else if (ass[1] == null) {
-						System.out.print(ass[0].getName());
-					} else {
-						System.out.print(ass[0].getName() + ", " + ass[1].getName());
-					}
-
-					System.out.println("]");
-				}
-
-
-
 				try {
-					System.out.println();
 					System.out.println("Score: " + p.score());
+                                        System.out.println();
 				} catch (NullPointerException e) {
 					e.printStackTrace();
 				}
@@ -206,9 +183,6 @@ public class SisyphusI {
 
 
 	protected void printResults() {
-		System.out.println("Would print results here, but the search isn't implemented yet.");
-
-
 		Iterator<Room> iter1 = env.smallRooms.values().iterator();
 		Iterator<Room> iter2 = env.rooms.values().iterator();
 		Iterator<Room> iter3 = env.largeRooms.values().iterator();
