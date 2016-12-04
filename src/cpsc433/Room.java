@@ -99,7 +99,12 @@ public class Room extends Entity {
     // are unchanged
     public void putPerson(Person p) throws FullRoomException {
         if(assignedPeople[0] == null) {
-            assignedPeople[0] = p;
+            if(p == null) {
+                assignedPeople[0] = assignedPeople[1];
+                assignedPeople[1] = null;
+            } else {
+                assignedPeople[0] = p; 
+            }
         } else if(assignedPeople[1] == null) {
             assignedPeople[1] = p;
         } else {
