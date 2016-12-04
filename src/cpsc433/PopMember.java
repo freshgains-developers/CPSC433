@@ -492,6 +492,18 @@ public class PopMember {
         Person a = room1[randInt];
         Person b = room2[randInt2];
 
+        if (a.getFixed() && b.getFixed() ){
+            return;
+        }
+
+        if (a.getFixed()){
+            a = room1[1-randInt];
+        }
+
+        else {
+            b = room2[1-randInt2];
+        }
+
         r1.removePerson(a);
         r2.removePerson(b);
 

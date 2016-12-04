@@ -661,8 +661,10 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 
             if(people.containsKey(p)) {
                 person = people.get(p);
+                person.setFixed(true);
             } else {
                 person = new Person(p);
+                person.setFixed(true);
                 people.put(p, person);
             }
 
