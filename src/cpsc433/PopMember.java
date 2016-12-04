@@ -31,6 +31,10 @@ public class PopMember {
     private HashMap<String, Project> projects = null;
     private HashSet<SymmetricPair<Room, Room>> closeTo = null;
     private LinkedHashSet<Room> assignedRooms;
+    
+    private Room[] smallRooms;
+    private Room[] mediumRooms;
+    private Room[] largeRooms;
 
 
     /**
@@ -57,7 +61,11 @@ public class PopMember {
         this.people = people;
         this.groups = groups;
         this.projects = projects;
-        this.closeTo = closeTo;    
+        this.closeTo = closeTo; 
+        
+        this.smallRooms = smallRoomAddresses;
+        this.mediumRooms = roomAddresses;
+        this.largeRooms = largeRoomAddresses;
         
         Random randGen = new Random();
         assignedRooms = new LinkedHashSet();
@@ -406,7 +414,11 @@ public class PopMember {
     }
     
     public void mutate() {
-        
+        for(Room room : smallRooms) {
+            if(room.hasProod()) {
+                
+            }
+        }
     }
     
     private void swapOccupants(Room r1, Room r2) throws FullRoomException {
