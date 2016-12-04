@@ -413,10 +413,47 @@ public class PopMember {
         return assignedRooms;
     }
     
-    public void mutate() {
-        for(Room room : smallRooms) {
-            if(room.hasProod()) {
+    public void mutate() throws FullRoomException {
+        Random rand = new Random();
+        int totalRooms = smallRooms.length + mediumRooms.length + largeRooms.length;
+        
+        for(int i=0;i<3;i++) {
+            Room[] rooms = null;
+            switch(i) {
+                case 0:
+                    rooms = smallRooms;
+                    break;
+                    
+                case 1:
+                    rooms = mediumRooms;
+                    break;
+                    
+                case 2:
+                    rooms = largeRooms;
+                    break;
                 
+                default:
+                    break;
+            }
+            
+            for (Room room1 : rooms) {
+                if (room1.hasProod()) {
+                    Room room2;
+                    int roomIndex = rand.nextInt(totalRooms);
+
+                    if (roomIndex > smallRooms.length && roomIndex < mediumRooms.length + smallRooms.length) {
+                        // Picked medium room
+                        room2 = mediumRooms[roomIndex - smallRooms.length];
+                    } else if (roomIndex > mediumRooms.length + smallRooms.length) {
+                        // Picked large room
+                        room2 = largeRooms[roomIndex - mediumRooms.length - smallRooms.length];
+                    } else {
+                        // Picked small room
+                        room2 = smallRooms[roomIndex];
+                    }
+
+                    swapOccupants(room1, room2);
+                }
             }
         }
     }
