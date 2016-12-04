@@ -188,34 +188,35 @@ public class SisyphusI {
 		Iterator<Room> iter3 = env.largeRooms.values().iterator();
 
 		for (Room i : env.smallRooms.values()) {
-			if (i.getAssignedPeople().length >= 1) {
-				System.out.println("assign-to(" + i.getAssignedPeople()[0] + ", " + i +")");
+			if (i.getAssignedPeople()[0] != null) {
+				System.out.println("assign-to(" + i.getAssignedPeople()[0].getName() + ", " + i.getName() +")");
 			}
 
-			if (i.getAssignedPeople().length == 2 ) {
-				System.out.println("assign-to(" + i.getAssignedPeople()[1] + ", " + i +")");
+			if (i.getAssignedPeople()[1]  != null ) {
+				System.out.println("assign-to(" + i.getAssignedPeople()[1].getName() + ", " + i.getName() +")");
 			}
 		}
 
 		for (Room i : env.rooms.values()) {
-			if (i.getAssignedPeople().length >= 1) {
-				System.out.println("assign-to(" + i.getAssignedPeople()[0] + ", " + i +")");
+			if (i.getAssignedPeople()[0] != null) {
+				System.out.println("assign-to(" + i.getAssignedPeople()[0].getName() + ", " + i.getName() +")");
 			}
 
-			if (i.getAssignedPeople().length == 2 ) {
-				System.out.println("assign-to(" + i.getAssignedPeople()[1] + ", " + i +")");
+			if (i.getAssignedPeople()[1]  != null ) {
+				System.out.println("assign-to(" + i.getAssignedPeople()[1].getName() + ", " + i.getName() +")");
 			}
 		}
 
 		for (Room i : env.largeRooms.values()) {
-			if (i.getAssignedPeople().length >= 1) {
-				System.out.println("assign-to(" + i.getAssignedPeople()[0] + ", " + i +")");
+			if (i.getAssignedPeople()[0] != null) {
+				System.out.println("assign-to(" + i.getAssignedPeople()[0].getName() + ", " + i.getName() +")");
 			}
 
-			if (i.getAssignedPeople().length == 2 ) {
-				System.out.println("assign-to(" + i.getAssignedPeople()[1] + ", " + i +")");
+			if (i.getAssignedPeople()[1]  != null ) {
+				System.out.println("assign-to(" + i.getAssignedPeople()[1].getName() + ", " + i.getName() +")");
 			}
 		}
+
 
 
 	}
