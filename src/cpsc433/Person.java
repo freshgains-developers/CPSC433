@@ -61,7 +61,7 @@ public class Person extends Entity{
 
     public void setFixed(boolean b) {this.fixed = b;}
 
-    public boolean getFixed () {return this.manager;}
+    public boolean getFixed () {return this.fixed;}
     public void setManager(boolean b) {
         this.manager = b;
     }

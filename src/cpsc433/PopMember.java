@@ -506,13 +506,9 @@ public class PopMember {
                             mediumRooms[roomIndex] = mediumRooms[--mediumRoomMutateCount];
                             mediumRooms[mediumRoomMutateCount] = room2;
 
-                            room2 = mediumRooms[roomIndex];
-                            
+                            // Re-select
+                            room2 = room1;
                             totalRooms--;
-                            if(mediumRoomMutateCount == 0) {
-                                // Re-select
-                                room2 = room1;
-                            }
                         }
                     } else if (roomIndex >= mediumRoomMutateCount + smallRoomMutateCount) {
                         // Picked large room
@@ -524,14 +520,10 @@ public class PopMember {
                         if ( (room2.hasProod() && room2.hasFixedAssignments()) || room2.allFixed()) {
                             largeRooms[roomIndex] = largeRooms[--largeRoomMutateCount];
                             largeRooms[largeRoomMutateCount] = room2;
-
-                            room2 = largeRooms[roomIndex];
                             
+                            // Re-select
+                            room2 = room1;
                             totalRooms--;
-                            if(largeRoomMutateCount == 0) {
-                                // Re-select
-                                room2 = room1;
-                            }
                         }
                     } else {
                         // Picked small room
@@ -543,13 +535,9 @@ public class PopMember {
                             smallRooms[roomIndex] = smallRooms[--smallRoomMutateCount];
                             smallRooms[smallRoomMutateCount] = room2;
 
-                            room2 = smallRooms[roomIndex];
-                            
+                            // Re-select
+                            room2 = room1;
                             totalRooms--;
-                            if(smallRoomMutateCount == 0) {
-                                // Re-select
-                                room2 = room1;
-                            }
                         }
                     }
                     
