@@ -600,7 +600,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 
         @Override
 	public void a_works_with(String p, TreeSet<Pair<ParamType,Object>> p2s){
-            Person thisPerson;
+            Person thisPerson = null;
             
             for(HashMap<String,Person> personMap : people) {
                 if (personMap.containsKey(p)) {
@@ -644,7 +644,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 
         @Override
 	public void a_works_with(String p, String p2) {
-            Person personObj1, personObj2;
+            Person personObj1 = null, personObj2 = null;
 
             // First check if the specified people exist, if not
             // create them
@@ -754,7 +754,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 
         @Override
 	public void a_close(String room, String room2) {
-            Room roomObj1, roomObj2;
+            Room roomObj1 = null, roomObj2 = null;
             
             for (int i = 0; i < largeRooms.size(); i++) {
                 HashMap<String, Room> roomMap = rooms.get(i);
@@ -801,7 +801,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 
         @Override
 	public void a_close(String room, TreeSet<Pair<ParamType,Object>> set) {
-            Room roomObj1;
+            Room roomObj1 = null;
 
             for (int i = 0; i < largeRooms.size(); i++) {
                 HashMap<String, Room> roomMap = rooms.get(i);
@@ -825,7 +825,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
             // (room1, room_i) to the closeTo set
             Iterator<Pair<ParamType,Object>> iter = set.iterator();
             while(iter.hasNext()) {
-                Room room_i;
+                Room room_i = null;
                 String roomName_i = (String)iter.next().getValue();
                 
                 for (int i = 0; i < largeRooms.size(); i++) {
