@@ -36,9 +36,9 @@ public class PopMember {
     private Room[] mediumRooms;
     private Room[] largeRooms;
     
-    private static int smallRoomMutateCount;
-    private static int mediumRoomMutateCount;
-    private static int largeRoomMutateCount;
+    private int smallRoomMutateCount;
+    private int mediumRoomMutateCount;
+    private int largeRoomMutateCount;
 
 
     /**
@@ -71,9 +71,9 @@ public class PopMember {
         this.mediumRooms = roomAddresses;
         this.largeRooms = largeRoomAddresses;
         
-        smallRoomMutateCount = smallRooms.length;
-        mediumRoomMutateCount = mediumRooms.length;
-        largeRoomMutateCount = largeRooms.length;
+        this.smallRoomMutateCount = smallRooms.length;
+        this.mediumRoomMutateCount = mediumRooms.length;
+        this.largeRoomMutateCount = largeRooms.length;
         
         Random randGen = new Random();
         assignedRooms = new LinkedHashSet();
@@ -421,148 +421,91 @@ public class PopMember {
         return assignedRooms;
     }
     
-    public void mutate() throws FullRoomException {
-        Random rand = new Random();
-        int totalRooms = smallRoomMutateCount + mediumRoomMutateCount + largeRoomMutateCount;
-        
-        // This handles this case where 1 room 1-2 people causes an infinite loop
-        if(totalRooms == 1) {
-            return;
+    private Room pickRandomSwapableRoom(Random rand) {
+        Room room = null;
+        while(room == null) {
+            int totalRooms = smallRoomMutateCount + mediumRoomMutateCount + largeRoomMutateCount;
+
+            // No rooms available for swap 
+            if (totalRooms < 2) {
+                return null;
+            }
+
+            int roomIndex = rand.nextInt(totalRooms);
+
+            if (roomIndex >= smallRoomMutateCount && roomIndex < mediumRoomMutateCount + smallRoomMutateCount) {
+                // Picked medium room
+                roomIndex -= smallRoomMutateCount;
+                room = mediumRooms[roomIndex];
+
+                // If room has fixed assignments and a prood then we
+                // can't do any swaps, swap with the back of the list
+                if ((room.hasProod() && room.hasFixedAssignments()) || room.allFixed()) {
+                    mediumRooms[roomIndex] = mediumRooms[--mediumRoomMutateCount];
+                    mediumRooms[mediumRoomMutateCount] = room;
+
+                    room = null;
+                }
+            } else if (roomIndex >= mediumRoomMutateCount + smallRoomMutateCount) {
+                // Picked large room
+                roomIndex -= mediumRoomMutateCount + smallRoomMutateCount;
+                room = largeRooms[roomIndex];
+
+                // If room has fixed assignments and a prood then we
+                // can't do any swaps, swap with the back of the list
+                if ((room.hasProod() && room.hasFixedAssignments()) || room.allFixed()) {
+                    largeRooms[roomIndex] = largeRooms[--largeRoomMutateCount];
+                    largeRooms[largeRoomMutateCount] = room;
+
+                    room = null;
+                }
+            } else {
+                // Picked small room
+                room = smallRooms[roomIndex];
+
+                // If room has fixed assignments and a prood then we
+                // can't do any swaps, swap with the back of the list
+                if ((room.hasProod() && room.hasFixedAssignments()) || room.allFixed()) {
+                    smallRooms[roomIndex] = smallRooms[--smallRoomMutateCount];
+                    smallRooms[smallRoomMutateCount] = room;
+
+                    room = null;
+                }
+            }
         }
         
-        for(int i=0;i<3;i++) {
-            Room[] rooms = null;
-            int roomsLength = 0;
+        return room;
+    }
+    
+    public void mutate(int numSwaps) throws FullRoomException {
+        Random rand = new Random();
+        
+        while (numSwaps-- > 0) {
+            Room room1 = pickRandomSwapableRoom(rand);
+            Room room2 = pickRandomSwapableRoom(rand);
             
-            switch(i) {
-                case 0:
-                    rooms = smallRooms;
-                    roomsLength = smallRoomMutateCount;
-                    break;
-                    
-                case 1:
-                    rooms = mediumRooms;
-                    roomsLength = mediumRoomMutateCount;
-                    break;
-                    
-                case 2:
-                    rooms = largeRooms;
-                    roomsLength = largeRoomMutateCount;
-                    break;
-                
-                default:
-                    break;
+            // No rooms available 
+            if(room1 == null || room2 == null) {
+                break;
             }
-            
-            for (int ri1 = 0; ri1 < roomsLength; ri1++) {
-                Room room1 = rooms[ri1];
-                
-                // If room1 has fixed assignments and a prood then we
-                // can't do any swaps, move it to the back
-                if( (room1.hasProod() && room1.hasFixedAssignments()) || room1.allFixed()) {
-                    rooms[ri1] = rooms[--roomsLength];
-                    rooms[roomsLength] = room1;
-                    
-                    totalRooms--;
 
-                    switch(i) {
-                        case 0:
-                            smallRoomMutateCount--;
-                            break;
-                            
-                        case 1:
-                            mediumRoomMutateCount--;
-                            break;
-                            
-                        case 2:
-                            largeRoomMutateCount--;
-                            break;
-                            
-                        default:
-                            break;
-                    }
-                    
-                    ri1--;
-                    continue;
-                }
-                
-                Room room2 = null;
-                do {
-                    // No rooms available for swap mutate not possible
-                    if(totalRooms == 0) {
-                        return;
-                    }
-                    
-                    int roomIndex = rand.nextInt(totalRooms);
-
-                    if (roomIndex >= smallRoomMutateCount && roomIndex < mediumRoomMutateCount + smallRoomMutateCount) {
-                        // Picked medium room
-                        roomIndex -= smallRoomMutateCount;
-                        room2 = mediumRooms[roomIndex];
-                        
-                        // If room2 has fixed assignments and a prood then we
-                        // can't do any swaps, swap with the back of the list
-                        if ( (room2.hasProod() && room2.hasFixedAssignments()) || room2.allFixed()) {
-                            mediumRooms[roomIndex] = mediumRooms[--mediumRoomMutateCount];
-                            mediumRooms[mediumRoomMutateCount] = room2;
-
-                            // Re-select
-                            room2 = room1;
-                            totalRooms--;
-                        }
-                    } else if (roomIndex >= mediumRoomMutateCount + smallRoomMutateCount) {
-                        // Picked large room
-                        roomIndex -= mediumRoomMutateCount + smallRoomMutateCount;
-                        room2 = largeRooms[roomIndex];
-                        
-                        // If room2 has fixed assignments and a prood then we
-                        // can't do any swaps, swap with the back of the list
-                        if ( (room2.hasProod() && room2.hasFixedAssignments()) || room2.allFixed()) {
-                            largeRooms[roomIndex] = largeRooms[--largeRoomMutateCount];
-                            largeRooms[largeRoomMutateCount] = room2;
-                            
-                            // Re-select
-                            room2 = room1;
-                            totalRooms--;
-                        }
-                    } else {
-                        // Picked small room
-                        room2 = smallRooms[roomIndex];
-                        
-                        // If room2 has fixed assignments and a prood then we
-                        // can't do any swaps, swap with the back of the list
-                        if ( (room2.hasProod() && room2.hasFixedAssignments()) || room2.allFixed()) {
-                            smallRooms[roomIndex] = smallRooms[--smallRoomMutateCount];
-                            smallRooms[smallRoomMutateCount] = room2;
-
-                            // Re-select
-                            room2 = room1;
-                            totalRooms--;
-                        }
-                    }
-                    
-                } while (room1 == room2);
- 
-                
-                if(!room1.hasFixedAssignments() && !room2.hasFixedAssignments() && (room1.hasProod() || room2.hasProod() || rand.nextInt(2) == 0)) {
-                    swapOccupants(room1, room2);
-                } else {
-                    swapSingle(room1, room2, rand);
-                }
-
-
-                if (room1.isEmpty()){
-                    assignedRooms.remove(room1);
-                } else {
-                    assignedRooms.add(room1);
-                }
-                if (room2.isEmpty()){
-                    assignedRooms.remove(room2);
-                } else {
-                    assignedRooms.add(room2);
-                }
-                
+            if (!room1.hasFixedAssignments() && !room2.hasFixedAssignments() && (room1.hasProod() || room2.hasProod() || rand.nextInt(2) == 0)) {
+                swapOccupants(room1, room2);
+            } else {
+                swapSingle(room1, room2, rand);
             }
+
+            if (room1.isEmpty()) {
+                assignedRooms.remove(room1);
+            } else {
+                assignedRooms.add(room1);
+            }
+            if (room2.isEmpty()) {
+                assignedRooms.remove(room2);
+            } else {
+                assignedRooms.add(room2);
+            }
+
         }
     }
     

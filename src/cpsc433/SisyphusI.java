@@ -174,7 +174,7 @@ public class SisyphusI {
 				} catch (NullPointerException e) {
 					e.printStackTrace();
 				}
-                                p.mutate();
+                                p.mutate(1);
                                 /* ----- CUT HERE ------ */
                                 
 				try {
