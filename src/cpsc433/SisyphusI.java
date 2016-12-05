@@ -1,5 +1,6 @@
 package cpsc433;
 
+import java.io.*;
 import java.util.*;
 
 /**
@@ -30,8 +31,8 @@ public class SisyphusI {
 
 	protected final String[] args;
 	protected String out;
-	protected Environment env;
-
+	//protected Environment env;
+	private LinkedHashSet<PopMember> populations;
 
 	public SisyphusI(String[] args) {
 		this.args = args;
@@ -39,13 +40,13 @@ public class SisyphusI {
 	}
 
 	protected void run() {
-                env = getEnvironment();
+                //env = getEnvironment();
 
 		String fromFile = null;
 
 		if (args.length>0) {
 			fromFile = args[0];
-			env.fromFile(fromFile);
+			//env.fromFile(fromFile);
 		}
 		else {
 			printSynopsis();
@@ -108,7 +109,7 @@ public class SisyphusI {
 			//timeLimit -= (System.currentTimeMillis()-startTime);
 			System.out.println("Performing search for "+timeLimit+"ms\n");
 			try {
-				doSearch(env, timeLimit);
+				doSearch(timeLimit);
 			} catch (Throwable e) {
 				e.printStackTrace();
 			}
@@ -123,79 +124,121 @@ public class SisyphusI {
 
 	/**
 	 * Perform the actual search
-	 * @param env An Environment object.
 	 * @param timeLimit A time limit in milliseconds.
 	 * @throws cpsc433.Environment.UnsolvableInstanceException
 	 */
-	protected void doSearch(Environment env, long timeLimit) throws Environment.UnsolvableInstanceException {
-
-		Iterator<Person> peopleIter = env.people.values().iterator();
-
-		LinkedList<Person> managerQ = new LinkedList();
-		LinkedList<Person> groupHeadQ = new LinkedList();
-		LinkedList<Person> projectHeadQ = new LinkedList();
-		LinkedList<Person> secretaryQ = new LinkedList();
-		LinkedList<Person> personQ = new LinkedList();
-
-		Room[] roomAddresses = (Room[]) env.rooms.values().toArray(new Room[0]);
-		Room[] largeRoomAddresses = (Room[]) env.largeRooms.values().toArray(new Room[0]);
-		Room[] smallRoomAddresses = (Room[]) env.smallRooms.values().toArray(new Room[0]);
-
-		// identify all managers, group heads, project heads, secretaries
-		// and assign to proper queues
-		while (peopleIter.hasNext()) {
-			Person tempPerson = peopleIter.next();
-
-			if (tempPerson.isGroupHead()) {
-				groupHeadQ.add(tempPerson);
-			} else if (tempPerson.isManager()) {
-				managerQ.add(tempPerson);
-			} else if (tempPerson.isProjectHead()) {
-				projectHeadQ.add(tempPerson);
-			} else if (tempPerson.isSecretary()) {
-				secretaryQ.add(tempPerson);
-			} else {
-				personQ.add(tempPerson);
-			}
+	protected void doSearch(long timeLimit) throws Environment.UnsolvableInstanceException, IOException {
+		BufferedReader stream = null;
+		try {
+			stream = new BufferedReader(new InputStreamReader(new FileInputStream(args[0])));
+			stream.mark(10000000);
+		}
+		catch (FileNotFoundException ex) {
+			System.out.println("Can't open file " + args[0]);
+			return;
 		}
 
-		//cutoff for unsolvable instances. Dependant on number of people, rooms, managers, and heads.
-		int proods = managerQ.size() + groupHeadQ.size() + projectHeadQ.size();
-		if (env.people.size() - proods <= 2 * (env.rooms.size() + env.smallRooms.size() + env.largeRooms.size() - proods)) {
-			try {
-				PopMember p = env.createPopulationMember(managerQ, groupHeadQ, projectHeadQ, secretaryQ, personQ, roomAddresses, largeRoomAddresses, smallRoomAddresses);
-				System.out.println("Population member created...");
-                                
-                                /* ----- CUT HERE ------ */
-                                printResults();
-                                try {
-					System.out.println("Score: " + p.score());
-                                        System.out.println();
-				} catch (NullPointerException e) {
-					e.printStackTrace();
-				}
-                                p.mutate(3);
-                                /* ----- CUT HERE ------ */
-                                
-				try {
-					System.out.println("Score: " + p.score());
-                                        System.out.println();
-				} catch (NullPointerException e) {
-					e.printStackTrace();
+		try {
+			for (int j = 0; j < 20; j++ ) {
+				Environment env = new Environment(null);
+
+				env.fromStream(stream);
+				stream.reset();
+
+				long start = System.nanoTime();
+				Iterator<Person> peopleIter = env.people.values().iterator();
+				this.populations = new LinkedHashSet<PopMember>();
+				LinkedList<Person> managerQ = new LinkedList();
+				LinkedList<Person> groupHeadQ = new LinkedList();
+				LinkedList<Person> projectHeadQ = new LinkedList();
+				LinkedList<Person> secretaryQ = new LinkedList();
+				LinkedList<Person> personQ = new LinkedList();
+
+				// identify all managers, group heads, project heads, secretaries
+				// and assign to proper queues
+				while (peopleIter.hasNext()) {
+					Person tempPerson = peopleIter.next();
+
+					if (tempPerson.isGroupHead()) {
+						groupHeadQ.add(tempPerson);
+					} else if (tempPerson.isManager()) {
+						managerQ.add(tempPerson);
+					} else if (tempPerson.isProjectHead()) {
+						projectHeadQ.add(tempPerson);
+					} else if (tempPerson.isSecretary()) {
+						secretaryQ.add(tempPerson);
+					} else {
+						personQ.add(tempPerson);
+					}
 				}
 
-			} catch (Room.FullRoomException ex) {
-				ex.printStackTrace();
+				//cutoff for unsolvable instances. Dependant on number of people, rooms, managers, and heads.
+				int proods = managerQ.size() + groupHeadQ.size() + projectHeadQ.size();
+				if (env.people.size() - proods > 2 * (env.rooms.size() + env.smallRooms.size() + env.largeRooms.size() - proods)) {
+					// TODO: Remove this exception and replace with comment write
+					throw new Environment.UnsolvableInstanceException("Instance is unsolvable. No solution possible.");
+				}
+
+				Room[] roomAddresses = (Room[]) env.rooms.values().toArray(new Room[0]);
+				Room[] largeRoomAddresses = (Room[]) env.largeRooms.values().toArray(new Room[0]);
+				Room[] smallRoomAddresses = (Room[]) env.smallRooms.values().toArray(new Room[0]);
+
+
+				PopMember p = env.createPopulationMember(managerQ, groupHeadQ, projectHeadQ, secretaryQ, personQ, roomAddresses, largeRoomAddresses, smallRoomAddresses);
+				populations.add(p);
+				p.mutate(5);
+				long end = System.nanoTime();
+				System.out.println("TIME: " + (float)(end-start)/1000);
+				//System.out.println("Population member created...");
+
+
+				for (Room i : env.smallRooms.values()) {
+					if (i.getAssignedPeople()[0] != null) {
+						System.out.println("assign-to(" + i.getAssignedPeople()[0].getName() + ", " + i.getName() +")");
+					}
+
+					if (i.getAssignedPeople()[1]  != null ) {
+						System.out.println("assign-to(" + i.getAssignedPeople()[1].getName() + ", " + i.getName() +")");
+					}
+				}
+
+				for (Room i : env.rooms.values()) {
+					if (i.getAssignedPeople()[0] != null) {
+						System.out.println("assign-to(" + i.getAssignedPeople()[0].getName() + ", " + i.getName() +")");
+					}
+
+					if (i.getAssignedPeople()[1]  != null ) {
+						System.out.println("assign-to(" + i.getAssignedPeople()[1].getName() + ", " + i.getName() +")");
+					}
+				}
+
+				for (Room i : env.largeRooms.values()) {
+					if (i.getAssignedPeople()[0] != null) {
+						System.out.println("assign-to(" + i.getAssignedPeople()[0].getName() + ", " + i.getName() +")");
+					}
+
+					if (i.getAssignedPeople()[1]  != null ) {
+						System.out.println("assign-to(" + i.getAssignedPeople()[1].getName() + ", " + i.getName() +")");
+					}
+				}
+				System.out.println(p.score());
 			}
-		} else {
-                    // TODO: Remove this exception and replace with comment write
-                    throw new Environment.UnsolvableInstanceException("Instance is unsolvable. No solution possible.");
+
+		} catch (Room.FullRoomException ex) {
+			ex.printStackTrace();
+		}
+
+		try {
+			if (stream!=null) stream.close();
+		}
+		catch (IOException ex) {
+			System.out.println("Can't close file " + args[0]);
 		}
 	}
 
 
 	protected void printResults() {
-		Iterator<Room> iter1 = env.smallRooms.values().iterator();
+		/*Iterator<Room> iter1 = env.smallRooms.values().iterator();
 		Iterator<Room> iter2 = env.rooms.values().iterator();
 		Iterator<Room> iter3 = env.largeRooms.values().iterator();
 
@@ -227,7 +270,7 @@ public class SisyphusI {
 			if (i.getAssignedPeople()[1]  != null ) {
 				System.out.println("assign-to(" + i.getAssignedPeople()[1].getName() + ", " + i.getName() +")");
 			}
-		}
+		}*/
 
 
 
@@ -237,6 +280,8 @@ public class SisyphusI {
 		final int maxBuf = 200;
 		byte[] buf = new byte[maxBuf];
 		int length;
+
+		Environment env = Environment.get();
 
 		Scanner scan = new Scanner(System.in);
 		try {

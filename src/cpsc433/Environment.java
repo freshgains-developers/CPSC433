@@ -67,7 +67,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
         public HashMap<String, Room> smallRooms = null;
         private HashSet<SymmetricPair<Room, Room>> closeTo = null;
 
-	protected Environment(String name) {
+	public Environment(String name) {
 		super(name==null?"theEnvironment":name);
 
                 worksWith = new HashSet();
@@ -96,7 +96,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
             return p;
         }
 
-        @Override
+        /*@Override
         public int fromFile(String fileName) {
 		int ret = super.fromFile(fileName);
                 if(ret >= 0) {
@@ -117,7 +117,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                 }
 
                 return ret;
-	}
+	}*/
 
         private void printPeoplePredicates(PrintWriter writer) {
             Iterator<Person> peopleIter = people.values().iterator();
