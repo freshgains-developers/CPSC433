@@ -102,6 +102,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 	/**
 	 * A getter for the global instance of this class.  If an instance of this class
 	 * does not already exist, it will be created.
+         * @param popSize the population size
 	 * @return The singleton (global) instance.
 	 */
 	public static Environment get(int popSize) {
@@ -114,7 +115,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
             return p;
         }
 
-        @Override
+        /*@Override
         public int fromFile(String fileName) {
 		int ret = super.fromFile(fileName);
                 if(ret >= 0) {
@@ -135,7 +136,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                 }
 
                 return ret;
-	}
+	}*/
 
         private void printPeoplePredicates(PrintWriter writer) { /*
             Iterator<Person> peopleIter = people.values().iterator();

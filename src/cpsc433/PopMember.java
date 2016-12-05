@@ -419,6 +419,17 @@ public class PopMember {
         
     }
     
+    public LinkedHashSet<Room> copyAssignedRooms() {
+        LinkedHashSet<Room> copy = new LinkedHashSet<>(assignedRooms.size());
+        
+        for(Room room : assignedRooms) {
+            Room roomCopy = new Room(room);
+            copy.add(roomCopy);
+        }
+        
+        return copy;
+    }
+    
     public void printAssignments() {
         for(Person person : people.values()) {
             System.out.println("assign-to(" + person.getName() + ", " + person.assignedRoom().getName() + ")");
