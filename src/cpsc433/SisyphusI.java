@@ -42,6 +42,8 @@ public class SisyphusI {
         
         private LinkedHashSet<Room> bestAssignments = null;
         private int bestScore = Integer.MIN_VALUE;
+        
+        private long timerStart;
 
 
 	public SisyphusI(String[] args) {
@@ -107,6 +109,8 @@ public class SisyphusI {
 			long timeLimit = Long.parseLong(args[1]);
 
                         if(timeLimit > 0) {
+                            timerStart = System.nanoTime();
+                            
                             Timer timer = new Timer();
                             timer.schedule((new TimerTask() {
                                 @Override
@@ -114,7 +118,7 @@ public class SisyphusI {
                                     printResults();
                                     System.exit(0);
                                 }
-                            }), (long) (timeLimit * 0.9)); 
+                            }), (long) (timeLimit * 0.8)); 
                         }
                         
 			//timeLimit -= (System.currentTimeMillis()-startTime);
@@ -266,6 +270,7 @@ public class SisyphusI {
             writer.close();
             long end = System.nanoTime();
             System.out.println("WRITING TOOK: " + (float)(end-start)/1000000 + "ms");
+            System.out.println("SEARCH TOOK: " + (float)(start-timerStart)/1000000 + "ms");
             
             System.out.println("SEARCH COMPLETE -- Results written to " + args[0] + ".out");
             System.out.println();
