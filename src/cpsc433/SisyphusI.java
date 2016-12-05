@@ -130,7 +130,6 @@ public class SisyphusI {
 	 * @throws cpsc433.Environment.UnsolvableInstanceException
 	 */
 	protected void doSearch(Environment env, long timeLimit) throws Environment.UnsolvableInstanceException {
-            long start = System.nanoTime();
             for (int popIndex = 0; popIndex < POP_SIZE; popIndex++) {
                 Iterator<Person> peopleIter = env.people.get(popIndex).values().iterator();
 
