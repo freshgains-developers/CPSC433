@@ -28,6 +28,8 @@ public class SisyphusI {
 		new SisyphusI(args);
 	}
 
+	private int SWAP_TOTAL = 1;
+
 	protected final String[] args;
 	protected String out;
 	protected Environment env;
@@ -129,7 +131,12 @@ public class SisyphusI {
 	 * @param timeLimit A time limit in milliseconds.
 	 * @throws cpsc433.Environment.UnsolvableInstanceException
 	 */
-	protected void doSearch(Environment env, long timeLimit) throws Environment.UnsolvableInstanceException {
+	protected void doSearch(Environment env, long timeLimit) throws Environment.UnsolvableInstanceException, Room.FullRoomException {
+
+		// The array that holds all the pop members
+		PopMember[] population = new PopMember[POP_SIZE];
+		int[] populationScores = new int[POP_SIZE];
+
             for (int popIndex = 0; popIndex < POP_SIZE; popIndex++) {
                 Iterator<Person> peopleIter = env.people.get(popIndex).values().iterator();
 
@@ -143,8 +150,10 @@ public class SisyphusI {
                 Room[] largeRoomAddresses = (Room[]) env.largeRooms.get(popIndex).values().toArray(new Room[0]);
                 Room[] smallRoomAddresses = (Room[]) env.smallRooms.get(popIndex).values().toArray(new Room[0]);
 
-		// identify all managers, group heads, project heads, secretaries
-                // and assign to proper queues
+
+
+				// identify all managers, group heads, project heads, secretaries
+				// and assign to proper queues
                 while (peopleIter.hasNext()) {
                     Person tempPerson = peopleIter.next();
 
@@ -166,26 +175,7 @@ public class SisyphusI {
                 if (env.people.get(popIndex).size() - proods <= 2 * (env.rooms.get(popIndex).size() + env.smallRooms.get(popIndex).size() + env.largeRooms.get(popIndex).size() - proods)) {
                     try {
                         PopMember p = env.createPopulationMember(popIndex, managerQ, groupHeadQ, projectHeadQ, secretaryQ, personQ, roomAddresses, largeRoomAddresses, smallRoomAddresses);
-                        System.out.println("Population member created...");
-                        p.printAssignments();
-                        
-                        /* ----- CUT HERE ------ */
-                        try {
-                            //System.out.println("Score: " + p.score());
-                            System.out.println();
-                        } catch (NullPointerException e) {
-                            e.printStackTrace();
-                        }
-                        //p.mutate(3);
-                        //p.printAssignments();
-                        /* ----- CUT HERE ------ */
-
-                        try {
-                            //System.out.println("Score: " + p.score());
-                            //System.out.println();
-                        } catch (NullPointerException e) {
-                            e.printStackTrace();
-                        }
+						population[popIndex] = p;
 
                     } catch (Room.FullRoomException ex) {
                         ex.printStackTrace();
@@ -194,7 +184,37 @@ public class SisyphusI {
                     // TODO: Remove this exception and replace with comment write
                     throw new Environment.UnsolvableInstanceException("Instance is unsolvable. No solution possible.");
                 }
+
             }
+
+		Random rand = new Random();
+
+		// mutations loop
+		while(1 == 1){
+			int totalScore = 0;
+			for (int popIndex = 0; popIndex < POP_SIZE; popIndex++) {
+				// Saving previous scores
+				int tempScore = population[popIndex].score();
+				populationScores[popIndex] = tempScore;
+				totalScore += tempScore;
+
+				// Finds new scores
+				population[popIndex].mutate(SWAP_TOTAL);
+			}
+			// Average
+			int averageScore = totalScore / POP_SIZE;
+
+			// Compares the scores and decides if we should be mutating
+			for (int popIndex = 0; popIndex < POP_SIZE; popIndex++) {
+
+				int newScore = population[popIndex].score();
+				// Checks to see if the original was better than the new mutation
+				if (averageScore > newScore && rand.nextInt(100) > 10) {
+					population[popIndex].rollback();
+				}
+			}
+		}
+
 	}
 
 
