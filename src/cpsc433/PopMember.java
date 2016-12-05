@@ -491,6 +491,8 @@ public class PopMember {
     }
     
     public void mutate(int numSwaps) throws FullRoomException {
+        this.swapList = new ArrayList<>();
+        
         Random rand = new Random();
         
         while (numSwaps > 0) {
