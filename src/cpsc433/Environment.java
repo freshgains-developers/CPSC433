@@ -105,7 +105,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 	 * @return The singleton (global) instance.
 	 */
 	public static Environment get(int popSize) {
-		if (instance==null) instance = new Environment(null);
+		if (instance==null) instance = new Environment(null, popSize);
 		return instance;
 	}
         
