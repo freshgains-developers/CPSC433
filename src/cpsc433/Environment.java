@@ -56,27 +56,45 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 	protected boolean fixedAssignments=false;
 
         // TODO: Maybe use LinkedHashMap instead ?
-        public HashMap<String, Person> people = null;
+        public ArrayList<HashMap<String, Person>> people = null;
         private HashSet<SymmetricPair<Person, Person>> worksWith = null;
 
-        private HashMap<String, Group> groups = null;
-        private HashMap<String, Project> projects = null;
+        private ArrayList<HashMap<String, Group>> groups = null;
+        private ArrayList<HashMap<String, Project>> projects = null;
 
-        public HashMap<String, Room> rooms = null;
-        public HashMap<String, Room> largeRooms = null;
-        public HashMap<String, Room> smallRooms = null;
-        private HashSet<SymmetricPair<Room, Room>> closeTo = null;
+        public ArrayList<HashMap<String, Room>> rooms = null;
+        public ArrayList<HashMap<String, Room>> largeRooms = null;
+        public ArrayList<HashMap<String, Room>> smallRooms = null;
+        private ArrayList<HashSet<SymmetricPair<Room, Room>> closeTo = null;
 
-	protected Environment(String name) {
+	protected Environment(String name, int popSize) {
 		super(name==null?"theEnvironment":name);
 
                 worksWith = new HashSet();
-                people = new HashMap();
-                groups = new HashMap();
-                projects = new HashMap();
-                rooms = new HashMap();
-                largeRooms = new HashMap();
-                smallRooms = new HashMap();
+                people = new ArrayList<>(popSize);
+                for(int i=0;i<popSize;i++) {
+                    people.add(new HashMap());
+                }
+                groups = new ArrayList<>(popSize);
+                for(int i=0;i<popSize;i++) {
+                    groups.add(new HashMap());
+                }
+                projects = new ArrayList<>(popSize);
+                for(int i=0;i<popSize;i++) {
+                    projects.add(new HashMap());
+                }
+                rooms = new ArrayList<>(popSize);
+                for(int i=0;i<popSize;i++) {
+                    rooms.add(new HashMap());
+                }
+                largeRooms = new ArrayList<>(popSize);
+                for(int i=0;i<popSize;i++) {
+                    largeRooms.add(new HashMap());
+                }
+                smallRooms = new ArrayList<>(popSize);
+                for(int i=0;i<popSize;i++) {
+                    smallRooms.add(new HashMap());
+                }
                 closeTo = new HashSet();
 
 	}
@@ -86,7 +104,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 	 * does not already exist, it will be created.
 	 * @return The singleton (global) instance.
 	 */
-	public static Environment get() {
+	public static Environment get(int popSize) {
 		if (instance==null) instance = new Environment(null);
 		return instance;
 	}
