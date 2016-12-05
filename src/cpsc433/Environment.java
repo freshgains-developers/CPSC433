@@ -109,8 +109,8 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 		return instance;
 	}
         
-        public PopMember createPopulationMember(LinkedList<Person> managerQ, LinkedList<Person> groupHeadQ, LinkedList<Person> projectHeadQ, LinkedList<Person> secretaryQ, LinkedList<Person> personQ, Room[] roomAddresses, Room[] largeRoomAddresses, Room[] smallRoomAddresses) throws FullRoomException {
-            PopMember p = new PopMember(worksWith, people, groups, projects, closeTo, managerQ, groupHeadQ, projectHeadQ, secretaryQ, personQ, roomAddresses, largeRoomAddresses, smallRoomAddresses);
+        public PopMember createPopulationMember(int index, LinkedList<Person> managerQ, LinkedList<Person> groupHeadQ, LinkedList<Person> projectHeadQ, LinkedList<Person> secretaryQ, LinkedList<Person> personQ, Room[] roomAddresses, Room[] largeRoomAddresses, Room[] smallRoomAddresses) throws FullRoomException {
+            PopMember p = new PopMember(worksWith, people.get(index), groups.get(index), projects.get(index), closeTo, managerQ, groupHeadQ, projectHeadQ, secretaryQ, personQ, roomAddresses, largeRoomAddresses, smallRoomAddresses);
             return p;
         }
 
@@ -752,22 +752,35 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
         @Override
 	public void a_close(String room, String room2) {
             Room roomObj1, roomObj2;
+            
+            for (int i = 0; i < largeRooms.size(); i++) {
+                HashMap<String, Room> roomMap = rooms.get(i);
+                HashMap<String, Room> smallRoomMap = smallRooms.get(i);
+                HashMap<String, Room> largeRoomMap = largeRooms.get(i);
 
-            // First check if the specified rooms exist, if not
-            // create them
+                // First check if the specified rooms exist, if not
+                // create them
+                if(roomMap.containsKey(room)) {
+                    roomObj1 = roomMap.get(room);
+                } else if(smallRoomMap.containsKey(room)) {
+                    roomObj1 = smallRoomMap.get(room);
+                } else if(largeRoomMap.containsKey(room)) {
+                    roomObj1 = largeRoomMap.get(room);
+                } else {
+                    roomObj1 = new Room(room, RoomSize.MEDIUM);
+                    roomMap.put(room, roomObj1);
+                }
 
-            if(!rooms.containsKey(room)) {
-                roomObj1 = new Room(room, RoomSize.MEDIUM);
-                rooms.put(room, roomObj1);
-            } else {
-                roomObj1 = rooms.get(room);
-            }
-
-            if(!rooms.containsKey(room2)) {
-                roomObj2 = new Room(room2, RoomSize.MEDIUM);
-                rooms.put(room2, roomObj2);
-            } else {
-                roomObj2 = rooms.get(room2);
+                if(roomMap.containsKey(room2)) {
+                    roomObj2 = roomMap.get(room2);
+                } else if(smallRoomMap.containsKey(room2)) {
+                    roomObj2 = smallRoomMap.get(room2);
+                } else if(largeRoomMap.containsKey(room2)) {
+                    roomObj2 = largeRoomMap.get(room2);
+                } else {
+                    roomObj2 = new Room(room2, RoomSize.MEDIUM);
+                    roomMap.put(room2, roomObj2);
+                }
             }
 
             // Create a new relation pair (room1, room2) and add
@@ -780,21 +793,28 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
         }
         @Override
 	public boolean e_close(String room, String room2) {
-            return ( rooms.containsKey(room) && rooms.containsKey(room2)
-                     && closeTo.contains(new SymmetricPair(rooms.get(room), rooms.get(room2))) );
+            return true;
         }
 
         @Override
 	public void a_close(String room, TreeSet<Pair<ParamType,Object>> set) {
             Room roomObj1;
 
-            // If the room does not exist create it before
-            // proceeding
-            if(!rooms.containsKey(room)) {
-                roomObj1 = new Room(room, RoomSize.MEDIUM);
-                rooms.put(room, roomObj1);
-            } else {
-                roomObj1 = rooms.get(room);
+            for (int i = 0; i < largeRooms.size(); i++) {
+                HashMap<String, Room> roomMap = rooms.get(i);
+                HashMap<String, Room> smallRoomMap = smallRooms.get(i);
+                HashMap<String, Room> largeRoomMap = largeRooms.get(i);
+                
+                if(roomMap.containsKey(room)) {
+                    roomObj1 = roomMap.get(room);
+                } else if(smallRoomMap.containsKey(room)) {
+                    roomObj1 = smallRoomMap.get(room);
+                } else if(largeRoomMap.containsKey(room)) {
+                    roomObj1 = largeRoomMap.get(room);
+                } else {
+                    roomObj1 = new Room(room, RoomSize.MEDIUM);
+                    roomMap.put(room, roomObj1);
+                }
             }
 
             // Iterate through all rooms in TreeSet, if any rooms
@@ -804,12 +824,22 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
             while(iter.hasNext()) {
                 Room room_i;
                 String roomName_i = (String)iter.next().getValue();
+                
+                for (int i = 0; i < largeRooms.size(); i++) {
+                    HashMap<String, Room> roomMap = rooms.get(i);
+                    HashMap<String, Room> smallRoomMap = smallRooms.get(i);
+                    HashMap<String, Room> largeRoomMap = largeRooms.get(i);
 
-                if(!rooms.containsKey(roomName_i)) {
-                    room_i = new Room(roomName_i, RoomSize.MEDIUM);
-                    rooms.put(roomName_i, room_i);
-                } else {
-                    room_i = rooms.get(roomName_i);
+                    if (roomMap.containsKey(roomName_i)) {
+                        room_i = roomMap.get(roomName_i);
+                    } else if (smallRoomMap.containsKey(roomName_i)) {
+                        room_i = smallRoomMap.get(roomName_i);
+                    } else if (largeRoomMap.containsKey(roomName_i)) {
+                        room_i = largeRoomMap.get(roomName_i);
+                    } else {
+                        room_i = new Room(roomName_i, RoomSize.MEDIUM);
+                        roomMap.put(roomName_i, room_i);
+                    }
                 }
 
                 closeTo.add(new SymmetricPair(roomObj1, room_i));
@@ -817,30 +847,6 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
         }
         @Override
 	public boolean e_close(String room, TreeSet<Pair<ParamType,Object>> set) {
-            // If the first room name is not associated with any
-            // known room or the set is empty return false
-            if(!rooms.containsKey(room) || set.isEmpty()) {
-                return false;
-            }
-
-            Room roomObj1 = rooms.get(room);
-            Iterator<Pair<ParamType,Object>> iter = set.iterator();
-
-            while(iter.hasNext()) {
-                Room room_i;
-                String roomName_i = (String)iter.next().getValue();
-
-                if(!rooms.containsKey(roomName_i)) {
-                    return false;
-                } else {
-                    room_i = rooms.get(roomName_i);
-                }
-
-                if( !closeTo.contains(new SymmetricPair(roomObj1, room_i)) ) {
-                    return false;
-                }
-            }
-
             return true;
         }
 
