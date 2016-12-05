@@ -118,7 +118,7 @@ public class SisyphusI {
                                     printResults();
                                     System.exit(0);
                                 }
-                            }), (long) (timeLimit * 0.6)); 
+                            }), (long) (timeLimit * 0.8)); 
                         }
                         
 			//timeLimit -= (System.currentTimeMillis()-startTime);
