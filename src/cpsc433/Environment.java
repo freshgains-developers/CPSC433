@@ -69,7 +69,8 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 
 	protected Environment(String name, int popSize) {
 		super(name==null?"theEnvironment":name);
-
+                
+                
                 worksWith = new HashSet();
                 people = new ArrayList<>(popSize);
                 for(int i = 0; i < popSize; i++) {
