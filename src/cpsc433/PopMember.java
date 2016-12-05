@@ -539,8 +539,8 @@ public class PopMember {
             } else {
                 SingleSwap singleSwap = (SingleSwap)swap;
                 
-                Room room1 = singleSwap.person1.assignedRoom();
-                Room room2 = singleSwap.person2.assignedRoom();
+                Room room1 = singleSwap.room1;
+                Room room2 = singleSwap.room2;
                 
                 room1.removePerson(singleSwap.person1);
                 room2.removePerson(singleSwap.person2);
@@ -548,8 +548,12 @@ public class PopMember {
                 room1.putPerson(singleSwap.person2);
                 room2.putPerson(singleSwap.person1);
                 
-                singleSwap.person1.assignToRoom(room2);
-                singleSwap.person2.assignToRoom(room1);
+                if(singleSwap.person1 != null) {
+                    singleSwap.person1.assignToRoom(room2);
+                }
+                if(singleSwap.person2 != null) {
+                    singleSwap.person2.assignToRoom(room1);
+                }
             }
         }
     }
@@ -619,7 +623,7 @@ public class PopMember {
            b.assignToRoom(r1);
         }
         
-        swapList.add(new SingleSwap(a,b));
+        swapList.add(new SingleSwap(r1, r2, b, a));
     }
 
 
@@ -645,14 +649,14 @@ public class PopMember {
             if(p1 != null && p2 != null) {
                 // 16) Two people shouldn't share a small room
                 if(r.getSize() == RoomSize.SMALL) {
-                    System.out.println(p1.getName() + " and " + p2.getName() + " share a room. -25 * 2             CONSTRAINT 16 ");
+                    //System.out.println(p1.getName() + " and " + p2.getName() + " share a room. -25 * 2             CONSTRAINT 16 ");
                     score -= 50;// * 2
                 }
                 
                 // 15) If two people share an office, they sould work together
                 if(!worksWith.contains(new SymmetricPair<>(p1, p2))) {
                     score -= 6; // * 2
-                    System.out.println(p1.getName() + " and " + p2.getName() + " don't work together and share a room. -3 * 2             CONSTRAINT 15 ");
+                    //System.out.println(p1.getName() + " and " + p2.getName() + " don't work together and share a room. -3 * 2             CONSTRAINT 15 ");
                 }
                 
                 // 13) if a non-secretary hacker/non-hacker shares an office, 
@@ -663,31 +667,31 @@ public class PopMember {
                 if ((p1.isHacker() != p2.isHacker()) && !p1.isSecretary() && !p2.isSecretary()) {
                     score -= 4; // * 2
                     if (p1.isHacker()) {
-                        System.out.println(p1.getName() + " is a Hacker while " + p2.getName() + " is not, and neither is a secretary. -4             CONSTRAINT 13");
+                        //System.out.println(p1.getName() + " is a Hacker while " + p2.getName() + " is not, and neither is a secretary. -4             CONSTRAINT 13");
                     }
                     else{
-                        System.out.println(p2.getName() + " is a Hacker while " + p1.getName() + " is not, and neither is a secretary. -4             CONSTRAINT 13 ");
+                        //System.out.println(p2.getName() + " is a Hacker while " + p1.getName() + " is not, and neither is a secretary. -4             CONSTRAINT 13 ");
                     }
                 }
                 
                 // 11) A smoker shouldn't share an office with a non-smoker
                 if (p1.isSmoker() != p2.isSmoker()) {
                     score -= 100; // * 2
-                    System.out.println(p1.getName() + " and " + p2.getName() + " share a room and one is one is a smoker and one is a non-smoker. -100             CONSTRAINT 11");
+                    //System.out.println(p1.getName() + " and " + p2.getName() + " share a room and one is one is a smoker and one is a non-smoker. -100             CONSTRAINT 11");
                 }
                 
                 // 4) secretaries should share offices with other secretaries
                 if (p1.isSecretary() != p2.isSecretary()) {
                     score -= 10; // * 2
-                    System.out.println(p1.getName() + " and " + p2.getName() + " share a room and are not both secretaries. -10             CONSTRAINT 4 ");
+                    //System.out.println(p1.getName() + " and " + p2.getName() + " share a room and are not both secretaries. -10             CONSTRAINT 4 ");
                 }
                 
                 // 14) People prefer to have their own offices 
                 score -= 8; // * 2
-                System.out.println(p1.getName() + " and " + p2.getName() + " share a room (and prefer to have their own). -4 * 2             CONSTRAINT 14 ");
+                //System.out.println(p1.getName() + " and " + p2.getName() + " share a room (and prefer to have their own). -4 * 2             CONSTRAINT 14 ");
             } else if (p1 != null && p2 == null && p1.isSecretary()) {
                 score -= 5;
-                System.out.println(p1.getName()+ " does not share a room with another secretary. (and is a secretary) -5             CONSTRAINT 4 ");
+                //System.out.println(p1.getName()+ " does not share a room with another secretary. (and is a secretary) -5             CONSTRAINT 4 ");
             }
         }
 
@@ -718,7 +722,7 @@ public class PopMember {
                 // 1) Group heads should have a large office
                 if (headValue.assignedRoom().getSize() != RoomSize.LARGE){
                     score -= 40;
-                    System.out.println(headValue.getName()+ " is a group head and does not have a large office. -40             CONSTRAINT 1 ");
+                    //System.out.println(headValue.getName()+ " is a group head and does not have a large office. -40             CONSTRAINT 1 ");
                 }
                                
                 // 2.1) Group heads should be close to all members of their group
@@ -731,7 +735,7 @@ public class PopMember {
                     
                     if(!closeTo.contains(new SymmetricPair<>(headValue.assignedRoom(), person.assignedRoom()))) {
                         score -= 2;
-                        System.out.println(headValue.getName()+ " is a group head and is not by " + person.getName() + ". -2             CONSTRAINT 2.1 ");
+                        //System.out.println(headValue.getName()+ " is a group head and is not by " + person.getName() + ". -2             CONSTRAINT 2.1 ");
                     }
                 }
                 
@@ -747,7 +751,7 @@ public class PopMember {
                     
                     if(!closeTo.contains(new SymmetricPair<>(headValue.assignedRoom(), secretary.assignedRoom()))) {
                         score -= 2;
-                        System.out.println(headValue.getName()+ " is a group head and is not close to " + secretary.getName() + " (who is in " + headValue.getName()+"'s group and is a secretary). -2             CONSTRAINT 2.2 ");
+                        //System.out.println(headValue.getName()+ " is a group head and is not close to " + secretary.getName() + " (who is in " + headValue.getName()+"'s group and is a secretary). -2             CONSTRAINT 2.2 ");
                     } else {
                         secretaryIsClose = true;
                     }
@@ -757,7 +761,7 @@ public class PopMember {
                 //    secretary in the group
                 if(!secretaryIsClose) {
                     score -= 30;
-                    System.out.println(headValue.getName()+ " is a group head and is not close to any secretaries in their group. -30             CONSTRAINT 3 ");
+                    //System.out.println(headValue.getName()+ " is a group head and is not close to any secretaries in their group. -30             CONSTRAINT 3 ");
                 }
                 
                 // 2.3) Group heads should be close to all managers of 
@@ -771,12 +775,12 @@ public class PopMember {
                     
                     if(!closeTo.contains(new SymmetricPair<>(headValue.assignedRoom(), manager.assignedRoom()))) {
                         score -= 2;
-                        System.out.println(headValue.getName()+ " is a group head and is not close to " + manager.getName() + " (who is in " + headValue.getName()+"'s group and is a manager). -2             CONSTRAINT 2.3 ");
+                        //System.out.println(headValue.getName()+ " is a group head and is not close to " + manager.getName() + " (who is in " + headValue.getName()+"'s group and is a manager). -2             CONSTRAINT 2.3 ");
                         
                         // IMPLIED - 6) managers should be close to their 
                         //              group's head
                         score -= 20;
-                        System.out.println(manager.getName()+ " is a manager and is not close to their group head. -20             CONSTRAINT 6 ");
+                        //System.out.println(manager.getName()+ " is a manager and is not close to their group head. -20             CONSTRAINT 6 ");
                     }
                     
                     peopleIter = group.getPersonMap().values().iterator(); 
@@ -791,7 +795,7 @@ public class PopMember {
                         //    their group
                         if (!closeTo.contains(new SymmetricPair<>(manager.assignedRoom(), person.assignedRoom()))) {
                             score -= 2;
-                            System.out.println(manager.getName()+ " is a manager and is not close to " + person.getName() + " (who is in " + manager.getName()+"'s group and is a person). -2             CONSTRAINT 7 ");
+                            //System.out.println(manager.getName()+ " is a manager and is not close to " + person.getName() + " (who is in " + manager.getName()+"'s group and is a person). -2             CONSTRAINT 7 ");
 
                         }
                     }
@@ -809,7 +813,7 @@ public class PopMember {
                         //    their group
                         if (!closeTo.contains(new SymmetricPair<>(manager.assignedRoom(), secretary.assignedRoom()))) {
                             score -= 2;
-                            System.out.println(manager.getName()+ " is a manager and is not close to " + secretary.getName() + " (who is in " + manager.getName()+"'s group and is a secretary). -2             CONSTRAINT 7 ");
+                            //System.out.println(manager.getName()+ " is a manager and is not close to " + secretary.getName() + " (who is in " + manager.getName()+"'s group and is a secretary). -2             CONSTRAINT 7 ");
                         } else {
                             secretaryIsClose = true;
                         }
@@ -819,7 +823,7 @@ public class PopMember {
                     //    secretary in their group
                     if(!secretaryIsClose) {
                         score -= 20;
-                        System.out.println(manager.getName()+ " is a manager and is not close to all secretaries in their group. -20             CONSTRAINT 5 ");
+                        //System.out.println(manager.getName()+ " is a manager and is not close to all secretaries in their group. -20             CONSTRAINT 5 ");
                     }
                 }
 
@@ -847,7 +851,7 @@ public class PopMember {
                     
                     if(p1.assignedRoom() == p2.assignedRoom() && p1 != p2) {
                         score -= 14; // -7 * 2
-                        System.out.println(p1.getName()+ " and" + p2.getName() + " share an office and are on the same project. -7*2             CONSTRAINT 12 ");
+                        //System.out.println(p1.getName()+ " and" + p2.getName() + " share an office and are on the same project. -7*2             CONSTRAINT 12 ");
                     }
                 }
             }
@@ -872,7 +876,7 @@ public class PopMember {
                     
                     if(!closeTo.contains(new SymmetricPair<>(projectHeadRoom, pmr))) {
                         score -= -5;
-                        System.out.println(projectHead.getName()+ " is a project head and is not close to " + projectMember.getName() + ", who is in their project. -5             CONSTRAINT 8 ");
+                        //System.out.println(projectHead.getName()+ " is a project head and is not close to " + projectMember.getName() + ", who is in their project. -5             CONSTRAINT 8 ");
                     }
                 }
                 
@@ -897,7 +901,7 @@ public class PopMember {
 
                         if (!secretaryIsClose) {
                             score -= 10;
-                            System.out.println(projectHead.getName() + " is a large project head and is not close to any of the secretaries in the same project. -10             CONSTRAINT 9 ");
+                            //System.out.println(projectHead.getName() + " is a large project head and is not close to any of the secretaries in the same project. -10             CONSTRAINT 9 ");
                         }
 
                          // 10) The heads of large projects should be close to the 
@@ -909,7 +913,7 @@ public class PopMember {
 
                             if (!closeTo.contains(new SymmetricPair<>(rgh, projectHeadRoom))) {
                                 score -= 10;
-                                System.out.println(projectHead.getName() + " is a large project head and is not close to " + groupHead.getName() + ", who is in the same project. -10             CONSTRAINT 10 ");
+                                //System.out.println(projectHead.getName() + " is a large project head and is not close to " + groupHead.getName() + ", who is in the same project. -10             CONSTRAINT 10 ");
                             }
                         }
                     }

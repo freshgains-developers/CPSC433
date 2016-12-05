@@ -28,13 +28,16 @@ public class SisyphusI {
 		new SisyphusI(args);
 	}
 
-	private int SWAP_TOTAL = 1;
+	private int SWAP_TOTAL = 4;
 
 	protected final String[] args;
 	protected String out;
 	protected Environment env;
         
-        private final int POP_SIZE = 10;
+        private final int POP_SIZE = 100;
+        
+        private PopMember bestPopMember = null;
+        private int bestScore = Integer.MIN_VALUE;
 
 
 	public SisyphusI(String[] args) {
@@ -197,6 +200,15 @@ public class SisyphusI {
 				int tempScore = population[popIndex].score();
 				populationScores[popIndex] = tempScore;
 				totalScore += tempScore;
+                                
+                                if(tempScore >= bestScore) {
+                                    bestScore = tempScore;
+                                    bestPopMember = population[popIndex];
+                                    
+                                    population[popIndex].printAssignments();
+                                    System.out.println("Score: " + tempScore);
+                                    System.out.println();
+                                }
 
 				// Finds new scores
 				population[popIndex].mutate(SWAP_TOTAL);
