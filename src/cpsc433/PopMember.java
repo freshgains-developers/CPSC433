@@ -30,11 +30,11 @@ public class PopMember {
     private HashMap<String, Group> groups = null;
     private HashMap<String, Project> projects = null;
     private HashSet<SymmetricPair<Room, Room>> closeTo = null;
-    private LinkedHashSet<Room> assignedRooms;
+    private final LinkedHashSet<Room> assignedRooms;
     
-    private Room[] smallRooms;
-    private Room[] mediumRooms;
-    private Room[] largeRooms;
+    private final Room[] smallRooms;
+    private final Room[] mediumRooms;
+    private final Room[] largeRooms;
     
     private int smallRoomMutateCount;
     private int mediumRoomMutateCount;
@@ -480,13 +480,17 @@ public class PopMember {
     public void mutate(int numSwaps) throws FullRoomException {
         Random rand = new Random();
         
-        while (numSwaps-- > 0) {
+        while (numSwaps > 0) {
             Room room1 = pickRandomSwapableRoom(rand);
             Room room2 = pickRandomSwapableRoom(rand);
             
             // No rooms available 
             if(room1 == null || room2 == null) {
                 break;
+            }
+            
+            if(room1 == room2) {
+                continue;
             }
 
             if (!room1.hasFixedAssignments() && !room2.hasFixedAssignments() && (room1.hasProod() || room2.hasProod() || rand.nextInt(2) == 0)) {
@@ -501,11 +505,12 @@ public class PopMember {
                 assignedRooms.add(room1);
             }
             if (room2.isEmpty()) {
-                assignedRooms.remove(room2);
+                 assignedRooms.remove(room2);
             } else {
                 assignedRooms.add(room2);
             }
-
+            
+            numSwaps--;
         }
     }
     
@@ -513,15 +518,30 @@ public class PopMember {
         Person p1 = r1.getAssignedPeople()[0];
         Person p2 = r1.getAssignedPeople()[1];
         
+        Person p3 = r2.getAssignedPeople()[0];
+        Person p4 = r2.getAssignedPeople()[1];
+        
         r1.clearRoom();
-        
-        r1.putPerson(r2.getAssignedPeople()[0]);
-        r1.putPerson(r2.getAssignedPeople()[1]);
-        
         r2.clearRoom();
         
         r2.putPerson(p1);
         r2.putPerson(p2);
+
+        r1.putPerson(p3);
+        r1.putPerson(p4);
+        
+        if(p1 != null) {
+            p1.assignToRoom(r2);
+        }
+        if(p2 != null) {
+            p2.assignToRoom(r2);
+        }
+        if(p3 != null) {
+            p3.assignToRoom(r1);
+        }
+        if(p4 != null) {
+            p4.assignToRoom(r1);
+        }
     }
     
     private void swapSingle (Room r1, Room r2, Random rand) throws FullRoomException {
@@ -548,6 +568,12 @@ public class PopMember {
         r1.putPerson(b);
         r2.putPerson(a);
 
+        if(a != null) {
+           a.assignToRoom(r2); 
+        }
+        if(b != null) {
+           b.assignToRoom(r1);
+        }
     }
 
 
@@ -675,7 +701,7 @@ public class PopMember {
                     
                     if(!closeTo.contains(new SymmetricPair<>(headValue.assignedRoom(), secretary.assignedRoom()))) {
                         score -= 2;
-                        System.out.println(headValue.getName()+ " is a group head and is not close to" + secretary.getName() + " (who is in " + headValue.getName()+"'s group and is a secretary). -2             CONSTRAINT 2.2 ");
+                        System.out.println(headValue.getName()+ " is a group head and is not close to " + secretary.getName() + " (who is in " + headValue.getName()+"'s group and is a secretary). -2             CONSTRAINT 2.2 ");
                     } else {
                         secretaryIsClose = true;
                     }
@@ -699,7 +725,7 @@ public class PopMember {
                     
                     if(!closeTo.contains(new SymmetricPair<>(headValue.assignedRoom(), manager.assignedRoom()))) {
                         score -= 2;
-                        System.out.println(headValue.getName()+ " is a group head and is not close to" + manager.getName() + " (who is in " + headValue.getName()+"'s group and is a manager). -2             CONSTRAINT 2.3 ");
+                        System.out.println(headValue.getName()+ " is a group head and is not close to " + manager.getName() + " (who is in " + headValue.getName()+"'s group and is a manager). -2             CONSTRAINT 2.3 ");
                         
                         // IMPLIED - 6) managers should be close to their 
                         //              group's head
@@ -719,7 +745,7 @@ public class PopMember {
                         //    their group
                         if (!closeTo.contains(new SymmetricPair<>(manager.assignedRoom(), person.assignedRoom()))) {
                             score -= 2;
-                            System.out.println(manager.getName()+ " is a manager and is not close to" + person.getName() + " (who is in " + manager.getName()+"'s group and is a person). -2             CONSTRAINT 7 ");
+                            System.out.println(manager.getName()+ " is a manager and is not close to " + person.getName() + " (who is in " + manager.getName()+"'s group and is a person). -2             CONSTRAINT 7 ");
 
                         }
                     }
@@ -737,7 +763,7 @@ public class PopMember {
                         //    their group
                         if (!closeTo.contains(new SymmetricPair<>(manager.assignedRoom(), secretary.assignedRoom()))) {
                             score -= 2;
-                            System.out.println(manager.getName()+ " is a manager and is not close to" + secretary.getName() + " (who is in " + manager.getName()+"'s group and is a secretary). -2             CONSTRAINT 7 ");
+                            System.out.println(manager.getName()+ " is a manager and is not close to " + secretary.getName() + " (who is in " + manager.getName()+"'s group and is a secretary). -2             CONSTRAINT 7 ");
                         } else {
                             secretaryIsClose = true;
                         }
