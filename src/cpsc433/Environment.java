@@ -65,7 +65,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
         public ArrayList<HashMap<String, Room>> rooms = null;
         public ArrayList<HashMap<String, Room>> largeRooms = null;
         public ArrayList<HashMap<String, Room>> smallRooms = null;
-        private HashSet<SymmetricPair<Room, Room> closeTo = null;
+        private HashSet<SymmetricPair<Room, Room>> closeTo = null;
 
 	protected Environment(String name, int popSize) {
 		super(name==null?"theEnvironment":name);
@@ -268,177 +268,193 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
         
         @Override
 	public void a_person(String p) {
-            // Check to see if there is a person of name p.
-            // If there is then do nothing
-            if(people.containsKey(p)){
-                // Do nothing (Because there is already a person with that name)
-            }
+            for (HashMap<String, Person> peopleMap : people ) {
+                 // Check to see if there is a person of name p.
+                 // If there is then do nothing
+                if(peopleMap.containsKey(p)){
+                    // Do nothing (Because there is already a person with that name)
+
+                 }
             // If no person exists:
             else{
                 Person newPerson = new Person(p);
-                people.put(p, newPerson);
+                peopleMap.put(p, newPerson);
+            }
             }
         }
 
         @Override
 	public boolean e_person(String p) {
             //Checks if a person exists with the name p
-            return people.containsKey(p);
+            return true; // people.containsKey(p);
         }
 
         @Override
 	public void a_secretary(String p) {
-            // Check to see if there is a person of name p.
-            // If there is then grab the person and make them a secretary.
-            if(people.containsKey(p)){
-                Person personWithNameP;
-                personWithNameP = people.get(p);
-                personWithNameP.setSecretary(true);
-                ArrayList<Group> personGroups = personWithNameP.getGroups();
+            for (HashMap<String, Person> peopleMap : people) {
 
-                for (Group i : personGroups) {
-                    i.addToGroup(personWithNameP);
+
+                // Check to see if there is a person of name p.
+                // If there is then grab the person and make them a secretary.
+                if (peopleMap.containsKey(p)) {
+                    Person personWithNameP;
+                    personWithNameP = peopleMap.get(p);
+                    personWithNameP.setSecretary(true);
+                    ArrayList<Group> personGroups = personWithNameP.getGroups();
+
+                    for (Group i : personGroups) {
+                        i.addToGroup(personWithNameP);
+                    }
                 }
-            }
-            // If no person exists:
-            else{
-                Person newPerson = new Person(p);
-                newPerson.setSecretary(true);
-                people.put(p, newPerson);
+                // If no person exists:
+                else {
+                    Person newPerson = new Person(p);
+                    newPerson.setSecretary(true);
+                    peopleMap.put(p, newPerson);
+                }
             }
         }
         @Override
 	public boolean e_secretary(String p) {
             // If the person exists and is a secretary then return true
-            if(people.containsKey(p)){
+           /* if(people.containsKey(p)){
                 Person tempPerson = people.get(p);
                 if(tempPerson.isSecretary()){
                     return true;
                 }
             }
-            // Else return false
+           */ // Else return false
             return false;
         }
 
         @Override
 	public void a_researcher(String p) {
+
+            for (HashMap<String, Person> peopleMap : people) {
             // Check to see if there is a person of name p.
             // If there is then grab the person and make them a researcher.
-            if(people.containsKey(p)){
+            if(peopleMap.containsKey(p)){
                 Person personWithNameP;
-                personWithNameP = people.get(p);
+                personWithNameP = peopleMap.get(p);
                 personWithNameP.setResearcher(true);
             }
             // If no person exists:
             else{
                 Person newPerson = new Person(p);
                 newPerson.setResearcher(true);
-                people.put(p, newPerson);
+                peopleMap.put(p, newPerson);
+                }
             }
         }
         @Override
 	public boolean e_researcher(String p) {
-            // If the person exists and is a researcher then return true
+       /*     // If the person exists and is a researcher then return true
             if(people.containsKey(p)){
                 Person tempPerson = people.get(p);
                 if(tempPerson.isResearcher()){
                     return true;
                 }
             }
-            // Else return false
+         */   // Else return false
             return false;
         }
 
 
         @Override
 	public void a_manager(String p) {
-            // Check to see if there is a person of name p.
-            // If there is then grab the person and make them a manager.
-            if(people.containsKey(p)){
-                Person personWithNameP;
-                personWithNameP = people.get(p);
-                personWithNameP.setManager(true);
-                ArrayList<Group> personGroups = personWithNameP.getGroups();
+            for (HashMap<String, Person> peopleMap : people) {
+                // Check to see if there is a person of name p.
+                // If there is then grab the person and make them a manager.
+                if (peopleMap.containsKey(p)) {
+                    Person personWithNameP;
+                    personWithNameP = peopleMap.get(p);
+                    personWithNameP.setManager(true);
+                    ArrayList<Group> personGroups = personWithNameP.getGroups();
 
-                for (Group i : personGroups) {
-                    i.addToGroup(personWithNameP);
+                    for (Group i : personGroups) {
+                        i.addToGroup(personWithNameP);
+                    }
                 }
-            }
-            // If no person exists:
-            else{
-                Person newPerson = new Person(p);
-                newPerson.setManager(true);
-                people.put(p, newPerson);
+                // If no person exists:
+                else {
+                    Person newPerson = new Person(p);
+                    newPerson.setManager(true);
+                    peopleMap.put(p, newPerson);
+                }
             }
         }
         @Override
 	public boolean e_manager(String p) {
-            // If the person exists and is a manager then return true
+          /*  // If the person exists and is a manager then return true
             if(people.containsKey(p)){
                 Person tempPerson = people.get(p);
                 if(tempPerson.isManager()){
                     return true;
                 }
             }
-            // Else return false
+            */// Else return false
             return false;
         }
 
         @Override
 	public void a_smoker(String p) {
-            // Check to see if there is a person of name p.
-            // If there is then grab the person and make them a smoker.
-            if(people.containsKey(p)){
-                Person personWithNameP;
-                personWithNameP = people.get(p);
-                personWithNameP.setSmoker(true);
-            }
-            // If no person exists:
-            else{
-                Person newPerson = new Person(p);
-                newPerson.setSmoker(true);
-                people.put(p, newPerson);
+            for (HashMap<String, Person> peopleMap : people) {
+                // Check to see if there is a person of name p.
+                // If there is then grab the person and make them a smoker.
+                if (peopleMap.containsKey(p)) {
+                    Person personWithNameP;
+                    personWithNameP = peopleMap.get(p);
+                    personWithNameP.setSmoker(true);
+                }
+                // If no person exists:
+                else {
+                    Person newPerson = new Person(p);
+                    newPerson.setSmoker(true);
+                    peopleMap.put(p, newPerson);
+                }
             }
         }
         @Override
 	public boolean e_smoker(String p) {
             // If the person exists and is a smoker then return true
-            if(people.containsKey(p)){
+          /*  if(people.containsKey(p)){
                 Person tempPerson = people.get(p);
                 if(tempPerson.isSmoker()){
                     return true;
                 }
             }
             // Else return false
-            return false;
+            */return false;
         }
 
         @Override
 	public void a_hacker(String p) {
-            // Check to see if there is a person of name p.
-            // If there is then grab the person and make them a hacker.
-            if(people.containsKey(p)){
-                Person personWithNameP;
-                personWithNameP = people.get(p);
-                personWithNameP.setHacker(true);
-            }
-            // If no person exists:
-            else{
-                Person newPerson = new Person(p);
-                newPerson.setHacker(true);
-                people.put(p, newPerson);
+            for (HashMap<String, Person> peopleMap : people) {
+                // Check to see if there is a person of name p.
+                // If there is then grab the person and make them a hacker.
+                if (peopleMap.containsKey(p)) {
+                    Person personWithNameP;
+                    personWithNameP = peopleMap.get(p);
+                    personWithNameP.setHacker(true);
+                }
+                // If no person exists:
+                else {
+                    Person newPerson = new Person(p);
+                    newPerson.setHacker(true);
+                    peopleMap.put(p, newPerson);
+                }
             }
         }
         @Override
 	public boolean e_hacker(String p) {
-            // If the person exists and is a hacker then return true
+       /*     // If the person exists and is a hacker then return true
             if(people.containsKey(p)){
                 Person tempPerson = people.get(p);
                 if(tempPerson.isHacker()){
                     return true;
                 }
             }
-            // Else return false
+         */   // Else return false
             return false;
         }
 
@@ -661,40 +677,48 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 
         @Override
 	public void a_assign_to(String p, String room) throws FullRoomException {
+            for (int i = 0; i < largeRooms.size(); i ++) {
+                HashMap<String, Room> roomMap = rooms.get(i);
+                HashMap<String, Room> smallRoomMap = smallRooms.get(i);
+                HashMap<String, Room> largeRoomMap = largeRooms.get(i);
+                HashMap<String, Person> peopleMap = people.get(i);
             Person person;
             Room   roomObj;
 
-            if(people.containsKey(p)) {
-                person = people.get(p);
+            if(peopleMap.containsKey(p)) {
+                person = peopleMap.get(p);
                 person.setFixed(true);
             } else {
                 person = new Person(p);
                 person.setFixed(true);
-                people.put(p, person);
+                peopleMap.put(p, person);
             }
 
-            if(rooms.containsKey(room)) {
-                roomObj = rooms.get(room);
-            } else if(smallRooms.containsKey(room)) {
-                roomObj = smallRooms.get(room);
-            } else if(largeRooms.containsKey(room)) {
-                roomObj = largeRooms.get(room);
+            if(roomMap.containsKey(room)) {
+                roomObj = roomMap.get(room);
+            } else if(smallRoomMap.containsKey(room)) {
+                roomObj = smallRoomMap.get(room);
+            } else if(largeRoomMap.containsKey(room)) {
+                roomObj = largeRoomMap.get(room);
             } else {
                 roomObj = new Room(room, RoomSize.MEDIUM);
-                rooms.put(room, roomObj);
+                roomMap.put(room, roomObj);
             }
-            
+
             roomObj.setHasFixedAssignments();
 
             roomObj.putPerson(person);
             person.assignToRoom(roomObj);
             //if person is manager then remove room from selection?
 
-            
+
+            }
         }
+
         @Override
 	public boolean e_assign_to(String p, String room) {
             // Check if the person exists
+            /*
             if(!people.containsKey(p)) {
                 // Person doesn't exist
                 return false;
@@ -710,7 +734,8 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
             }
 
             // Check if the assigned room matches the query
-            return assignedRoom.getName().equals(room);
+            return assignedRoom.getName().equals(room); */
+            return true;
         }
 
 	// ROOMS
@@ -721,7 +746,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
         }
         @Override
 	public boolean e_room(String r) {
-            return rooms.containsKey(r);
+            return true;//rooms.containsKey(r);
         }
 
         @Override
@@ -821,76 +846,94 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 
         @Override
 	public void a_large_room(String r) {
-            if(!rooms.containsKey(r) && !smallRooms.containsKey(r)) {
-                // Add room if it doesn't already exist
-                if(!largeRooms.containsKey(r)) {
-                    largeRooms.put(r, new Room(r, RoomSize.LARGE));
+            for (int i = 0; i < largeRooms.size(); i++) {
+                HashMap<String, Room> roomMap = rooms.get(i);
+                HashMap<String, Room> smallRoomMap = smallRooms.get(i);
+                HashMap<String, Room> largeRoomMap = largeRooms.get(i);
+
+                if (!roomMap.containsKey(r) && !smallRoomMap.containsKey(r)) {
+                    // Add room if it doesn't already exist
+                    if (!largeRoomMap.containsKey(r)) {
+                        largeRoomMap.put(r, new Room(r, RoomSize.LARGE));
+                    }
+                } else if (!smallRoomMap.containsKey(r)) {
+                    // If the room already exists update the size
+                    Room room = roomMap.remove(r);
+                    room.setSize(RoomSize.LARGE);
+                    largeRoomMap.put(r, room);
+
+                } else if (!roomMap.containsKey(r)) {
+                    // If the room already exists update the size
+                    Room room = smallRoomMap.remove(r);
+                    room.setSize(RoomSize.LARGE);
+                    largeRoomMap.put(r, room);
+
                 }
-            } else if(!smallRooms.containsKey(r)) {
-                // If the room already exists update the size
-                Room room = rooms.remove(r);
-                room.setSize(RoomSize.LARGE);
-                largeRooms.put(r, room);
-
-            } else if(!rooms.containsKey(r)) {
-                // If the room already exists update the size
-                Room room = smallRooms.remove(r);
-                room.setSize(RoomSize.LARGE);
-                largeRooms.put(r, room);
-
             }
         }
         @Override
 	public boolean e_large_room(String r) {
-            return (largeRooms.containsKey(r) );
+            return true;//(largeRooms.containsKey(r) );
         }
 
         @Override
 	public void a_medium_room(String r) {
-            if(!smallRooms.containsKey(r) && !largeRooms.containsKey(r)) {
-                // Add room if it doesn't already exist
-                if(!rooms.containsKey(r)) {
-                    rooms.put(r, new Room(r, RoomSize.MEDIUM));
+            for (int i = 0; i < largeRooms.size(); i++) {
+                HashMap<String, Room> roomMap = rooms.get(i);
+                HashMap<String, Room> smallRoomMap = smallRooms.get(i);
+                HashMap<String, Room> largeRoomMap = largeRooms.get(i);
+
+                if (!smallRoomMap.containsKey(r) && !largeRoomMap.containsKey(r)) {
+                    // Add room if it doesn't already exist
+                    if (!roomMap.containsKey(r)) {
+                        roomMap.put(r, new Room(r, RoomSize.MEDIUM));
+                    }
+                } else if (!largeRoomMap.containsKey(r)) {
+                    // If the room already exists update the size
+                    Room room = smallRoomMap.remove(r);
+                    room.setSize(RoomSize.MEDIUM);
+                    roomMap.put(r, room);
+                } else if (!smallRoomMap.containsKey(r)) {
+                    // If the room already exists update the size
+                    Room room = largeRoomMap.remove(r);
+                    room.setSize(RoomSize.MEDIUM);
+                    roomMap.put(r, room);
                 }
-            } else if(!largeRooms.containsKey(r)) {
-                // If the room already exists update the size
-                Room room = smallRooms.remove(r);
-                room.setSize(RoomSize.MEDIUM);
-                rooms.put(r, room);
-            } else if(!smallRooms.containsKey(r)) {
-                // If the room already exists update the size
-                Room room = largeRooms.remove(r);
-                room.setSize(RoomSize.MEDIUM);
-                rooms.put(r, room);
             }
         }
         @Override
 	public boolean e_medium_room(String r) {
-            return rooms.containsKey(r);
+            return true; //rooms.containsKey(r);
         }
 
         @Override
 	public void a_small_room(String r) {
-            if(!rooms.containsKey(r) && !largeRooms.containsKey(r)) {
-                // Add room if it doesn't already exist
-                if(!smallRooms.containsKey(r)) {
-                    smallRooms.put(r, new Room(r, RoomSize.SMALL));
+            for (int i = 0; i < largeRooms.size(); i++) {
+                HashMap<String, Room> roomMap = rooms.get(i);
+                HashMap<String, Room> smallRoomMap = smallRooms.get(i);
+                HashMap<String, Room> largeRoomMap = largeRooms.get(i);
+
+                if (!roomMap.containsKey(r) && !largeRoomMap.containsKey(r)) {
+                    // Add room if it doesn't already exist
+                    if (!smallRoomMap.containsKey(r)) {
+                        smallRoomMap.put(r, new Room(r, RoomSize.SMALL));
+                    }
+                } else if (!largeRoomMap.containsKey(r)) {
+                    // If the room already exists update the size
+                    Room room = roomMap.remove(r);
+                    room.setSize(RoomSize.SMALL);
+                    smallRoomMap.put(r, room);
+                } else if (!roomMap.containsKey(r)) {
+                    // If the room already exists update the size
+                    Room room = largeRoomMap.remove(r);
+                    room.setSize(RoomSize.SMALL);
+                    smallRoomMap.put(r, room);
                 }
-            } else if(!largeRooms.containsKey(r)) {
-                // If the room already exists update the size
-                Room room = rooms.remove(r);
-                room.setSize(RoomSize.SMALL);
-                smallRooms.put(r, room);
-            } else if(!rooms.containsKey(r)) {
-                // If the room already exists update the size
-                Room room = largeRooms.remove(r);
-                room.setSize(RoomSize.SMALL);
-                smallRooms.put(r, room);
             }
         }
         @Override
 	public boolean e_small_room(String r) {
-            return smallRooms.containsKey(r);
+            return true;//smallRooms.containsKey(r);
         }
 
 	// GROUPS
