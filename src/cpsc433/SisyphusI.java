@@ -31,6 +31,8 @@ public class SisyphusI {
 	protected final String[] args;
 	protected String out;
 	protected Environment env;
+        
+        private final int POP_SIZE = 10;
 
 
 	public SisyphusI(String[] args) {
@@ -73,7 +75,7 @@ public class SisyphusI {
 	 * @return The global environment object.
 	 */
 	protected Environment getEnvironment() {
-		return Environment.get();
+		return Environment.get(POP_SIZE);
 	}
 
 	protected void printSynopsis() {
@@ -128,74 +130,76 @@ public class SisyphusI {
 	 * @throws cpsc433.Environment.UnsolvableInstanceException
 	 */
 	protected void doSearch(Environment env, long timeLimit) throws Environment.UnsolvableInstanceException {
+            for (int popIndex = 0; popIndex < POP_SIZE; popIndex++) {
+                Iterator<Person> peopleIter = env.people.get(popIndex).values().iterator();
 
-		Iterator<Person> peopleIter = env.people.values().iterator();
+                LinkedList<Person> managerQ = new LinkedList();
+                LinkedList<Person> groupHeadQ = new LinkedList();
+                LinkedList<Person> projectHeadQ = new LinkedList();
+                LinkedList<Person> secretaryQ = new LinkedList();
+                LinkedList<Person> personQ = new LinkedList();
 
-		LinkedList<Person> managerQ = new LinkedList();
-		LinkedList<Person> groupHeadQ = new LinkedList();
-		LinkedList<Person> projectHeadQ = new LinkedList();
-		LinkedList<Person> secretaryQ = new LinkedList();
-		LinkedList<Person> personQ = new LinkedList();
-
-		Room[] roomAddresses = (Room[]) env.rooms.values().toArray(new Room[0]);
-		Room[] largeRoomAddresses = (Room[]) env.largeRooms.values().toArray(new Room[0]);
-		Room[] smallRoomAddresses = (Room[]) env.smallRooms.values().toArray(new Room[0]);
+                Room[] roomAddresses = (Room[]) env.rooms.get(popIndex).values().toArray(new Room[0]);
+                Room[] largeRoomAddresses = (Room[]) env.largeRooms.get(popIndex).values().toArray(new Room[0]);
+                Room[] smallRoomAddresses = (Room[]) env.smallRooms.get(popIndex).values().toArray(new Room[0]);
 
 		// identify all managers, group heads, project heads, secretaries
-		// and assign to proper queues
-		while (peopleIter.hasNext()) {
-			Person tempPerson = peopleIter.next();
+                // and assign to proper queues
+                while (peopleIter.hasNext()) {
+                    Person tempPerson = peopleIter.next();
 
-			if (tempPerson.isGroupHead()) {
-				groupHeadQ.add(tempPerson);
-			} else if (tempPerson.isManager()) {
-				managerQ.add(tempPerson);
-			} else if (tempPerson.isProjectHead()) {
-				projectHeadQ.add(tempPerson);
-			} else if (tempPerson.isSecretary()) {
-				secretaryQ.add(tempPerson);
-			} else {
-				personQ.add(tempPerson);
-			}
-		}
+                    if (tempPerson.isGroupHead()) {
+                        groupHeadQ.add(tempPerson);
+                    } else if (tempPerson.isManager()) {
+                        managerQ.add(tempPerson);
+                    } else if (tempPerson.isProjectHead()) {
+                        projectHeadQ.add(tempPerson);
+                    } else if (tempPerson.isSecretary()) {
+                        secretaryQ.add(tempPerson);
+                    } else {
+                        personQ.add(tempPerson);
+                    }
+                }
 
-		//cutoff for unsolvable instances. Dependant on number of people, rooms, managers, and heads.
-		int proods = managerQ.size() + groupHeadQ.size() + projectHeadQ.size();
-		if (env.people.size() - proods <= 2 * (env.rooms.size() + env.smallRooms.size() + env.largeRooms.size() - proods)) {
-			try {
-				PopMember p = env.createPopulationMember(managerQ, groupHeadQ, projectHeadQ, secretaryQ, personQ, roomAddresses, largeRoomAddresses, smallRoomAddresses);
-				System.out.println("Population member created...");
-                                
-                                /* ----- CUT HERE ------ */
-                                printResults();
-                                try {
-					System.out.println("Score: " + p.score());
-                                        System.out.println();
-				} catch (NullPointerException e) {
-					e.printStackTrace();
-				}
-                                p.mutate(3);
-                                /* ----- CUT HERE ------ */
-                                
-				try {
-					System.out.println("Score: " + p.score());
-                                        System.out.println();
-				} catch (NullPointerException e) {
-					e.printStackTrace();
-				}
+                //cutoff for unsolvable instances. Dependant on number of people, rooms, managers, and heads.
+                int proods = managerQ.size() + groupHeadQ.size() + projectHeadQ.size();
+                if (env.people.get(popIndex).size() - proods <= 2 * (env.rooms.get(popIndex).size() + env.smallRooms.get(popIndex).size() + env.largeRooms.get(popIndex).size() - proods)) {
+                    try {
+                        PopMember p = env.createPopulationMember(popIndex, managerQ, groupHeadQ, projectHeadQ, secretaryQ, personQ, roomAddresses, largeRoomAddresses, smallRoomAddresses);
+                        System.out.println("Population member created...");
+                        p.printAssignments();
 
-			} catch (Room.FullRoomException ex) {
-				ex.printStackTrace();
-			}
-		} else {
+                        /* ----- CUT HERE ------ */
+                        try {
+                            System.out.println("Score: " + p.score());
+                            System.out.println();
+                        } catch (NullPointerException e) {
+                            e.printStackTrace();
+                        }
+                        p.mutate(3);
+                        p.printAssignments();
+                        /* ----- CUT HERE ------ */
+
+                        try {
+                            System.out.println("Score: " + p.score());
+                            System.out.println();
+                        } catch (NullPointerException e) {
+                            e.printStackTrace();
+                        }
+
+                    } catch (Room.FullRoomException ex) {
+                        ex.printStackTrace();
+                    }
+                } else {
                     // TODO: Remove this exception and replace with comment write
                     throw new Environment.UnsolvableInstanceException("Instance is unsolvable. No solution possible.");
-		}
+                }
+            }
 	}
 
 
 	protected void printResults() {
-		Iterator<Room> iter1 = env.smallRooms.values().iterator();
+		/*Iterator<Room> iter1 = env.smallRooms.values().iterator();
 		Iterator<Room> iter2 = env.rooms.values().iterator();
 		Iterator<Room> iter3 = env.largeRooms.values().iterator();
 
@@ -227,7 +231,7 @@ public class SisyphusI {
 			if (i.getAssignedPeople()[1]  != null ) {
 				System.out.println("assign-to(" + i.getAssignedPeople()[1].getName() + ", " + i.getName() +")");
 			}
-		}
+		}*/
 
 
 

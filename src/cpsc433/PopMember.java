@@ -39,7 +39,7 @@ public class PopMember {
     private int smallRoomMutateCount;
     private int mediumRoomMutateCount;
     private int largeRoomMutateCount;
-
+    
 
     /**
      * Construct population member
@@ -410,6 +410,12 @@ public class PopMember {
             }
         }
         
+    }
+    
+    public void printAssignments() {
+        for(Person person : people.values()) {
+            System.out.println("assign-to(" + person.getName() + ", " + person.assignedRoom().getName() + ")");
+        }
     }
     
     /**
