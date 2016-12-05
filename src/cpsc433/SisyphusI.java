@@ -108,6 +108,7 @@ public class SisyphusI {
                                 @Override
                                 public void run() {
                                     printResults();
+                                    System.exit(0);
                                 }
                             }), (long) (timeLimit * 0.9)); 
                         }
