@@ -75,6 +75,15 @@ public class Entity implements Comparable<Entity>{
 		}
 	    else throw new java.lang.ClassCastException();
 	}
+        
+        /**
+         * Entity hash code based on name
+         * 
+         * @return 
+         */
+        public int hashCode() {
+            return name.hashCode();
+        }
 
 	/**
 	 * If the parameter object is an <code>Entity</code>, 

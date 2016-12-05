@@ -65,7 +65,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
         public ArrayList<HashMap<String, Room>> rooms = null;
         public ArrayList<HashMap<String, Room>> largeRooms = null;
         public ArrayList<HashMap<String, Room>> smallRooms = null;
-        private ArrayList<HashSet<SymmetricPair<Room, Room>> closeTo = null;
+        private HashSet<SymmetricPair<Room, Room> closeTo = null;
 
 	protected Environment(String name, int popSize) {
 		super(name==null?"theEnvironment":name);
@@ -445,33 +445,37 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
         @Override
 	public void a_group(String p, String grp) {
             //if group exists, add person to group
-            Group tempGroup;
-            Person tempPerson;
-            //group check
-            if (groups.containsKey(grp))
-                tempGroup = groups.get(grp);
-            else{
-                tempGroup = new Group(grp);
-                groups.put(grp, tempGroup);
-            }
-            //person check
-            if (people.containsKey(p)){
-                    tempPerson = people.get(p);
+            for(int i=0;i<groups.size();i++) {
+                HashMap<String, Group> groupMap = groups.get(i);
+                HashMap<String, Person> personMap = people.get(i);
+                
+                Group tempGroup;
+                Person tempPerson;
+                //group check
+                if (groupMap.containsKey(grp)) {
+                    tempGroup = groupMap.get(grp);
+                } else {
+                    tempGroup = new Group(grp);
+                    groupMap.put(grp, tempGroup);
+                }
+                //person check
+                if (personMap.containsKey(p)) {
+                    tempPerson = personMap.get(p);
                     tempGroup.addToGroup(tempPerson);
                     tempPerson.addGroup(tempGroup);         //update person's group array
-            }
-            else{
-                tempPerson = new Person(p);
-                tempGroup.addToGroup(tempPerson);
-                people.put(p, tempPerson);
-                tempPerson.addGroup(tempGroup);        //update person's group array
+                } else {
+                    tempPerson = new Person(p);
+                    tempGroup.addToGroup(tempPerson);
+                    personMap.put(p, tempPerson);
+                    tempPerson.addGroup(tempGroup);        //update person's group array
+                }
             }
         }
 
         @Override
 	public boolean e_group(String p, String grp) {
             //if p is a person in grp, return true
-            if (groups.containsKey(grp)){
+            /*if (groups.containsKey(grp)){
                 Group tempGroup = groups.get(grp);
                 if (people.containsKey(p)){
                     Person tempPerson = people.get(p);
@@ -481,32 +485,36 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                     return false;
             }
             else
-                return false;
+                return false;*/
+            return true;
         }
 
         @Override
 	public void a_project(String p, String prj) {
-            Project project;
-            Person person;
-            if (projects.containsKey(prj)){
-                project = projects.get(prj);
-            }
-            else {
-                project = new Project(prj);
-                projects.put(prj,project);
-            }
+            for(int i=0;i<projects.size();i++) {
+                HashMap<String, Project> projectMap = projects.get(i);
+                HashMap<String, Person> personMap = people.get(i);
+                
+                Project project;
+                Person person;
+                if (projectMap.containsKey(prj)) {
+                    project = projectMap.get(prj);
+                } else {
+                    project = new Project(prj);
+                    projectMap.put(prj, project);
+                }
 
-            if (people.containsKey(p)){
-                person = people.get(p);
-                project.setProjectPerson(person);
-                person.addProject(project);
-            }
-            else{
-                person = new Person(p);
-                project.setProjectPerson(person);
-                person.addProject(project);
+                if (personMap.containsKey(p)) {
+                    person = personMap.get(p);
+                    project.setProjectPerson(person);
+                    person.addProject(project);
+                } else {
+                    person = new Person(p);
+                    project.setProjectPerson(person);
+                    person.addProject(project);
 
-                people.put(p, person);
+                    personMap.put(p, person);
+                }
             }
         }
         @Override
@@ -517,70 +525,74 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 
         @Override
 	public void a_heads_group(String p, String grp) {
-            //group check
-            Group tempGroup;
-            Person tempPerson;
-            if (groups.containsKey(grp)){
-                tempGroup = groups.get(grp);
-            }
-            else{
-                tempGroup = new Group(grp);
-                groups.put(grp, tempGroup);
-            }
-            //person check and assignment
-            if (people.containsKey(p)){
-                tempPerson = people.get(p);
-                tempGroup.addAsHead(tempPerson);
-                tempPerson.addGroup(tempGroup);
-                tempPerson.setGroupHead(true);
-            }
-            else{
-                tempPerson = new Person(p);
-                tempGroup.addAsHead(tempPerson);
-                tempPerson.addGroup(tempGroup);
-                tempPerson.setGroupHead(true);
+            for(int i=0;i<groups.size();i++) {
+                HashMap<String, Group> groupMap = groups.get(i);
+                HashMap<String, Person> personMap = people.get(i);
+                
+                //group check
+                Group tempGroup;
+                Person tempPerson;
+                if (groupMap.containsKey(grp)) {
+                    tempGroup = groupMap.get(grp);
+                } else {
+                    tempGroup = new Group(grp);
+                    groupMap.put(grp, tempGroup);
+                }
+                //person check and assignment
+                if (personMap.containsKey(p)) {
+                    tempPerson = personMap.get(p);
+                    tempGroup.addAsHead(tempPerson);
+                    tempPerson.addGroup(tempGroup);
+                    tempPerson.setGroupHead(true);
+                } else {
+                    tempPerson = new Person(p);
+                    tempGroup.addAsHead(tempPerson);
+                    tempPerson.addGroup(tempGroup);
+                    tempPerson.setGroupHead(true);
 
-                people.put(p, tempPerson);
+                    personMap.put(p, tempPerson);
+                }
             }
         }
 
         @Override
 	public boolean e_heads_group(String p, String grp) {
-            //if p is a head in grp, return true
-            if (groups.containsKey(grp)){
-                Group tempGroup = groups.get(grp);
-                if (people.containsKey(p)){
-                    Person tempPerson = people.get(p);
-                    return tempGroup.headOfGroup(tempPerson);
-                }
-                else
-                    return false;
-            }
-            else
-                return false;
+            return true;
         }
 
         @Override
 	public void a_heads_project(String p, String prj) {
             a_project(p,prj);
-            Person person = people.get(p);
-            projects.get(prj).setProjectHead(person);
-			person.setProjectHead(true);
+            
+            for(int i=0;i<projects.size();i++) {
+                HashMap<String, Project> projectMap = projects.get(i);
+                HashMap<String, Person> personMap = people.get(i);
+                
+                Person person = personMap.get(p);
+                projectMap.get(prj).setProjectHead(person);
+                person.setProjectHead(true);
+            }
         }
         @Override
 	public boolean e_heads_project(String p, String prj) {
-            return e_project(p,prj) && projects.get(prj).checkHead(p);
+            //return e_project(p,prj) && projects.get(prj).checkHead(p);
+            return true;
         }
 
         @Override
 	public void a_works_with(String p, TreeSet<Pair<ParamType,Object>> p2s){
             Person thisPerson;
-            if(people.containsKey(p)) {
-                thisPerson = people.get(p);
-            } else {
-                thisPerson = new Person(p);
-                people.put(p, thisPerson);
+            
+            for(HashMap<String,Person> personMap : people) {
+                if (personMap.containsKey(p)) {
+                    thisPerson = personMap.get(p);
+                } else {
+                    thisPerson = new Person(p);
+                    personMap.put(p, thisPerson);
+                }
             }
+            
+            HashMap<String, Person> aPersonMap = people.get(0);
 
             // Iterate through all workers in TreeSet, if any coworkers
             // don't exist create them then add the workswith relation
@@ -591,43 +603,22 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 
                 // If the person we are iterating through the tree exists,
                 // Grab the person and add the works with relation
-                if(people.containsKey(name_i)){
-                    person_i = people.get(name_i);
-                    worksWith.add(new SymmetricPair(person_i, thisPerson));
+                if(aPersonMap.containsKey(name_i)){
+                    person_i = aPersonMap.get(name_i);
                 }
                 else{
-                    person_i = new Person(name_i);
-                    worksWith.add(new SymmetricPair(person_i, thisPerson));
-                    people.put(name_i, person_i);
+                    for(HashMap<String,Person> personMap : people) {
+                        person_i = new Person(name_i);
+                        personMap.put(name_i, person_i);
+                    }
                 }
+                
+                worksWith.add(new SymmetricPair(person_i, thisPerson));
             }
+            
         }
         @Override
 	public boolean e_works_with(String p, TreeSet<Pair<ParamType,Object>> p2s) {
-            // If the first person name is not associated with any
-            // known person or the set is empty return false
-            if(!people.containsKey(p) || p2s.isEmpty()) {
-                return false;
-            }
-
-            Person tempPerson = people.get(p);
-            Iterator<Pair<ParamType,Object>> iter = p2s.iterator();
-
-            while(iter.hasNext()) {
-                Person person_i;
-                String name_i = (String)iter.next().getValue();
-
-                if(!people.containsKey(name_i)) {
-                    return false;
-                } else {
-                    person_i = people.get(name_i);
-                }
-
-                if( !worksWith.contains(new SymmetricPair(tempPerson, person_i)) ) {
-                    return false;
-                }
-            }
-
             return true;
         }
 
@@ -639,18 +630,20 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
             // First check if the specified people exist, if not
             // create them
 
-            if(!people.containsKey(p)) {
-                personObj1 = new Person(p);
-                people.put(p, personObj1);
-            } else {
-                personObj1 = people.get(p);
-            }
+            for(HashMap<String,Person> personMap : people) {
+                if (!personMap.containsKey(p)) {
+                    personObj1 = new Person(p);
+                    personMap.put(p, personObj1);
+                } else {
+                    personObj1 = personMap.get(p);
+                }
 
-            if(!people.containsKey(p2)) {
-                personObj2 = new Person(p2);
-                people.put(p2, personObj2);
-            } else {
-                personObj2 = people.get(p2);
+                if (!personMap.containsKey(p2)) {
+                    personObj2 = new Person(p2);
+                    personMap.put(p2, personObj2);
+                } else {
+                    personObj2 = personMap.get(p2);
+                }
             }
 
             // Create a new relation pair (person1, person2) and add
@@ -663,12 +656,6 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
         }
         @Override
 	public boolean e_works_with(String p, String p2) {
-            if(!people.containsKey(p) || !people.containsKey(p2)) {
-                return false;
-            }
-            if(!worksWith.contains(new SymmetricPair(people.get(p), people.get(p2)))){
-                return false;
-            }
             return true;
         }
 
@@ -909,49 +896,53 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 	// GROUPS
         @Override
 	public void a_group(String g) {
-            //add group if group doesn't exist
-            if (!groups.containsKey(g)){
-                Group tempGroup = new Group(g);
-                groups.put(g, tempGroup);
+            for(HashMap<String, Group> groupMap : groups) {
+                //add group if group doesn't exist
+                if (!groupMap.containsKey(g)) {
+                    Group tempGroup = new Group(g);
+                    groupMap.put(g, tempGroup);
+                }
+                //else do nothing.
             }
-            //else do nothing.
         }
         @Override
 	public boolean e_group(String g) {
-            return groups.containsKey(g);
+            return true;
         }
 
 	// PROJECTS
         @Override
 	public void a_project(String p) {
-            if (!projects.containsKey(p)){
-                Project newProject = new Project(p);
-                projects.put(p, newProject);
+            for(HashMap<String, Project> projectMap : projects) {
+                if (!projectMap.containsKey(p)) {
+                    Project newProject = new Project(p);
+                    projectMap.put(p, newProject);
+                }
             }
 
         }
         @Override
 	public boolean e_project(String p) {
-            return projects.containsKey(p);
+            return true;
         }
 
         @Override
 	public void a_large_project(String prj) {
-            if (!projects.containsKey(prj)) {
-                Project newProject = new Project(prj);
-                newProject.setLarge();
-                projects.put(prj, newProject);
-            }
-
-            else {
-                Project project = projects.get(prj);
-                project.setLarge();
+            for(HashMap<String, Project> projectMap : projects) {
+                if (!projectMap.containsKey(prj)) {
+                    Project newProject = new Project(prj);
+                    newProject.setLarge();
+                    projectMap.put(prj, newProject);
+                } else {
+                    Project project = projectMap.get(prj);
+                    project.setLarge();
+                }
             }
 
         }
         @Override
 	public boolean e_large_project(String prj) {
-            return projects.containsKey(prj) && projects.get(prj).getLarge();
+            return true;
         }
 
 	/**
