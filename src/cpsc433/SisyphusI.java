@@ -1,5 +1,9 @@
 package cpsc433;
 
+import static cpsc433.PredicateReader.error;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 /**
@@ -36,7 +40,7 @@ public class SisyphusI {
         
         private final int POP_SIZE = 100;
         
-        private PopMember bestPopMember = null;
+        private LinkedHashSet<Room> bestAssignments = null;
         private int bestScore = Integer.MIN_VALUE;
 
 
@@ -133,9 +137,9 @@ public class SisyphusI {
 	 * Perform the actual search
 	 * @param env An Environment object.
 	 * @param timeLimit A time limit in milliseconds.
-	 * @throws cpsc433.Environment.UnsolvableInstanceException
+         * @throws cpsc433.Room.FullRoomException should never occur for debug purposes
 	 */
-	protected void doSearch(Environment env, long timeLimit) throws Environment.UnsolvableInstanceException, Room.FullRoomException {
+	protected void doSearch(Environment env, long timeLimit) throws Room.FullRoomException {
 
 		// The array that holds all the pop members
 		PopMember[] population = new PopMember[POP_SIZE];
@@ -185,8 +189,8 @@ public class SisyphusI {
                         ex.printStackTrace();
                     }
                 } else {
-                    // TODO: Remove this exception and replace with comment write
-                    throw new Environment.UnsolvableInstanceException("Instance is unsolvable. No solution possible.");
+                    printResults();
+                    System.exit(0);
                 }
 
             }
@@ -202,13 +206,13 @@ public class SisyphusI {
 				populationScores[popIndex] = tempScore;
 				totalScore += tempScore;
                                 
-                                if(tempScore >= bestScore) {
+                                if(tempScore > bestScore) {
                                     bestScore = tempScore;
-                                    bestPopMember = population[popIndex];
+                                    bestAssignments = population[popIndex].copyAssignedRooms();
                                     
-                                    population[popIndex].printAssignments();
+                                    /*population[popIndex].printAssignments();
                                     System.out.println("Score: " + tempScore);
-                                    System.out.println();
+                                    System.out.println();*/
                                 }
 
 				// Finds new scores
@@ -232,42 +236,57 @@ public class SisyphusI {
 
 
 	protected void printResults() {
-		/*Iterator<Room> iter1 = env.smallRooms.values().iterator();
-		Iterator<Room> iter2 = env.rooms.values().iterator();
-		Iterator<Room> iter3 = env.largeRooms.values().iterator();
+            long start = System.nanoTime();
+            
+            PrintWriter writer;
+            try {
+                writer = new PrintWriter(args[0] + ".out", "UTF-8");
+            } catch (FileNotFoundException | UnsupportedEncodingException e) {
+                System.out.println("Can't open file " + args[0] + ".out");
+                return;
+            }
 
-		for (Room i : env.smallRooms.values()) {
-			if (i.getAssignedPeople()[0] != null) {
-				System.out.println("assign-to(" + i.getAssignedPeople()[0].getName() + ", " + i.getName() +")");
-			}
-
-			if (i.getAssignedPeople()[1]  != null ) {
-				System.out.println("assign-to(" + i.getAssignedPeople()[1].getName() + ", " + i.getName() +")");
-			}
-		}
-
-		for (Room i : env.rooms.values()) {
-			if (i.getAssignedPeople()[0] != null) {
-				System.out.println("assign-to(" + i.getAssignedPeople()[0].getName() + ", " + i.getName() +")");
-			}
-
-			if (i.getAssignedPeople()[1]  != null ) {
-				System.out.println("assign-to(" + i.getAssignedPeople()[1].getName() + ", " + i.getName() +")");
-			}
-		}
-
-		for (Room i : env.largeRooms.values()) {
-			if (i.getAssignedPeople()[0] != null) {
-				System.out.println("assign-to(" + i.getAssignedPeople()[0].getName() + ", " + i.getName() +")");
-			}
-
-			if (i.getAssignedPeople()[1]  != null ) {
-				System.out.println("assign-to(" + i.getAssignedPeople()[1].getName() + ", " + i.getName() +")");
-			}
-		}*/
-
-
-
+            if(bestAssignments != null) {
+                for (Room room : bestAssignments) {
+                    Person[] assignedPeople = room.getAssignedPeople();
+                    if (assignedPeople[0] != null) {
+                        writer.println("assign-to(" + assignedPeople[0].getName() + ", " + room.getName() + ")");
+                    }
+                    if (assignedPeople[1] != null) {
+                        writer.println("assign-to(" + assignedPeople[1].getName() + ", " + room.getName() + ")");
+                    }
+                }
+                
+                writer.println();
+                writer.println("// Score: " + bestScore);
+            } else {
+                writer.println("// No solution");
+            }
+            
+            writer.close();
+            long end = System.nanoTime();
+            System.out.println("WRITING TOOK: " + (float)(end-start)/1000000 + "ms");
+            
+            System.out.println("SEARCH COMPLETE -- Results written to " + args[0] + ".out");
+            System.out.println();
+            
+            // Print to console for debug
+            if(bestAssignments != null) {
+                for (Room room : bestAssignments) {
+                    Person[] assignedPeople = room.getAssignedPeople();
+                    if (assignedPeople[0] != null) {
+                        System.out.println("assign-to(" + assignedPeople[0].getName() + ", " + room.getName() + ")");
+                    }
+                    if (assignedPeople[1] != null) {
+                        System.out.println("assign-to(" + assignedPeople[1].getName() + ", " + room.getName() + ")");
+                    }
+                }
+                
+                System.out.println();
+                System.out.println("// Score: " + bestScore);
+            } else {
+                System.out.println("// No solution");
+            }
 	}
 
 	protected void runInteractiveMode() {

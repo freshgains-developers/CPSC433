@@ -54,6 +54,27 @@ public class Room extends Entity {
         assignedPeople[1] = null;
     }
     
+    // Copy constructor, * this is not a deep copy *
+    // this method simply compies Person Room objects
+    // in sufficient depth to preserve assignments
+    public Room(Room toCopy) {
+        super(toCopy.getName());
+        
+        this.size = toCopy.getSize();
+        this.hasFixedAssignments = toCopy.hasFixedAssignments();
+                
+        assignedPeople = new Person[2];
+        assignedPeople[0] = null;
+        assignedPeople[1] = null;
+        
+        if(toCopy.getAssignedPeople()[0] != null) {
+            assignedPeople[0] = new Person(toCopy.getAssignedPeople()[0].getName());
+        }
+        if(toCopy.getAssignedPeople()[1] != null) {
+            assignedPeople[1] = new Person(toCopy.getAssignedPeople()[1].getName());
+        }
+    }
+    
     // Getter for Room size
     public RoomSize getSize() {
         return size;
