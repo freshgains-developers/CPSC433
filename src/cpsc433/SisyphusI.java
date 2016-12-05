@@ -130,6 +130,7 @@ public class SisyphusI {
 	 * @throws cpsc433.Environment.UnsolvableInstanceException
 	 */
 	protected void doSearch(Environment env, long timeLimit) throws Environment.UnsolvableInstanceException {
+            long start = System.nanoTime();
             for (int popIndex = 0; popIndex < POP_SIZE; popIndex++) {
                 Iterator<Person> peopleIter = env.people.get(popIndex).values().iterator();
 
@@ -176,13 +177,13 @@ public class SisyphusI {
                         } catch (NullPointerException e) {
                             e.printStackTrace();
                         }
-                        p.mutate(3);
-                        p.printAssignments();
+                        //p.mutate(3);
+                        //p.printAssignments();
                         /* ----- CUT HERE ------ */
 
                         try {
-                            System.out.println("Score: " + p.score());
-                            System.out.println();
+                            //System.out.println("Score: " + p.score());
+                            //System.out.println();
                         } catch (NullPointerException e) {
                             e.printStackTrace();
                         }
