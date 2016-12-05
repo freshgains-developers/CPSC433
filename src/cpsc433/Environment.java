@@ -137,7 +137,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                 return ret;
 	}
 
-        private void printPeoplePredicates(PrintWriter writer) {
+        private void printPeoplePredicates(PrintWriter writer) { /*
             Iterator<Person> peopleIter = people.values().iterator();
             while (peopleIter.hasNext()){
                 Person tempPerson = peopleIter.next();
@@ -170,10 +170,10 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                 SymmetricPair<Person, Person> relation = worksWithIter.next();
                 writer.println("works-with(" + relation.left.getName() + ", " + relation.right.getName() + ")");
                 writer.println("works-with(" + relation.right.getName() + ", " + relation.left.getName() + ")");
-            }
+            } */
         }
 
-        private void printRoomPredicates(PrintWriter writer) {
+        private void printRoomPredicates(PrintWriter writer) { /*
             // NON-FUNCTIONAL
             Iterator<Room> roomIter = rooms.values().iterator();
             while (roomIter.hasNext()) {
@@ -212,8 +212,9 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                 writer.println("close(" + relation.left.getName() + ", " + relation.right.getName() + ")");
                 writer.println("close(" + relation.right.getName() + ", " + relation.left.getName() + ")");
             }
+            */
         }
-        private void printGroupPredicates(PrintWriter writer){
+        private void printGroupPredicates(PrintWriter writer){ /*
             Iterator<Group> groupIter = groups.values().iterator();
                 while(groupIter.hasNext()){
                     Group group = groupIter.next();
@@ -242,9 +243,10 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                         writer.println("group(" + tempPerson.getName() + "," + group.getName() + ")");
                     }
                 }
+                */
         }
 
-        private void printProjectPredicates(PrintWriter writer){
+        private void printProjectPredicates(PrintWriter writer){ /*
             Iterator<Project> projectIter = projects.values().iterator();
                 while(projectIter.hasNext()){
                     Project project = projectIter.next();
@@ -264,6 +266,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                         writer.println("project(" + tempPerson.getName() + "," + project.getName() + ")");
                     }
                 }
+                */
         }
         
         @Override
