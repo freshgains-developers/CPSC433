@@ -168,10 +168,10 @@ public class SisyphusI {
                         PopMember p = env.createPopulationMember(popIndex, managerQ, groupHeadQ, projectHeadQ, secretaryQ, personQ, roomAddresses, largeRoomAddresses, smallRoomAddresses);
                         System.out.println("Population member created...");
                         p.printAssignments();
-
+                        
                         /* ----- CUT HERE ------ */
                         try {
-                            System.out.println("Score: " + p.score());
+                            //System.out.println("Score: " + p.score());
                             System.out.println();
                         } catch (NullPointerException e) {
                             e.printStackTrace();

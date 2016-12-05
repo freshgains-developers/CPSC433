@@ -7,6 +7,7 @@ package cpsc433;
 
 import cpsc433.Room.RoomSize;
 import cpsc433.Room.FullRoomException;
+import cpsc433.Swap.SwapType;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -39,6 +40,8 @@ public class PopMember {
     private int smallRoomMutateCount;
     private int mediumRoomMutateCount;
     private int largeRoomMutateCount;
+    
+    private ArrayList<Swap> swapList;
     
 
     /**
@@ -74,6 +77,8 @@ public class PopMember {
         this.smallRoomMutateCount = smallRooms.length;
         this.mediumRoomMutateCount = mediumRooms.length;
         this.largeRoomMutateCount = largeRooms.length;
+        
+        this.swapList = new ArrayList<>();
         
         Random randGen = new Random();
         assignedRooms = new LinkedHashSet();
@@ -500,7 +505,7 @@ public class PopMember {
             }
 
             if (!room1.hasFixedAssignments() && !room2.hasFixedAssignments() && (room1.hasProod() || room2.hasProod() || rand.nextInt(2) == 0)) {
-                swapOccupants(room1, room2);
+                swapOccupants(room1, room2, false);
             } else {
                 swapSingle(room1, room2, rand);
             }
@@ -520,7 +525,32 @@ public class PopMember {
         }
     }
     
-    private void swapOccupants(Room r1, Room r2) throws FullRoomException {
+    public void rollback() throws FullRoomException {
+        while(swapList.size() > 0) {
+            Swap swap = swapList.remove(swapList.size()-1);
+            
+            if(swap.type == SwapType.OCCUPANT) {
+                OccupantSwap occupantSwap = (OccupantSwap)swap;
+                swapOccupants(occupantSwap.room1, occupantSwap.room2, true);
+            } else {
+                SingleSwap singleSwap = (SingleSwap)swap;
+                
+                Room room1 = singleSwap.person1.assignedRoom();
+                Room room2 = singleSwap.person2.assignedRoom();
+                
+                room1.removePerson(singleSwap.person1);
+                room2.removePerson(singleSwap.person2);
+                
+                room1.putPerson(singleSwap.person2);
+                room2.putPerson(singleSwap.person1);
+                
+                singleSwap.person1.assignToRoom(room2);
+                singleSwap.person2.assignToRoom(room1);
+            }
+        }
+    }
+    
+    private void swapOccupants(Room r1, Room r2, boolean reverse) throws FullRoomException {
         Person p1 = r1.getAssignedPeople()[0];
         Person p2 = r1.getAssignedPeople()[1];
         
@@ -547,6 +577,10 @@ public class PopMember {
         }
         if(p4 != null) {
             p4.assignToRoom(r1);
+        }
+        
+        if(!reverse) {
+           swapList.add(new OccupantSwap(r1, r2)); 
         }
     }
     
@@ -580,6 +614,8 @@ public class PopMember {
         if(b != null) {
            b.assignToRoom(r1);
         }
+        
+        swapList.add(new SingleSwap(a,b));
     }
 
 
