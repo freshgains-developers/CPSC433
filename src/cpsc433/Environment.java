@@ -617,7 +617,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
             // don't exist create them then add the workswith relation
             Iterator<Pair<ParamType,Object>> iter = p2s.iterator();
             while(iter.hasNext()) {
-                Person person_i;
+                Person person_i = null;
                 String name_i = (String)iter.next().getValue();
 
                 // If the person we are iterating through the tree exists,
