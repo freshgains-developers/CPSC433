@@ -57,8 +57,22 @@ public class SisyphusI {
 		String fromFile = null;
 
 		if (args.length>0) {
+                    
+                    long timeLimit = Long.parseLong(args[1]);
+                    if(timeLimit > 0) {
+                            timerStart = System.nanoTime();
+                            
+                            Timer timer = new Timer();
+                            timer.schedule((new TimerTask() {
+                                @Override
+                                public void run() {
+                                    printResults();
+                                    System.exit(0);
+                                }
+                            }), (long) (timeLimit * 0.8)); 
 			fromFile = args[0];
 			env.fromFile(fromFile);
+                    }
 		}
 		else {
 			printSynopsis();
@@ -107,7 +121,7 @@ public class SisyphusI {
 	protected void runCommandLineMode() {
 		try {
 			long timeLimit = Long.parseLong(args[1]);
-
+                        /*
                         if(timeLimit > 0) {
                             timerStart = System.nanoTime();
                             
@@ -119,7 +133,7 @@ public class SisyphusI {
                                     System.exit(0);
                                 }
                             }), (long) (timeLimit * 0.8)); 
-                        }
+                        }*/
                         
 			//timeLimit -= (System.currentTimeMillis()-startTime);
 			System.out.println("Performing search for "+timeLimit+"ms\n");
