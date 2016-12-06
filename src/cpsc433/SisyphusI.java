@@ -59,7 +59,7 @@ public class SisyphusI {
 	protected void run() {
                 long timeLimit = Long.parseLong(args[1]);
                 if(timeLimit > 0) {
-                    POP_SIZE = (int) (timeLimit * 0.001)+20;
+                    POP_SIZE = ((int) (timeLimit * 0.001))+20;
                     if (POP_SIZE > 1000){
                         POP_SIZE = 1000;
                     }
@@ -71,7 +71,7 @@ public class SisyphusI {
 		if (args.length>0) {
 
                     if(timeLimit > 0) {
-                        SWAP_TOTAL = (int) (timeLimit * 0.10)+1;
+                        SWAP_TOTAL = ((int) (timeLimit * 0.10))+1;
                             timerStart = System.nanoTime();
                             
                             Timer timer = new Timer();
@@ -79,7 +79,7 @@ public class SisyphusI {
                                 @Override
                                 public void run() {
                                     printFirst = true;
-                                    printAfter = true;
+                                    //printAfter = true;
 
                                 }
                             }), (long) (timeLimit * 0.85));
@@ -233,6 +233,8 @@ public class SisyphusI {
 			if (printFirst) {
 				printFirst = false;
 				printResults();
+                                
+                                System.exit(0);
 			}
 
 			int totalScore = 0;
@@ -280,7 +282,7 @@ public class SisyphusI {
 
 
 	protected void printResults() {
-            long start = System.nanoTime();
+            //long start = System.nanoTime();
             
             PrintWriter writer;
             try {
@@ -308,12 +310,12 @@ public class SisyphusI {
             }
             
             writer.close();
-            long end = System.nanoTime();
-            System.out.println("WRITING TOOK: " + (float)(end-start)/1000000 + "ms");
-            System.out.println("SEARCH TOOK: " + (float)(start-timerStart)/1000000 + "ms");
+            //long end = System.nanoTime();
+            //System.out.println("WRITING TOOK: " + (float)(end-start)/1000000 + "ms");
+            //System.out.println("SEARCH TOOK: " + (float)(start-timerStart)/1000000 + "ms");
             
-            System.out.println("SEARCH COMPLETE -- Results written to " + args[0] + ".out");
-            System.out.println();
+            //System.out.println("SEARCH COMPLETE -- Results written to " + args[0] + ".out");
+            //System.out.println();
             
             // Print to console for debug
             if(bestAssignments != null) {
