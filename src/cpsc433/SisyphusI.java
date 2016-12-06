@@ -69,7 +69,7 @@ public class SisyphusI {
                                     printResults();
                                     System.exit(0);
                                 }
-                            }), (long) (timeLimit * 0.8)); 
+                            }), (long) (timeLimit * 0.90)); 
 			fromFile = args[0];
 			env.fromFile(fromFile);
                     }
