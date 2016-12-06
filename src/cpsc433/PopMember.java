@@ -543,7 +543,7 @@ public class PopMember {
             if (room2.isEmpty()) {
                  assignedRooms.remove(room2);
             } else {
-                assignedRooms.add(room2);
+                 assignedRooms.add(room2);
             }
             
             numSwaps--;
@@ -557,6 +557,17 @@ public class PopMember {
             if(swap.type == SwapType.OCCUPANT) {
                 OccupantSwap occupantSwap = (OccupantSwap)swap;
                 swapOccupants(occupantSwap.room1, occupantSwap.room2, true);
+                
+                if (occupantSwap.room1.isEmpty()) {
+                    assignedRooms.remove(occupantSwap.room1);
+                } else {
+                    assignedRooms.add(occupantSwap.room1);
+                }
+                if (occupantSwap.room2.isEmpty()) {
+                    assignedRooms.remove(occupantSwap.room2);
+                } else {
+                    assignedRooms.add(occupantSwap.room2);
+                }
             } else {
                 SingleSwap singleSwap = (SingleSwap)swap;
                 
@@ -574,6 +585,17 @@ public class PopMember {
                 }
                 if(singleSwap.person2 != null) {
                     singleSwap.person2.assignToRoom(room1);
+                }
+                
+                if (singleSwap.room1.isEmpty()) {
+                    assignedRooms.remove(singleSwap.room1);
+                } else {
+                    assignedRooms.add(singleSwap.room1);
+                }
+                if (singleSwap.room2.isEmpty()) {
+                    assignedRooms.remove(singleSwap.room2);
+                } else {
+                    assignedRooms.add(singleSwap.room2);
                 }
             }
         }
