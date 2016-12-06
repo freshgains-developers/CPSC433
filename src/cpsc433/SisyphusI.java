@@ -214,9 +214,9 @@ public class SisyphusI {
                                     bestScore = tempScore;
                                     bestAssignments = population[popIndex].copyAssignedRooms();
                                     
-                                    /*population[popIndex].printAssignments();
+                                    population[popIndex].printAssignments();
                                     System.out.println("Score: " + tempScore);
-                                    System.out.println();*/
+                                    System.out.println();
                                 }
 
 				// Finds new scores

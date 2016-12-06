@@ -713,7 +713,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 
             roomObj.putPerson(person);
             person.assignToRoom(roomObj);
-
+            
             }
         }
 

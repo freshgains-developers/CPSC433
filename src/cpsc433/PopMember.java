@@ -154,6 +154,8 @@ public class PopMember {
                         roomAddresses[roomIndex] = roomAddresses[--roomsLeft];
                     }
                 }
+            } else {
+                assignedRooms.add(tempPerson.assignedRoom());
             }
         }
         
@@ -215,6 +217,8 @@ public class PopMember {
                         roomAddresses[roomIndex] = roomAddresses[--roomsLeft];
                     }
                 }
+            } else {
+                assignedRooms.add(tempPerson.assignedRoom());
             }
         }
         
@@ -277,6 +281,8 @@ public class PopMember {
                         roomAddresses[roomIndex] = roomAddresses[--roomsLeft];
                     }
                 }
+            } else {
+                assignedRooms.add(tempPerson.assignedRoom());
             }
         }
 
@@ -346,6 +352,8 @@ public class PopMember {
                         }
                     }
                 }
+            } else {
+                assignedRooms.add(tempPerson.assignedRoom());
             }
         }
 
@@ -414,6 +422,8 @@ public class PopMember {
                         }
                     }
                 }
+            } else {
+                assignedRooms.add(tempPerson.assignedRoom());
             }
         }
         
