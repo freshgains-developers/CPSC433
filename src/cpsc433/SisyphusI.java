@@ -32,7 +32,7 @@ public class SisyphusI {
 		new SisyphusI(args);
 	}
 
-	private int SWAP_TOTAL = 4;
+	private int SWAP_TOTAL = 1;
 
 	protected final String[] args;
 	protected String out;
@@ -69,7 +69,7 @@ public class SisyphusI {
                                     printResults();
                                     System.exit(0);
                                 }
-                            }), (long) (timeLimit * 0.90)); 
+                            }), (long) (timeLimit * 0.85)); 
 			fromFile = args[0];
 			env.fromFile(fromFile);
                     }
