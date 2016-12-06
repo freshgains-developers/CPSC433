@@ -53,6 +53,8 @@ public class SisyphusI {
 
 	protected void run() {
                 env = getEnvironment();
+                //update pop size and swap total
+                
 
 		String fromFile = null;
 
