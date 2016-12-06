@@ -78,11 +78,11 @@ public class SisyphusI {
                             timer.schedule((new TimerTask() {
                                 @Override
                                 public void run() {
-									printFirst = true;
+                                    printFirst = true;
                                     printAfter = true;
 
                                 }
-                            }), (long) (timeLimit * 0.000000000000001));
+                            }), (long) (timeLimit * 0.85));
 			fromFile = args[0];
 			env.fromFile(fromFile);
                     }
