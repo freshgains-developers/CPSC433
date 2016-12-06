@@ -32,13 +32,13 @@ public class SisyphusI {
 		new SisyphusI(args);
 	}
 
-	private int SWAP_TOTAL = 1;
+	private int SWAP_TOTAL = 500;
 
 	protected final String[] args;
 	protected String out;
 	protected Environment env;
         
-        private final int POP_SIZE = 100;
+        private final int POP_SIZE = 50;
         
         private LinkedHashSet<Room> bestAssignments = null;
         private int bestScore = Integer.MIN_VALUE;
