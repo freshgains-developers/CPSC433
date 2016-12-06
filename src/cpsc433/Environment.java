@@ -686,34 +686,34 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
                 HashMap<String, Room> smallRoomMap = smallRooms.get(i);
                 HashMap<String, Room> largeRoomMap = largeRooms.get(i);
                 HashMap<String, Person> peopleMap = people.get(i);
-            Person person;
-            Room   roomObj;
+                Person person;
+                Room roomObj;
 
-            if(peopleMap.containsKey(p)) {
-                person = peopleMap.get(p);
-                person.setFixed(true);
-            } else {
-                person = new Person(p);
-                person.setFixed(true);
-                peopleMap.put(p, person);
-            }
+                if (peopleMap.containsKey(p)) {
+                    person = peopleMap.get(p);
+                    person.setFixed(true);
+                } else {
+                    person = new Person(p);
+                    person.setFixed(true);
+                    peopleMap.put(p, person);
+                }
 
-            if(roomMap.containsKey(room)) {
-                roomObj = roomMap.get(room);
-            } else if(smallRoomMap.containsKey(room)) {
-                roomObj = smallRoomMap.get(room);
-            } else if(largeRoomMap.containsKey(room)) {
-                roomObj = largeRoomMap.get(room);
-            } else {
-                roomObj = new Room(room, RoomSize.MEDIUM);
-                roomMap.put(room, roomObj);
-            }
+                if (roomMap.containsKey(room)) {
+                    roomObj = roomMap.get(room);
+                } else if (smallRoomMap.containsKey(room)) {
+                    roomObj = smallRoomMap.get(room);
+                } else if (largeRoomMap.containsKey(room)) {
+                    roomObj = largeRoomMap.get(room);
+                } else {
+                    roomObj = new Room(room, RoomSize.MEDIUM);
+                    roomMap.put(room, roomObj);
+                }
 
-            roomObj.setHasFixedAssignments();
+                roomObj.setHasFixedAssignments();
 
-            roomObj.putPerson(person);
-            person.assignToRoom(roomObj);
-            
+                roomObj.putPerson(person);
+                person.assignToRoom(roomObj);
+
             }
         }
 
