@@ -38,7 +38,7 @@ public class SisyphusI {
 	protected String out;
 	protected Environment env;
         
-        private final int POP_SIZE = 50;
+        private int POP_SIZE = 50;
         
         private LinkedHashSet<Room> bestAssignments = null;
         private int bestScore = Integer.MIN_VALUE;
@@ -52,16 +52,21 @@ public class SisyphusI {
 	}
 
 	protected void run() {
+                long timeLimit = Long.parseLong(args[1]);
+                if(timeLimit > 0) {
+                    POP_SIZE = (int) (timeLimit * 0.001)+20;
+                    if (POP_SIZE > 1000){
+                        POP_SIZE = 1000;
+                    }
+                }
                 env = getEnvironment();
-                //update pop size and swap total
-                
 
 		String fromFile = null;
 
 		if (args.length>0) {
                     
-                    long timeLimit = Long.parseLong(args[1]);
                     if(timeLimit > 0) {
+                        SWAP_TOTAL = (int) (timeLimit * 0.10)+1;
                             timerStart = System.nanoTime();
                             
                             Timer timer = new Timer();
