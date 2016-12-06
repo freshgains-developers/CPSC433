@@ -32,13 +32,14 @@ public class SisyphusI {
 		new SisyphusI(args);
 	}
 
-	private int SWAP_TOTAL = 500;
+	private int SWAP_TOTAL = 1;
 
 	protected final String[] args;
 	protected String out;
 	protected Environment env;
-        
-        private final int POP_SIZE = 50;
+	private boolean printAfter = false;
+	private boolean printFirst = false;
+        private final int POP_SIZE = 100;
         
         private LinkedHashSet<Room> bestAssignments = null;
         private int bestScore = Integer.MIN_VALUE;
@@ -57,7 +58,7 @@ public class SisyphusI {
 		String fromFile = null;
 
 		if (args.length>0) {
-                    
+
                     long timeLimit = Long.parseLong(args[1]);
                     if(timeLimit > 0) {
                             timerStart = System.nanoTime();
@@ -66,10 +67,11 @@ public class SisyphusI {
                             timer.schedule((new TimerTask() {
                                 @Override
                                 public void run() {
-                                    printResults();
-                                    System.exit(0);
+									printFirst = true;
+                                    printAfter = true;
+
                                 }
-                            }), (long) (timeLimit * 0.85)); 
+                            }), (long) (timeLimit * 0.000000000000001));
 			fromFile = args[0];
 			env.fromFile(fromFile);
                     }
@@ -217,22 +219,33 @@ public class SisyphusI {
 
 		// mutations loop
 		while(1 == 1){
+			if (printFirst) {
+				printFirst = false;
+				printResults();
+			}
+
 			int totalScore = 0;
 			for (int popIndex = 0; popIndex < POP_SIZE; popIndex++) {
 				// Saving previous scores
 				int tempScore = population[popIndex].score();
 				populationScores[popIndex] = tempScore;
 				totalScore += tempScore;
+
+
                                 
                                 if(tempScore > bestScore) {
                                     /*population[popIndex].printAssignments();
                                     System.out.println("Score: " + tempScore);
                                     System.out.println();*/
-                                    
+
                                     bestScore = tempScore;
                                     bestAssignments = population[popIndex].copyAssignedRooms();
-                                    
-                                    
+
+
+									if (printAfter) {
+										printResults();
+									}
+
                                 }
 
 				// Finds new scores
