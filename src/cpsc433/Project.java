@@ -1,5 +1,6 @@
 package cpsc433;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -8,23 +9,20 @@ import java.util.Iterator;
  */
 public class Project extends Entity {
 
-    private final HashMap<String, Person> personMap;
+    private final ArrayList<Person> personList;
     private final HashMap<String, Person> headMap;
     private boolean isLarge = false;
 
     public Project(String name) {
         super(name);
-        personMap = new HashMap();
+        personList = new ArrayList();
         headMap = new HashMap();
     }
 
     public Iterator<Person> getHeads(){
         return headMap.values().iterator();
     }
-    
-    public Iterator<Person> getMembers(){
-        return personMap.values().iterator();
-    }
+   
     public HashMap getHeadMap() {
         return headMap;
     }
@@ -39,18 +37,12 @@ public class Project extends Entity {
         }
     }
 
-    public HashMap getPersonMap() {
-        return personMap;
+    public ArrayList<Person> getPersonList() {
+        return personList;
     }
 
     public void setProjectPerson(Person p) {
-        if (!checkPerson(p.getName())){
-            personMap.put(p.getName(), p);
-        }
-    }
-
-    public boolean checkPerson(String k) {
-        return personMap.containsKey(k);
+         personList.add(p);
     }
 
     public void setLarge() {
@@ -60,20 +52,4 @@ public class Project extends Entity {
     public boolean getLarge(){
         return isLarge;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }
