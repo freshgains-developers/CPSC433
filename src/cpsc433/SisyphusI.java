@@ -1,6 +1,5 @@
 package cpsc433;
 
-import static cpsc433.PredicateReader.error;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
@@ -59,9 +58,9 @@ public class SisyphusI {
 	protected void run() {
                 long timeLimit = Long.parseLong(args[1]);
                 if(timeLimit > 0) {
-                    POP_SIZE = ((int) (timeLimit * 0.001))+20;
-                    if (POP_SIZE > 1000){
-                        POP_SIZE = 1000;
+                    POP_SIZE = ((int) (timeLimit * 0.002))+40;
+                    if (POP_SIZE > 1500){
+                        POP_SIZE = 1500;
                     }
                 }
                 env = getEnvironment();
@@ -71,7 +70,7 @@ public class SisyphusI {
 		if (args.length>0) {
 
                     if(timeLimit > 0) {
-                        SWAP_TOTAL = ((int) (timeLimit * 0.10))+1;
+                        SWAP_TOTAL = ((int) (timeLimit * 0.001))+1;
                             timerStart = System.nanoTime();
                             
                             Timer timer = new Timer();
@@ -176,7 +175,7 @@ public class SisyphusI {
 		PopMember[] population = new PopMember[POP_SIZE];
 		int[] populationScores = new int[POP_SIZE];
 
-            for (int popIndex = 0; popIndex < POP_SIZE; popIndex++) {
+            for (int popIndex = 0; popIndex < POP_SIZE && !printFirst; popIndex++) {
                 Iterator<Person> peopleIter = env.people.get(popIndex).values().iterator();
 
                 LinkedList<Person> managerQ = new LinkedList();
@@ -214,8 +213,9 @@ public class SisyphusI {
                 if (env.people.get(popIndex).size() - proods <= 2 * (env.rooms.get(popIndex).size() + env.smallRooms.get(popIndex).size() + env.largeRooms.get(popIndex).size() - proods)) {
                     try {
                         PopMember p = env.createPopulationMember(popIndex, managerQ, groupHeadQ, projectHeadQ, secretaryQ, personQ, roomAddresses, largeRoomAddresses, smallRoomAddresses);
-						population[popIndex] = p;
-
+                        population[popIndex] = p;
+                        
+                        bestAssignments = p.getAssignedRooms();
                     } catch (Room.FullRoomException ex) {
                         ex.printStackTrace();
                     }
@@ -238,7 +238,7 @@ public class SisyphusI {
 			}
 
 			int totalScore = 0;
-			for (int popIndex = 0; popIndex < POP_SIZE; popIndex++) {
+			for (int popIndex = 0; popIndex < POP_SIZE && !printFirst; popIndex++) {
 				// Saving previous scores
 				int tempScore = population[popIndex].score();
 				populationScores[popIndex] = tempScore;
@@ -268,7 +268,7 @@ public class SisyphusI {
 			int averageScore = totalScore / POP_SIZE;
 
 			// Compares the scores and decides if we should be mutating
-			for (int popIndex = 0; popIndex < POP_SIZE; popIndex++) {
+			for (int popIndex = 0; popIndex < POP_SIZE && !printFirst; popIndex++) {
 
 				int newScore = population[popIndex].score();
 				// Checks to see if the original was better than the new mutation
