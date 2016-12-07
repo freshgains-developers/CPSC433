@@ -1,8 +1,8 @@
 package cpsc433;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
+        import java.util.ArrayList;
+        import java.util.HashMap;
+        import java.util.Iterator;
 
 /**
  * Created by thise_000 on 2016-11-09.
@@ -19,10 +19,10 @@ public class Project extends Entity {
         headMap = new HashMap();
     }
 
-    public Iterator<Person> getHeads(){
+    public Iterator<Person> getHeads() {
         return headMap.values().iterator();
     }
-   
+
     public HashMap getHeadMap() {
         return headMap;
     }
@@ -42,14 +42,14 @@ public class Project extends Entity {
     }
 
     public void setProjectPerson(Person p) {
-         personList.add(p);
+        personList.add(p);
     }
 
     public void setLarge() {
         isLarge = true;
     }
 
-    public boolean getLarge(){
+    public boolean getLarge() {
         return isLarge;
     }
 }
