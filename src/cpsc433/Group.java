@@ -8,9 +8,9 @@ package cpsc433;
 import java.util.HashMap;
 
 /**
- * @author Brenton Kruger
- *         <p>
- *         Class to hold group data
+ * @author Chris Kinzel, Eric Ma, Brenton Kruger, Micheal Friesen
+ *
+ * Class to hold group data
  */
 public class Group extends Entity {
 

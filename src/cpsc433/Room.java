@@ -6,7 +6,7 @@
 package cpsc433;
 
 /**
- * @author Chris
+ * @author Chris Kinzel, Eric Ma, Brenton Kruger, Micheal Friesen
  *         <p>
  *         Class to hold room data
  */

@@ -138,15 +138,15 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
      *
      * The creation of a new population member, which, for simplicity terms, is a fact.
      *
-     * @param index The index we are creating the popMember at (in memory)
-     * @param managerQ The managers queue we are using
-     * @param groupHeadQ The group queue heads we are using
-     * @param projectHeadQ The project queue heads we are using
-     * @param secretaryQ The secretaries queue we are using
-     * @param personQ the person queue we are using
+     * @param index - int - The index we are creating the popMember at (in memory)
+     * @param managerQ - LinkedList of people -The managers queue we are using
+     * @param groupHeadQ - LinkedList of people- The group queue heads we are using
+     * @param projectHeadQ - LinkedList of people - The project queue heads we are using
+     * @param secretaryQ - LinkedList of people - The secretaries queue we are using
+     * @param personQ - LinkedList of people - the person queue we are using
      * @param roomAddresses The medium rooms we have
-     * @param largeRoomAddresses
-     * @param smallRoomAddresses
+     * @param largeRoomAddresses The large rooms we have
+     * @param smallRoomAddresses The small rooms we have
      * @return
      * @throws FullRoomException
      */

@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 /**
  *
- * @author Micheal
+ * @author Chris Kinzel, Eric Ma, Brenton Kruger, Micheal Friesen
  * An object that represents each person in the Sisyphus problem
  */
 public class Person extends Entity{
