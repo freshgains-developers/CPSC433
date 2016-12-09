@@ -11,24 +11,29 @@ import java.util.ArrayList;
 
 /**
  *
- * @author Micheal
+ * @author Chris Kinzel, Eric Ma, Brenton Kruger, Micheal Friesen
  * An object that represents each person in the Sisyphus problem
  */
 public class Person extends Entity{
+    
     // Array of projects the person is assigned to
     private ArrayList projects = null;
+    
     // Array of groups the person is associated with
     private ArrayList groups = null;
+    
     // Role booleans (default false)
     private boolean secretary = false;
     private boolean manager = false;
     private boolean hacker = false;
     private boolean projectHead = false;
     private boolean groupHead = false;
-    private boolean fixed = false;
     private boolean researcher = false;
-    // Smoker (default false)
     private boolean smoker = false;
+    
+    // This is to indicate if an assignment is fixed or not. (on input)
+    private boolean fixed = false;
+    
 
     // Assigned room or null if not assigned
     private Room assignedRoom = null;

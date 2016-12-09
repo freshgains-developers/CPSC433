@@ -7,12 +7,18 @@ package cpsc433;
 
 /**
  *
- * @author Chris
+ * @author Chris Kinzel, Eric Ma, Brenton Kruger, Micheal Friesen
  */
 public class OccupantSwap extends Swap {
+    // Defines two rooms
     public final Room room1;
     public final Room room2;
-    
+
+    /**
+     * Swaps all occupants of two specified rooms
+     * @param room1 the first room
+     * @param room2 the second room
+     */
     public OccupantSwap(Room room1, Room room2) {
         super(SwapType.OCCUPANT);
         
