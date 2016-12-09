@@ -129,6 +129,7 @@ public class PopMember {
                         // A prood is an "important person" (manager or greater)
                         assignedRooms.add(tempRoom);
                         largeRoomAddresses[roomIndex] = largeRoomAddresses[--largeRoomsLeft];
+                        largeRoomAddresses[largeRoomsLeft] = tempRoom;
                     } else {
                         roomAssigned = tempRoom;
                         roomAssigned.putPerson(tempPerson);
@@ -136,6 +137,7 @@ public class PopMember {
                         tempPerson.assignToRoom(roomAssigned);
                         //move last element to take the place of the full one && update large rooms left
                         largeRoomAddresses[roomIndex] = largeRoomAddresses[--largeRoomsLeft];
+                        largeRoomAddresses[largeRoomsLeft] = tempRoom;
                     }
                 }
                 // Tries to put it in a small room, leaving medium rooms for two people
@@ -146,6 +148,7 @@ public class PopMember {
                         //remove room because it already has a prood in it
                         assignedRooms.add(tempRoom);
                         smallRoomAddresses[roomIndex] = smallRoomAddresses[--smallRoomsLeft];
+                        smallRoomAddresses[smallRoomsLeft] = tempRoom;
                     } else {
                         roomAssigned = tempRoom;
                         roomAssigned.putPerson(tempPerson);
@@ -153,8 +156,10 @@ public class PopMember {
                         tempPerson.assignToRoom(roomAssigned);
                         //move last element to take the place of the full one && update large rooms left
                         smallRoomAddresses[roomIndex] = smallRoomAddresses[--smallRoomsLeft];
+                        smallRoomAddresses[smallRoomsLeft] = tempRoom;
                     }
                 }
+
 
                 // Places them in a random remaining room
                 while (roomAssigned == null && (roomsLeft > 0)) {
@@ -164,6 +169,7 @@ public class PopMember {
                         //remove room because it already has a prood in it
                         assignedRooms.add(tempRoom);
                         roomAddresses[roomIndex] = roomAddresses[--roomsLeft];
+                        roomAddresses[roomsLeft] = tempRoom;
                     } else {
                         roomAssigned = tempRoom;
                         roomAssigned.putPerson(tempPerson);
@@ -171,6 +177,7 @@ public class PopMember {
                         tempPerson.assignToRoom(roomAssigned);
                         //move last element to take the place of the full one && update large rooms left
                         roomAddresses[roomIndex] = roomAddresses[--roomsLeft];
+                        roomAddresses[roomsLeft] = tempRoom;
                     }
                 }
             } else {
@@ -194,6 +201,7 @@ public class PopMember {
                         //remove room because it already has a prood in it
                         assignedRooms.add(tempRoom);
                         smallRoomAddresses[roomIndex] = smallRoomAddresses[--smallRoomsLeft];
+                        smallRoomAddresses[smallRoomsLeft] = tempRoom;
                     } else {
                         roomAssigned = tempRoom;
                         roomAssigned.putPerson(tempPerson);
@@ -201,6 +209,7 @@ public class PopMember {
                         tempPerson.assignToRoom(roomAssigned);
                         //move last element to take the place of the full one && update large rooms left
                         smallRoomAddresses[roomIndex] = smallRoomAddresses[--smallRoomsLeft];
+                        smallRoomAddresses[smallRoomsLeft] = tempRoom;
                     }
                 }
                 // Try for large room
@@ -211,6 +220,7 @@ public class PopMember {
                         //remove room because it already has a prood in it
                         assignedRooms.add(tempRoom);
                         largeRoomAddresses[roomIndex] = largeRoomAddresses[--largeRoomsLeft];
+                        largeRoomAddresses[largeRoomsLeft] = tempRoom;
                     } else {
                         roomAssigned = tempRoom;
                         roomAssigned.putPerson(tempPerson);
@@ -228,6 +238,7 @@ public class PopMember {
                         //remove room because it already has a prood in it
                         assignedRooms.add(tempRoom);
                         roomAddresses[roomIndex] = roomAddresses[--roomsLeft];
+                        roomAddresses[roomsLeft] = tempRoom;
                     } else {
                         roomAssigned = tempRoom;
                         roomAssigned.putPerson(tempPerson);
@@ -235,6 +246,7 @@ public class PopMember {
                         tempPerson.assignToRoom(roomAssigned);
                         //move last element to take the place of the full one && update large rooms left
                         roomAddresses[roomIndex] = roomAddresses[--roomsLeft];
+                        roomAddresses[roomsLeft] = tempRoom;
                     }
                 }
             } else {
@@ -258,6 +270,7 @@ public class PopMember {
                         //remove room because it already has a prood in it
                         assignedRooms.add(tempRoom);
                         smallRoomAddresses[roomIndex] = smallRoomAddresses[--smallRoomsLeft];
+                        smallRoomAddresses[smallRoomsLeft] = tempRoom;
                     } else {
                         roomAssigned = tempRoom;
                         roomAssigned.putPerson(tempPerson);
@@ -265,6 +278,7 @@ public class PopMember {
                         tempPerson.assignToRoom(roomAssigned);
                         //move last element to take the place of the full one && update large rooms left
                         smallRoomAddresses[roomIndex] = smallRoomAddresses[--smallRoomsLeft];
+                        smallRoomAddresses[smallRoomsLeft] = tempRoom;
                     }
                 }
                 // Try for large first
@@ -275,6 +289,7 @@ public class PopMember {
                         //remove room because it already has a prood in it
                         assignedRooms.add(tempRoom);
                         largeRoomAddresses[roomIndex] = largeRoomAddresses[--largeRoomsLeft];
+                        largeRoomAddresses[largeRoomsLeft] = tempRoom;
                     } else {
                         roomAssigned = tempRoom;
                         roomAssigned.putPerson(tempPerson);
@@ -282,6 +297,7 @@ public class PopMember {
                         tempPerson.assignToRoom(roomAssigned);
                         //move last element to take the place of the full one && update large rooms left
                         largeRoomAddresses[roomIndex] = largeRoomAddresses[--largeRoomsLeft];
+                        largeRoomAddresses[largeRoomsLeft] = tempRoom;
                     }
                 }
                 // Place anywhere
@@ -292,6 +308,7 @@ public class PopMember {
                         //remove room because it already has a prood in it
                         assignedRooms.add(tempRoom);
                         roomAddresses[roomIndex] = roomAddresses[--roomsLeft];
+                        roomAddresses[roomsLeft] = tempRoom;
                     } else {
                         roomAssigned = tempRoom;
                         roomAssigned.putPerson(tempPerson);
@@ -299,6 +316,7 @@ public class PopMember {
                         tempPerson.assignToRoom(roomAssigned);
                         //move last element to take the place of the full one && update large rooms left
                         roomAddresses[roomIndex] = roomAddresses[--roomsLeft];
+                        roomAddresses[roomsLeft] = tempRoom;
                     }
                 }
             } else {
@@ -321,6 +339,7 @@ public class PopMember {
                         //remove room because it already has a prood in it
                         assignedRooms.add(tempRoom);
                         largeRoomAddresses[roomIndex] = largeRoomAddresses[--largeRoomsLeft];
+                        largeRoomAddresses[largeRoomsLeft] = tempRoom;
                     } else {
                         roomAssigned = tempRoom;
                         roomAssigned.putPerson(tempPerson);
@@ -341,6 +360,7 @@ public class PopMember {
                         //remove room because it already has a prood in it
                         assignedRooms.add(tempRoom);
                         roomAddresses[roomIndex] = roomAddresses[--roomsLeft];
+                        roomAddresses[roomsLeft] = tempRoom;
                     } else {
                         roomAssigned = tempRoom;
                         roomAssigned.putPerson(tempPerson);
@@ -350,6 +370,7 @@ public class PopMember {
                         if (roomAssigned.isFull()) {
                             //move last element to take the place of the full one && update large rooms left
                             roomAddresses[roomIndex] = roomAddresses[--roomsLeft];
+                            roomAddresses[roomsLeft] = tempRoom;
                         }
                     }
                 }
@@ -361,6 +382,7 @@ public class PopMember {
                         //remove room because it already has a prood in it
                         assignedRooms.add(tempRoom);
                         smallRoomAddresses[roomIndex] = smallRoomAddresses[--smallRoomsLeft];
+                        smallRoomAddresses[smallRoomsLeft] = tempRoom;
                     } else {
                         roomAssigned = tempRoom;
                         roomAssigned.putPerson(tempPerson);
@@ -370,6 +392,7 @@ public class PopMember {
                         if (roomAssigned.isFull()) {
                             //move last element to take the place of the full one && update large rooms left
                             smallRoomAddresses[roomIndex] = smallRoomAddresses[--smallRoomsLeft];
+                            smallRoomAddresses[smallRoomsLeft] = tempRoom;
                         }
                     }
                 }
@@ -392,6 +415,7 @@ public class PopMember {
                         //remove room because it already has a prood in it
                         assignedRooms.add(tempRoom);
                         largeRoomAddresses[roomIndex] = largeRoomAddresses[--largeRoomsLeft];
+                        largeRoomAddresses[largeRoomsLeft] = tempRoom;
                     } else {
                         roomAssigned = tempRoom;
                         roomAssigned.putPerson(tempPerson);
@@ -400,6 +424,7 @@ public class PopMember {
                         if (roomAssigned.isFull()) {
                             //move last element to take the place of the full one && update large rooms left
                             largeRoomAddresses[roomIndex] = largeRoomAddresses[--largeRoomsLeft];
+                            largeRoomAddresses[largeRoomsLeft] = tempRoom;
                         }
                     }
                 }
@@ -411,6 +436,7 @@ public class PopMember {
                         //remove room because it already has a prood in it
                         assignedRooms.add(tempRoom);
                         roomAddresses[roomIndex] = roomAddresses[--roomsLeft];
+                        roomAddresses[roomsLeft] = tempRoom;
                     } else {
                         roomAssigned = tempRoom;
                         roomAssigned.putPerson(tempPerson);
@@ -420,6 +446,7 @@ public class PopMember {
                         if (roomAssigned.isFull()) {
                             //move last element to take the place of the full one && update large rooms left
                             roomAddresses[roomIndex] = roomAddresses[--roomsLeft];
+                            roomAddresses[roomsLeft] = tempRoom;
                         }
                     }
                 }
@@ -431,6 +458,7 @@ public class PopMember {
                         //remove room because it already has a prood in it
                         assignedRooms.add(tempRoom);
                         smallRoomAddresses[roomIndex] = smallRoomAddresses[--smallRoomsLeft];
+                        smallRoomAddresses[smallRoomsLeft] = tempRoom;
                     } else {
                         roomAssigned = tempRoom;
                         roomAssigned.putPerson(tempPerson);
@@ -440,6 +468,7 @@ public class PopMember {
                         if (roomAssigned.isFull()) {
                             //move last element to take the place of the full one && update large rooms left
                             smallRoomAddresses[roomIndex] = smallRoomAddresses[--smallRoomsLeft];
+                            smallRoomAddresses[smallRoomsLeft] = tempRoom;
                         }
                     }
                 }

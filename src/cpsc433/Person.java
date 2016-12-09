@@ -15,13 +15,10 @@ import java.util.ArrayList;
  * An object that represents each person in the Sisyphus problem
  */
 public class Person extends Entity{
-    
-    // Array of projects the person is assigned to
+    // Array of projects the person is a part of
     private ArrayList projects = null;
-    
-    // Array of groups the person is associated with
+    // Array of groups the person is a part of
     private ArrayList groups = null;
-    
     // Role booleans (default false)
     private boolean secretary = false;
     private boolean manager = false;
@@ -31,17 +28,15 @@ public class Person extends Entity{
     private boolean researcher = false;
     private boolean smoker = false;
     
-    // This is to indicate if an assignment is fixed or not. (on input)
+    // Fixed indicates if the persons assignments can be manipulated or not
+    // If it was an initial assertion, that should not be changed, then it is
+    // A fixed person
     private boolean fixed = false;
-    
 
     // Assigned room or null if not assigned
     private Room assignedRoom = null;
 
-    /**
-     * Accessor for groups array
-     * @param g group to add to person array
-     */
+    // ------ All of the setters / Adders for the instance variables --------
 
     public void addGroup(Group g){
         groups.add(g);
@@ -59,14 +54,15 @@ public class Person extends Entity{
         return groups;
     }
     
-    // Set methods for the private variables of person
     public void setSecretary(boolean b) {
         this.secretary = b;
     }
 
+
     public void setFixed(boolean b) {this.fixed = b;}
 
-    public boolean getFixed () {return this.fixed;}
+    
+    
     public void setManager(boolean b) {
         this.manager = b;
     }
@@ -95,7 +91,7 @@ public class Person extends Entity{
         this.groupHead = b;
     }
 
-    // Get methods
+    // ----   All Get methods ----
     public boolean isSecretary(){
         return secretary;
     }
@@ -125,6 +121,9 @@ public class Person extends Entity{
     public boolean isGroupHead(){
         return groupHead;
     }
+    
+    public boolean getFixed () {return this.fixed;}
+
 
     public Person(String name) {
         super(name);

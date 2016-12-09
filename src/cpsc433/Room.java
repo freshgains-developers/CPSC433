@@ -13,8 +13,8 @@ package cpsc433;
 public class Room extends Entity {
 
     /**
-     *
-     *  
+     * @author Chris
+     *         <p>
      *         Exception for when more than 2 people are assigned to a room
      */
     public class FullRoomException extends Exception {
@@ -43,11 +43,7 @@ public class Room extends Entity {
     private final Person[] assignedPeople;
     private boolean hasFixedAssignments = false;
 
-    /**
-     * Room constructor, making the room empty and initializing the two people to null.
-     * @param name name of the room
-     * @param size the size of the room (small medium or large)
-     */
+    // Constructor, accepts name and Room size
     public Room(String name, RoomSize size) {
         super(name);
         this.size = size;
@@ -57,9 +53,11 @@ public class Room extends Entity {
         assignedPeople[1] = null;
     }
 
-    // Copy constructor, * this is not a deep copy *
-    // this method simply compies Person Room objects
-    // in sufficient depth to preserve assignments
+    /** 
+     * Copy constructor, * this is not a deep copy *
+     * this method simply copies Person Room objects
+     * in sufficient depth to preserve assignments
+     */ 
     public Room(Room toCopy) {
         super(toCopy.getName());
 
@@ -78,7 +76,10 @@ public class Room extends Entity {
         }
     }
 
-    // Getter for Room size
+    /**
+     * Gets Room size
+     * @return size of room
+     */
     public RoomSize getSize() {
         return size;
     }
@@ -101,7 +102,10 @@ public class Room extends Entity {
         }
     }
 
-    // Getter for assigned people
+    /**
+     * Returns all people assigned to the room
+     * @return array of Persons that are assigned to that room
+     */
     public Person[] getAssignedPeople() {
         return assignedPeople;
     }
@@ -110,23 +114,40 @@ public class Room extends Entity {
         return ((assignedPeople[0] == null) && (assignedPeople[1] == null));
     }
 
-    // Setter for Room size
+
     public void setSize(RoomSize size) {
         this.size = size;
     }
 
+    
+    /**
+     * Sets if the Room has some fixed assignments or not. If it does then mutate wont change it
+     */
     public void setHasFixedAssignments() {
         this.hasFixedAssignments = true;
     }
 
+    
+    /**
+     * Checks if the room can be mutated
+     * @return boolean
+     */
     public boolean hasFixedAssignments() {
         return hasFixedAssignments;
     }
 
+    /**
+     * Returns if the room is completely fixed, or if it is only some variables
+     * @return 
+     */
     public boolean allFixed() {
         return isFull() && assignedPeople[0].getFixed() && assignedPeople[1].getFixed();
     }
 
+    /**
+     * Checks if the room is full
+     * @return 
+     */
     public boolean isFull() {
         if (this.assignedPeople[1] == null)
             return false;
@@ -134,9 +155,11 @@ public class Room extends Entity {
             return true;
     }
 
-    // Adds Person p to this room if space is available,
-    // otherwise throws FullRoomException and occupants
-    // are unchanged
+    /**
+     * Adds Person p to this room if space is available,
+     * otherwise throws FullRoomException and occupants
+     * are unchanged
+     */
     public void putPerson(Person p) throws FullRoomException {
         if (assignedPeople[0] == null) {
             if (p == null) {
@@ -152,7 +175,10 @@ public class Room extends Entity {
         }
     }
 
-    // Removes Person p from this room (if present)
+    /**
+     * Removes Person p from this room (if present)
+     * @param p person to remove
+     */
     public void removePerson(Person p) {
         if (assignedPeople[0] == p) {
             assignedPeople[0] = null;
@@ -161,7 +187,9 @@ public class Room extends Entity {
         }
     }
 
-    // Removes all people from the room
+    /**
+     * Removes all people from the room
+     */
     public void clearRoom() {
         assignedPeople[0] = null;
         assignedPeople[1] = null;
