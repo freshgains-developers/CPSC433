@@ -6,18 +6,18 @@
 package cpsc433;
 
 /**
+ * @author Chris Kinzel, Eric Ma, Brenton Kruger, Micheal Friesen
  *
- * @author Chris
- * 
  * Dummy class to have common superclass for swap storage classes
+ *
  */
 public class Swap {
     public enum SwapType {
         OCCUPANT, SINGLE
     }
-    
+
     protected final SwapType type;
-    
+
     protected Swap(SwapType type) {
         this.type = type;
     }
