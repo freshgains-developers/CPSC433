@@ -54,6 +54,13 @@ public class PopMember {
      * FOR REFERENCE:
      * A pleb - a non manager, non group / project head
      * A prood - person > manager (group /  project head and manager)
+     * 
+     * 
+     * Creates a population member, which is used to mutate.
+     * On construction, no soft constraints are violated, allowing for 
+     * All popMembers to be assumed to have all hard constraints met.
+     * 
+     * Uses Iterators to search over the data we uses to construct, for efficiency.
      *
      * @param worksWith          HashSet of works with relations
      * @param people             Where we save the HashMap of people
@@ -70,7 +77,6 @@ public class PopMember {
      * @param smallRoomAddresses Global ArrayList of small rooms
      * @throws cpsc433.Room.FullRoomException ** (shouldn't happen) ** thrown if initialization error occurs (this would be a bug)
      */
-
 
     public PopMember(HashSet worksWith, HashMap people, HashMap groups, HashMap projects, HashSet closeTo, LinkedList<Person> managerQ, LinkedList<Person> groupHeadQ, LinkedList<Person> projectHeadQ, LinkedList<Person> secretaryQ, LinkedList<Person> personQ, Room[] roomAddresses, Room[] largeRoomAddresses, Room[] smallRoomAddresses) throws FullRoomException {
         //initialize population randomly.
@@ -481,7 +487,10 @@ public class PopMember {
 
     /**
      * Random room picker for swap based on a random number (for mutations)
-     * @param rand the random number
+     * 
+     * 
+     * 
+     * @param rand the random object used for picking the number
      * @return the room for swapping
      */
     private Room pickRandomSwapableRoom(Random rand) {
@@ -545,6 +554,7 @@ public class PopMember {
      * This is the mutate function for evolving our facts (on a pop member)
      *
      * To undo a fact mutation (if we keep the parent) we rollback with the roll back function below
+     * 
      *
      * @param numSwaps the amount of swaps we are doing
      * @throws FullRoomException Throws if there is a full room
@@ -596,7 +606,7 @@ public class PopMember {
     }
 
     /**
-     * Method to reverse or "undo" a mutation
+     * Method to reverse or "undo" a mutation. This was done for memory conservation
      * @throws FullRoomException For bug testing
      */
     public void rollback() throws FullRoomException {
@@ -656,6 +666,8 @@ public class PopMember {
 
     /**
      * Takes all people from one room and all people from the other room and swaps them all
+     * 
+     * 
      * @param r1 the first room to swap
      * @param r2 the second room to swap
      * @param reverse If we are reversing or not (for rollback)
@@ -747,7 +759,10 @@ public class PopMember {
 
 
     /**
-     * The scoring function, using many iterators, an for loops, with each evaluated contraint listed inline.
+     * The scoring function, using many iterators, and for loops, with each evaluated contraint listed inline.
+     * We tried our hardest to minimalize the amount of repeated for loops.
+     * This is the largest reason we have an excessive amount of nested loops.
+     * 
      * @return a utility score int.
      */
     public int score() {
