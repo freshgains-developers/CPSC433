@@ -14,15 +14,17 @@ import java.util.HashMap;
  */
 public class Group extends Entity {
 
+    // This is the holder of all data sets in the group, so we can quickly iterate.
+    // All instances are meant to be unique, so that there are no wasted computations
     private final HashMap<String, Person> peopleList;
     private final HashMap<String, Person> managerList;
     private final HashMap<String, Person> secretaryList;
     private final HashMap<String, Person> headMap;
 
-    //constructor of group
+    //constructor of group. 
     public Group(String name) {
         super(name);
-        //hashmap for people
+        
         peopleList = new HashMap<String, Person>();
         managerList = new HashMap<String, Person>();
         secretaryList = new HashMap<String, Person>();
@@ -31,6 +33,8 @@ public class Group extends Entity {
 
 
     /**
+     * Checks if a given person exists in the group
+     * 
      * @param p person to check
      * @return true if person is a member of group
      */
@@ -57,6 +61,8 @@ public class Group extends Entity {
 
 
     /**
+     * Checks the headMap for if a specific person is part of the head of this group
+     * 
      * @param p person to check
      * @return true if person is a head of the group
      */
@@ -66,7 +72,10 @@ public class Group extends Entity {
     }
 
     /**
-     * add person to group
+     * add person to all groups, looking at the specific traits of each person
+     * and assessing which of the lists they belong in. 
+     * 
+     * NOTE: The people list is only full of "Plebs" for efficiency purposes
      *
      * @param p is the key in the map
      */
@@ -88,7 +97,7 @@ public class Group extends Entity {
     }
 
     /**
-     * remove person from group
+     * remove person from all groups they were associated with
      *
      * @param p is a key in the group
      */

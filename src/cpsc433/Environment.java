@@ -63,6 +63,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
     protected boolean fixedAssignments = false;
 
     // The various array lists, used to iterate over the hashmaps of the groups of sets.
+    // ArrayLists were used in order to ensure that we could have seperated places in memory for each enviornment instance.
 
     public ArrayList<HashMap<String, Person>> people = null;
     private HashSet<SymmetricPair<Person, Person>> worksWith = null;
@@ -78,6 +79,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
 
     /**
      * The constructor for an environment instance.
+     * 
      *
      * @param name    - Name of the environment
      * @param popSize - Amount of people in the population
@@ -86,6 +88,7 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
         super(name == null ? "theEnvironment" : name);
 
         // Initializes the groups of the sets.
+        // We used ArrayLists 
         worksWith = new HashSet();
         people = new ArrayList<>(popSize);
         for (int i = 0; i < popSize; i++) {
@@ -137,6 +140,8 @@ public class Environment extends PredicateReader implements SisyphusPredicates {
     /**
      *
      * The creation of a new population member, which, for simplicity terms, is a fact.
+     * Each environnment has its own PopMember, meaning every fact we generation has it's
+     * own various LinkedLists
      *
      * @param index - int - The index we are creating the popMember at (in memory)
      * @param managerQ - LinkedList of people -The managers queue we are using

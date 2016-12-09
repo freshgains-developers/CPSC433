@@ -33,7 +33,7 @@ public class SisyphusI {
         new SisyphusI(args);
     }
 
-    // Default for mutation per ply
+    // Default for mutation per generation
     private int SWAP_TOTAL = 1;
 
     protected final String[] args;
@@ -60,6 +60,7 @@ public class SisyphusI {
 
     protected void run() {
         // Takes the time limit and sets the POP_SIZE to be a factor of the total amount of time
+        // This is because, the more time we have, the more we can generate at the same time.
         long timeLimit = Long.parseLong(args[1]);
         if (timeLimit > 0) {
             // Caps the size for efficancy sake
@@ -76,6 +77,8 @@ public class SisyphusI {
 
             if (timeLimit > 0) {
                 // Changes SWAP_TOTAL with respect to time
+                // This is because the more mutations we have, the more different
+                // of solutions we get, which takes more time.
                 SWAP_TOTAL = ((int) (timeLimit * 0.10)) + 1;
                 timerStart = System.nanoTime();
 
@@ -87,7 +90,7 @@ public class SisyphusI {
                         printFirst = true;
 
                     }
-                    // Uses 85% of alotted time for saftey purposes
+                    // Uses 85% of alotted time for saftey purposes (in case of very low time inputs)
                 }), (long) (timeLimit * 0.85));
                 fromFile = args[0];
                 env.fromFile(fromFile);
@@ -203,7 +206,7 @@ public class SisyphusI {
                 }
             }
 
-            //cutoff for unsolvable instances. Dependant on number of people, rooms, managers, and heads.
+            //cutoff for unsolvable instances. Dependant on number of people, rooms, managers, and heads. 
             int proods = managerQ.size() + groupHeadQ.size() + projectHeadQ.size();
             if (env.people.get(popIndex).size() - proods <= 2 * (env.rooms.get(popIndex).size() + env.smallRooms.get(popIndex).size() + env.largeRooms.get(popIndex).size() - proods)) {
                 try {

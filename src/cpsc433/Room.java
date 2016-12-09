@@ -13,8 +13,8 @@ package cpsc433;
 public class Room extends Entity {
 
     /**
-     * @author Chris
-     *         <p>
+     *
+     *  
      *         Exception for when more than 2 people are assigned to a room
      */
     public class FullRoomException extends Exception {
@@ -43,7 +43,11 @@ public class Room extends Entity {
     private final Person[] assignedPeople;
     private boolean hasFixedAssignments = false;
 
-    // Constructor, accepts name and Room size
+    /**
+     * Room constructor, making the room empty and initializing the two people to null.
+     * @param name name of the room
+     * @param size the size of the room (small medium or large)
+     */
     public Room(String name, RoomSize size) {
         super(name);
         this.size = size;

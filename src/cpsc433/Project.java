@@ -12,6 +12,7 @@ package cpsc433;
  */
 public class Project extends Entity {
 
+    // headmap is the hashmap of all the heads in the project (unique/no repeats)
     private final ArrayList<Person> personList;
     private final HashMap<String, Person> headMap;
     private boolean isLarge = false;
